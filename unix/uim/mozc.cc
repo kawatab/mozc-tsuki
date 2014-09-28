@@ -1,3 +1,16 @@
+// Modified code
+// Copyright 2014, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Modified the function:
+//     static uim_lisp get_input_rule(uim_lisp id_)
+// - Modified the function:
+//     static uim_lisp set_input_rule(uim_lisp mc_,
+//                                    uim_lisp id_,
+//                                    uim_lisp new_rule_)
+//
+
+// Original code
 /*
 
   Copyright (c) 2010-2013 uim Project http://code.google.com/p/uim/
@@ -1065,6 +1078,9 @@ get_input_rule(uim_lisp id_)
   case config::Config::KANA:
     rule = 1;
     break;
+  case config::Config::TSUKI:
+    rule = 2;
+    break;
   default:
     rule = 0;
     break;
@@ -1086,6 +1102,9 @@ set_input_rule(uim_lisp mc_, uim_lisp id_, uim_lisp new_rule_)
     break;
   case 1:
     method = config::Config::KANA;
+    break;
+  case 2:
+    method = config::Config::TSUKI;
     break;
   default:
     method = config::Config::ROMAN;

@@ -530,8 +530,13 @@ Mozcの機能向上に役立てる（再ログイン後に変更は完了しま�
     </message>
     <message>
         <location filename="config_dialog.cc" line="134"/>
-        <source>Kana</source>
-        <translation>かな入力</translation>
+        <source>Kana (JIS)</source>
+        <translation>かな入力（JIS配列）</translation>
+    </message>
+    <message>
+        <location filename="config_dialog.cc" line="134"/>
+        <source>Kana (Tsuki 2-263)</source>
+        <translation>かな入力（月配列2-263式）</translation>
     </message>
     <message>
         <location filename="config_dialog.cc" line="138"/>

@@ -1,3 +1,11 @@
+// Modified code
+// Copyright 2014, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Add an item for Tsuki map
+//
+
+// Original code
 // Copyright 2010-2014, Google Inc.
 // All rights reserved.
 //
@@ -234,7 +242,14 @@ mozc.OPTION_SELECTIONS_ = [
         name: chrome.i18n.getMessage('configPreeditMethodRomaji'),
         value: 'ROMAN'
       },
-      {name: chrome.i18n.getMessage('configPreeditMethodKana'), value: 'KANA'}
+      {
+        name: chrome.i18n.getMessage('configPreeditMethodKana'),
+        value: 'KANA'
+      },
+      {
+        name: chrome.i18n.getMessage('configPreeditMethodTsuki'),
+        value: 'TSUKI'
+      }
     ]
   },
   {

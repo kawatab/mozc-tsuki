@@ -1,3 +1,11 @@
+// Modified code
+// Copyright 2014, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added the array: { TSUKI: 'TSUKI' } to mozc.PreeditMethod_.
+//
+
+// Original code
 // Copyright 2010-2014, Google Inc.
 // All rights reserved.
 //
@@ -59,7 +67,8 @@ mozc.CANDIDATE_WINDOW_PAGE_SIZE_ = 9;
  */
 mozc.PreeditMethod_ = {
   ROMAN: 'ROMAN',
-  KANA: 'KANA'
+  KANA: 'KANA',
+  TSUKI: 'TSUKI'
 };
 
 /**

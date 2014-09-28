@@ -1,3 +1,14 @@
+// Modified code
+// Copyright 2014, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added the line: const char kTsukiCombinationTableFile[] = "system://tsuki.tsv";
+// - Modified the function:
+//     bool Table::InitializeWithRequestAndConfig(const commands::Request &request,
+//                                                const config::Config &config)
+//
+
+// Original code
 // Copyright 2010-2014, Google Inc.
 // All rights reserved.
 //
@@ -55,6 +66,7 @@ const char kDefaultPreeditTableFile[] = "system://romanji-hiragana.tsv";
 const char kRomajiPreeditTableFile[] = "system://romanji-hiragana.tsv";
 // Table for Kana combinations like "か゛" → "が".
 const char kKanaCombinationTableFile[] = "system://kana.tsv";
+const char kTsukiCombinationTableFile[] = "system://tsuki.tsv";
 
 // Special tables for 12keys
 const char k12keysHiraganaTableFile[] = "system://12keys-hiragana.tsv";
@@ -192,6 +204,7 @@ bool Table::InitializeWithRequestAndConfig(const commands::Request &request,
           LoadFromFile(kRomajiPreeditTableFile);
       break;
     case config::Config::KANA:
+    case config::Config::TSUKI:
       result = LoadFromFile(kRomajiPreeditTableFile);
       break;
     default:
@@ -278,7 +291,9 @@ bool Table::InitializeWithRequestAndConfig(const commands::Request &request,
   CHECK(result);
 
   // Load Kana combination rules.
-  result = LoadFromFile(kKanaCombinationTableFile);
+  result = LoadFromFile(config.preedit_method() == config::Config::KANA ?
+			kKanaCombinationTableFile :
+			kTsukiCombinationTableFile);
   return result;
 }
 

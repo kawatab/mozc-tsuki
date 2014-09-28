@@ -1,3 +1,11 @@
+# Modified code
+# Copyright 2014, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+# All rights reserved.
+#
+# - Added a line of 'tsuki.tsv'
+#
+
+# Original code
 # Copyright 2010-2014, Google Inc.
 # All rights reserved.
 #
@@ -314,6 +322,7 @@
             '../data/preedit/flick-number.tsv',
             '../data/preedit/hiragana-romanji.tsv',
             '../data/preedit/kana.tsv',
+            '../data/preedit/tsuki.tsv',
             '../data/preedit/godan-hiragana.tsv',
             '../data/preedit/qwerty_mobile-halfwidthascii.tsv',
             '../data/preedit/qwerty_mobile-hiragana-number.tsv',

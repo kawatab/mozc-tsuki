@@ -1,3 +1,11 @@
+// Modified code
+// Copyright 2014, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added the value: TSUKI to the enum: KeyCorrector::InputMode
+//
+
+// Original code
 // Copyright 2010-2014, Google Inc.
 // All rights reserved.
 //
@@ -42,6 +50,7 @@ class KeyCorrector {
   enum InputMode {
     ROMAN,
     KANA,
+    TSUKI,
   };
 
   KeyCorrector(const string &key, InputMode mode, size_t history_size);
