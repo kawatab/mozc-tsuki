@@ -1,9 +1,8 @@
 #mozc-tsuki
 
-This is an improved version of Mozc. With this version, you can input japanese by Tsuki 2-263 layout. At the moment,
-ibus-mozc and emacs-mozc are available, and uim-mozc and fcitx-mozc may be. I prepare package for Debian only.
+This is an improved version of Mozc. With this version, you can input japanese by Tsuki 2-263 layout. At the moment, ibus-mozc, fcitx-mozc and emacs-mozc are available, and uim-mozc may be. I prepare package for Debian only.
 
-月配列2-263式を使えるようにMozcをソースに手を加えました。今のところ、ibus-mozcとemacs-mozcは使えます。uim-mozcとfcitx-mozcはテストしていませんが、使えるかもしれません。
+月配列2-263式を使えるようにMozcをソースに手を加えました。今のところ、ibus-mozcとfcitx-mozc、emacs-mozcは使えます。uim-mozcとfcitx-mozcはテストしていませんが、使えるかもしれません。
 
 対応しているのはDebianのみです。
 
