@@ -1,2 +1,0 @@
-build gen//data/test/character_set/character_set.tsv: copy $
-    ../../data/test/character_set/character_set.tsv

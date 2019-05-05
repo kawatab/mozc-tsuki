@@ -1,2 +1,0 @@
-build gen//engine/engine_builder_test.cc: copy $
-    ../../engine/engine_builder_test.cc

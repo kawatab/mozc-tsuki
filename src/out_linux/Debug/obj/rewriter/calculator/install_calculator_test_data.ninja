@@ -1,2 +1,0 @@
-build gen//data/test/calculator/testset.txt: copy $
-    ../../data/test/calculator/testset.txt
