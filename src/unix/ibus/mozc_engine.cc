@@ -1,3 +1,15 @@
+// Modified code
+// Copyright 2019, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Modified the function:
+//     gboolean MozcEngine::ProcessKeyEvent(IBusEngine *engine,
+//                                          guint keyval,
+//                                          guint keycode,
+//                                          guint modifiers)
+//
+
+// Original code
 // Copyright 2010-2018, Google Inc.
 // All rights reserved.
 //
@@ -367,7 +379,8 @@ gboolean MozcEngine::ProcessKeyEvent(
 
   // TODO(yusukes): use |layout| in IBusEngineDesc if possible.
   const bool layout_is_jp =
-      !g_strcmp0(ibus_engine_get_name(engine), "mozc-jp");
+    // !g_strcmp0(ibus_engine_get_name(engine), "mozc-jp");
+    FALSE;
 
   commands::KeyEvent key;
   if (!key_event_handler_->GetKeyEvent(

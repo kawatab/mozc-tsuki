@@ -1,3 +1,11 @@
+// Modified code
+// Copyright 2019, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Modified the function: void PrintGreetingMessage()
+//
+
+// Original code
 // Copyright 2010-2018, Google Inc.
 // All rights reserved.
 //
@@ -59,6 +67,9 @@ void PrintGreetingMessage() {
       break;
     case mozc::config::Config::KANA:
       preedit_method = "kana";
+      break;
+    case mozc::config::Config::TSUKI:
+      preedit_method = "tsuki";
       break;
   }
 

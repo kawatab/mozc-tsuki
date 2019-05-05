@@ -524,7 +524,12 @@
     </message>
     <message>
         <location filename="config_dialog.cc" line="140"/>
-        <source>Kana</source>
+        <source>Kana (JIS)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="config_dialog.cc" line="141"/>
+        <source>Kana (Tsuki 2-263)</source>
         <translation></translation>
     </message>
     <message>
@@ -534,7 +539,12 @@
     </message>
     <message>
         <location filename="config_dialog.cc" line="145"/>
-        <source>Kana (switchable)</source>
+        <source>Kana-JIS (switchable)</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="config_dialog.cc" line="146"/>
+        <source>Kana-Tsuki (switchable)</source>
         <translation></translation>
     </message>
     <message>

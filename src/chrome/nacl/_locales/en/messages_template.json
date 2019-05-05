@@ -1,3 +1,12 @@
+// Modified code
+// Copyright 2019, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Modified the "message" value of "configPreeditMethodKana"
+// - Added "configPreeditMethodTsuki"
+//
+
+// Original code
 // Copyright 2010-2018, Google Inc.
 // All rights reserved.
 //
@@ -73,7 +82,10 @@
     "message": "Romaji"
   },
   "configPreeditMethodKana": {
-    "message": "Kana"
+    "message": "Kana (JIS)"
+  },
+  "configPreeditMethodTsuki": {
+    "message": "Kana (Tsuki 2-263)"
   },
   "configSymbolMethod": {
     "message": "Symbol style:"

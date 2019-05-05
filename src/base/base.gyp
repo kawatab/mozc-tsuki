@@ -1,3 +1,11 @@
+# Modified code
+# Copyright 2019, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+# All rights reserved.
+#
+# - Added a line of 'tsuki.tsv'
+#
+
+# Original code
 # Copyright 2010-2018, Google Inc.
 # All rights reserved.
 #
@@ -378,6 +386,7 @@
             '../data/preedit/flick-hiragana.tsv',
             '../data/preedit/hiragana-romanji.tsv',
             '../data/preedit/kana.tsv',
+            '../data/preedit/tsuki.tsv',
             '../data/preedit/notouch-hiragana.tsv',
             '../data/preedit/godan-hiragana.tsv',
             '../data/preedit/qwerty_mobile-halfwidthascii.tsv',

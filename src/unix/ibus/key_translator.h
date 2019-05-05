@@ -1,3 +1,19 @@
+// Modified code
+// Copyright 2019, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added a function for Tsuki layout
+//     bool IsTsukiAvailable(guint keyval,
+//                           guint keycode,
+//                           guint modifiers,
+//                           bool layout_is_jp,
+//                           string *out) const;
+// - Added the new member:
+//     "KanaMap tsuki_map_jp_" to the class: KeyTranslator
+//     "KanaMap tsuki_map_us_" to the class: KeyTranslator
+//
+
+// Original code
 // Copyright 2010-2018, Google Inc.
 // All rights reserved.
 //
@@ -78,6 +94,13 @@ class KeyTranslator {
                        bool layout_is_jp,
                        string *out) const;
 
+  // Returns true iff |keyval| is a key with a tsuki assigned.
+  bool IsTsukiAvailable(guint keyval,
+                       guint keycode,
+                       guint modifiers,
+                       bool layout_is_jp,
+                       string *out) const;
+
   // Returns true iff key is ASCII such as '0', 'A', or '!'.
   static bool IsAscii(guint keyval,
                       guint keycode,
@@ -105,6 +128,8 @@ class KeyTranslator {
   // 'Hiragana Letter Small U' (with Shift modifier).
   KanaMap kana_map_jp_;  // mapping for JP keyboard.
   KanaMap kana_map_us_;  // mapping for US keyboard.
+  KanaMap tsuki_map_jp_;  // mapping Tsuki 2-263 for JP keyboard.
+  KanaMap tsuki_map_us_;  // mapping Tsuki 2-263 for US keyboard.
 
   DISALLOW_COPY_AND_ASSIGN(KeyTranslator);
 };
