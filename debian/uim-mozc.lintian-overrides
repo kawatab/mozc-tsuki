@@ -1,2 +1,0 @@
-uim-mozc: postinst-has-useless-call-to-ldconfig
-uim-mozc: postrm-has-useless-call-to-ldconfig

@@ -1,3 +1,0 @@
-shlibs:Depends=libc6 (>= 2.15), libprotobuf17, libstdc++6 (>= 5.2), libuim-scm0 (>= 1:1.5.7), libuim8 (>= 1:1.5.7)
-misc:Depends=
-misc:Pre-Depends=

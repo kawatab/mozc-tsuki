@@ -1,3 +1,0 @@
-shlibs:Depends=libc6 (>= 2.15), libprotobuf17, libqt5core5a (>= 5.11.0~rc1), libqt5gui5 (>= 5.2.0), libqt5widgets5 (>= 5.11.0~rc1), libstdc++6 (>= 5.2), libzinnia0
-misc:Depends=
-misc:Pre-Depends=

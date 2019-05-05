@@ -1,8 +1,0 @@
-c7b77069191051b6b51735554d898ec9  usr/lib/x86_64-linux-gnu/uim/plugin/libuim-mozc.so
-d769cf7fed14767587c5e217d47ccf9e  usr/share/doc/uim-mozc/README.Debian
-9ac35afd670c67ca35baf98b8b3d20b5  usr/share/doc/uim-mozc/changelog.Debian.gz
-e73055c60557cb8103bc66f27a19c849  usr/share/doc/uim-mozc/copyright
-8eef8dc7aefde0af357235d461f36b18  usr/share/lintian/overrides/uim-mozc
-3229c21e3cda1238fd4572e3dd3257fe  usr/share/uim/mozc-custom.scm
-5da35c018ee5879ec67227fa98a96473  usr/share/uim/mozc-key-custom.scm
-c0ace5bdebf2b1de103c3c519315c42b  usr/share/uim/mozc.scm

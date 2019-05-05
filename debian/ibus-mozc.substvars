@@ -1,3 +1,0 @@
-shlibs:Depends=libc6 (>= 2.15), libglib2.0-0 (>= 2.31.8), libibus-1.0-5 (>= 1.5.4), libprotobuf17, libstdc++6 (>= 5.2), libxcb-xfixes0, libxcb1
-misc:Depends=
-misc:Pre-Depends=

@@ -1,9 +1,0 @@
-a5355afe67e03f75db200fdd23af2feb  usr/lib/x86_64-linux-gnu/fcitx/fcitx-mozc.so
-9ac35afd670c67ca35baf98b8b3d20b5  usr/share/doc/fcitx-mozc/changelog.Debian.gz
-e73055c60557cb8103bc66f27a19c849  usr/share/doc/fcitx-mozc/copyright
-56996debfc4eae9fdf7eecfc5a5549a4  usr/share/fcitx/addon/fcitx-mozc.conf
-4e799072b4af0c171c234ca8de874619  usr/share/fcitx/inputmethod/mozc.conf
-e3ee88ca7ed7216ecfd7a2fbc69f8c7d  usr/share/lintian/overrides/fcitx-mozc
-1973098038eb3ce7a1e92416818c15c4  usr/share/locale/ja/LC_MESSAGES/fcitx-mozc.mo
-b9a2f410d8b1424e6b7b8a7fcc338044  usr/share/locale/zh_CN/LC_MESSAGES/fcitx-mozc.mo
-79c90769f2629a420fe1ee5654e5244a  usr/share/locale/zh_TW/LC_MESSAGES/fcitx-mozc.mo
