@@ -1,4 +1,4 @@
-#mozc-tsuki
+# mozc-tsuki
 
 This is an improved version of Mozc. With this version, you can input japanese by Tsuki 2-263 layout. At the moment, ibus-mozc, fcitx-mozc and emacs-mozc are available, and uim-mozc may be. I prepare package for Debian only.
 
@@ -36,11 +36,11 @@ This is an improved version of Mozc. With this version, you can input japanese b
 
 ==========
 
-##Build
+## Build
 
 * sudo apt-get build-dep mozc
 * dpkg-buildpackage -r -uc -b
 
-##Install
+## Install
 
 * dpkg -i ibus-mozc_*deb mozc-server_*deb mozc-data_*deb emacs-mozc-bin_*deb emacs-mozc_*deb
