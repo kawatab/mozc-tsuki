@@ -1,0 +1,13 @@
+rule qrc_set_default_dialog_target_qrc_4f78c603c82c947574f313b3e491afb1
+  command = cd ../../gui; /usr/lib/x86_64-linux-gnu/qt5/bin/rcc -o $
+      ../out_linux/Debug/gen/gui/set_default_dialog/qrc_set_default_dialog.cc $
+      -name qrc_set_default_dialog set_default_dialog/set_default_dialog.qrc
+  description = ACTION Generating Resource file from set_default_dialog.qrc
+  restat = 1
+
+build gen/gui/set_default_dialog/qrc_set_default_dialog.cc: $
+    qrc_set_default_dialog_target_qrc_4f78c603c82c947574f313b3e491afb1 $
+    ../../gui/set_default_dialog/set_default_dialog.qrc $
+    ../../gui/set_default_dialog/set_default_dialog_en.qm $
+    ../../gui/set_default_dialog/set_default_dialog_ja.qm
+

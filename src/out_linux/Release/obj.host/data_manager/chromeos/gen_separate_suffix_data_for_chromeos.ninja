@@ -1,0 +1,26 @@
+rule $
+    gen_separate_suffix_data_for_chromeos_gen_separate_suffix_data_for_chromeos_f894c4df0ca15a2d5cba9e7be960ca59
+  command = cd ../../data_manager/chromeos; python $
+      ../../dictionary/gen_suffix_data.py $
+      "--input=../../data/dictionary_chromeos/suffix.txt" $
+      "--output_key_array=../../out_linux/Release/gen/data_manager/chromeos/suffix_key.data" $
+      "--output_value_array=../../out_linux/Release/gen/data_manager/chromeos/suffix_value.data" $
+      "--output_token_array=../../out_linux/Release/gen/data_manager/chromeos/suffix_token.data" $
+      ../../data/dictionary_chromeos/suffix.txt
+  description = ACTION(host) [chromeos] Generating $
+      gen/data_manager/chromeos/suffix_{key,value,token}.data
+  restat = 1
+
+build gen/data_manager/chromeos/suffix_key.data $
+    gen/data_manager/chromeos/suffix_value.data $
+    gen/data_manager/chromeos/suffix_token.data: $
+    gen_separate_suffix_data_for_chromeos_gen_separate_suffix_data_for_chromeos_f894c4df0ca15a2d5cba9e7be960ca59 $
+    ../../dictionary/gen_suffix_data.py $
+    ../../data/dictionary_chromeos/suffix.txt
+
+build $
+    obj.host/data_manager/chromeos/gen_separate_suffix_data_for_chromeos.actions_rules_copies.stamp: $
+    stamp gen/data_manager/chromeos/suffix_key.data $
+    gen/data_manager/chromeos/suffix_value.data $
+    gen/data_manager/chromeos/suffix_token.data
+

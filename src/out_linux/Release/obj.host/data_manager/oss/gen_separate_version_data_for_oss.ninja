@@ -1,0 +1,14 @@
+rule $
+    gen_separate_version_data_for_oss_gen_separate_version_data_for_oss_68a1c88810105c7b6372e4ff38e14f1a
+  command = cd ../../data_manager/oss; python $
+      ../../data_manager/gen_data_version.py "--tag=oss" $
+      "--mozc_version_template=../../data/version/mozc_version_template.bzl" $
+      "--output=../../out_linux/Release/gen/data_manager/oss/version.data"
+  description = ACTION(host) [oss] Generating version.data
+  restat = 1
+
+build gen/data_manager/oss/version.data: $
+    gen_separate_version_data_for_oss_gen_separate_version_data_for_oss_68a1c88810105c7b6372e4ff38e14f1a $
+    ../../data_manager/gen_data_version.py $
+    ../../data/version/mozc_version_template.bzl
+

@@ -1,0 +1,17 @@
+rule $
+    gen_separate_boundary_data_for_mock_gen_separate_boundary_data_for_mock_10d41b6be21cd936a3f437e46f62525d
+  command = cd ../../data_manager/testing; python $
+      ../../converter/gen_boundary_data.py $
+      "--boundary_def=../../data/rules/boundary.def" $
+      "--id_def=../../data/test/dictionary/id.def" $
+      "--special_pos=../../data/rules/special_pos.def" $
+      "--output=../../out_linux/Debug/gen/data_manager/testing/boundary.data"
+  description = ACTION(host) [mock] Generating $
+      gen/data_manager/testing/boundary.data
+  restat = 1
+
+build gen/data_manager/testing/boundary.data: $
+    gen_separate_boundary_data_for_mock_gen_separate_boundary_data_for_mock_10d41b6be21cd936a3f437e46f62525d $
+    ../../converter/gen_boundary_data.py ../../data/rules/boundary.def $
+    ../../data/test/dictionary/id.def ../../data/rules/special_pos.def
+

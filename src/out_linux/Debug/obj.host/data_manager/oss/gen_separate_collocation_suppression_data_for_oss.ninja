@@ -1,0 +1,17 @@
+rule $
+    gen_separate_collocation_suppression_data_for_oss_gen_separate_collocation_suppression_data_86ffac243ffed1976179345c101aa5f2
+  command = cd ../../data_manager/oss; $
+      ../../out_linux/Debug/gen_collocation_suppression_data_main $
+      "--suppression_data=../../data/dictionary_oss/collocation_suppression.txt" $
+      --binary_mode $
+      "--output=../../out_linux/Debug/gen/data_manager/oss/collocation_suppression_data.data"
+  description = ACTION(host) [oss] Generating $
+      gen/data_manager/oss/collocation_suppression_data.data
+  restat = 1
+
+build gen/data_manager/oss/collocation_suppression_data.data: $
+    gen_separate_collocation_suppression_data_for_oss_gen_separate_collocation_suppression_data_86ffac243ffed1976179345c101aa5f2 $
+    gen_collocation_suppression_data_main $
+    ../../data/dictionary_oss/collocation_suppression.txt || $
+    gen_collocation_suppression_data_main
+

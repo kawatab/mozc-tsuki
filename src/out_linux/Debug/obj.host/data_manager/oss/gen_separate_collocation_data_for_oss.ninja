@@ -1,0 +1,16 @@
+rule $
+    gen_separate_collocation_data_for_oss_gen_separate_collocation_data_7e569a5a992b509eb604506f3b373963
+  command = cd ../../data_manager/oss; $
+      ../../out_linux/Debug/gen_collocation_data_main $
+      "--collocation_data=../../data/dictionary_oss/collocation.txt" $
+      "--output=../../out_linux/Debug/gen/data_manager/oss/collocation_data.data" $
+      --binary_mode
+  description = ACTION(host) [oss] Generating $
+      gen/data_manager/oss/collocation_data.data
+  restat = 1
+
+build gen/data_manager/oss/collocation_data.data: $
+    gen_separate_collocation_data_for_oss_gen_separate_collocation_data_7e569a5a992b509eb604506f3b373963 $
+    gen_collocation_data_main ../../data/dictionary_oss/collocation.txt || $
+    gen_collocation_data_main
+

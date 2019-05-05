@@ -1,0 +1,137 @@
+build gen//data/test/session/scenario/auto_partial_suggestion.txt: copy $
+    ../../data/test/session/scenario/auto_partial_suggestion.txt
+build gen//data/test/session/scenario/b12751061_scenario.txt: copy $
+    ../../data/test/session/scenario/b12751061_scenario.txt
+build gen//data/test/session/scenario/b16123009_scenario.txt: copy $
+    ../../data/test/session/scenario/b16123009_scenario.txt
+build gen//data/test/session/scenario/b18112966_scenario.txt: copy $
+    ../../data/test/session/scenario/b18112966_scenario.txt
+build gen//data/test/session/scenario/b7132535_scenario.txt: copy $
+    ../../data/test/session/scenario/b7132535_scenario.txt
+build gen//data/test/session/scenario/b7321313_scenario.txt: copy $
+    ../../data/test/session/scenario/b7321313_scenario.txt
+build gen//data/test/session/scenario/b7548679_scenario.txt: copy $
+    ../../data/test/session/scenario/b7548679_scenario.txt
+build gen//data/test/session/scenario/b8690065_scenario.txt: copy $
+    ../../data/test/session/scenario/b8690065_scenario.txt
+build gen//data/test/session/scenario/b8703702_scenario.txt: copy $
+    ../../data/test/session/scenario/b8703702_scenario.txt
+build gen//data/test/session/scenario/change_request.txt: copy $
+    ../../data/test/session/scenario/change_request.txt
+build gen//data/test/session/scenario/clear_user_prediction.txt: copy $
+    ../../data/test/session/scenario/clear_user_prediction.txt
+build gen//data/test/session/scenario/commit.txt: copy $
+    ../../data/test/session/scenario/commit.txt
+build gen//data/test/session/scenario/composition_display_as.txt: copy $
+    ../../data/test/session/scenario/composition_display_as.txt
+build gen//data/test/session/scenario/conversion.txt: copy $
+    ../../data/test/session/scenario/conversion.txt
+build gen//data/test/session/scenario/conversion_display_as.txt: copy $
+    ../../data/test/session/scenario/conversion_display_as.txt
+build gen//data/test/session/scenario/conversion_with_history_segment.txt: $
+    copy ../../data/test/session/scenario/conversion_with_history_segment.txt
+build $
+    gen//data/test/session/scenario/conversion_with_long_history_segments.txt: $
+    copy $
+    ../../data/test/session/scenario/conversion_with_long_history_segments.txt
+build gen//data/test/session/scenario/convert_from_full_ascii_to_t13n.txt: $
+    copy ../../data/test/session/scenario/convert_from_full_ascii_to_t13n.txt
+build $
+    gen//data/test/session/scenario/convert_from_full_katakana_to_t13n.txt: $
+    copy $
+    ../../data/test/session/scenario/convert_from_full_katakana_to_t13n.txt
+build gen//data/test/session/scenario/convert_from_half_ascii_to_t13n.txt: $
+    copy ../../data/test/session/scenario/convert_from_half_ascii_to_t13n.txt
+build $
+    gen//data/test/session/scenario/convert_from_half_katakana_to_t13n.txt: $
+    copy $
+    ../../data/test/session/scenario/convert_from_half_katakana_to_t13n.txt
+build gen//data/test/session/scenario/convert_from_hiragana_to_t13n.txt: $
+    copy ../../data/test/session/scenario/convert_from_hiragana_to_t13n.txt
+build gen//data/test/session/scenario/delete_history.txt: copy $
+    ../../data/test/session/scenario/delete_history.txt
+build gen//data/test/session/scenario/desktop_t13n_candidates.txt: copy $
+    ../../data/test/session/scenario/desktop_t13n_candidates.txt
+build gen//data/test/session/scenario/input_mode.txt: copy $
+    ../../data/test/session/scenario/input_mode.txt
+build gen//data/test/session/scenario/insert_characters.txt: copy $
+    ../../data/test/session/scenario/insert_characters.txt
+build $
+    gen//data/test/session/scenario/mobile_qwerty_transliteration_scenario.txt: $
+    copy $
+    ../../data/test/session/scenario/mobile_qwerty_transliteration_scenario.txt
+build gen//data/test/session/scenario/mobile_t13n_candidates.txt: copy $
+    ../../data/test/session/scenario/mobile_t13n_candidates.txt
+build gen//data/test/session/scenario/on_off_cancel.txt: copy $
+    ../../data/test/session/scenario/on_off_cancel.txt
+build gen//data/test/session/scenario/partial_suggestion.txt: copy $
+    ../../data/test/session/scenario/partial_suggestion.txt
+build gen//data/test/session/scenario/pending_character.txt: copy $
+    ../../data/test/session/scenario/pending_character.txt
+build gen//data/test/session/scenario/predict_and_convert.txt: copy $
+    ../../data/test/session/scenario/predict_and_convert.txt
+build gen//data/test/session/scenario/reconvert.txt: copy $
+    ../../data/test/session/scenario/reconvert.txt
+build gen//data/test/session/scenario/revert.txt: copy $
+    ../../data/test/session/scenario/revert.txt
+build gen//data/test/session/scenario/segment_focus.txt: copy $
+    ../../data/test/session/scenario/segment_focus.txt
+build gen//data/test/session/scenario/segment_width.txt: copy $
+    ../../data/test/session/scenario/segment_width.txt
+build $
+    gen//data/test/session/scenario/twelvekeys_switch_inputmode_scenario.txt: $
+    copy $
+    ../../data/test/session/scenario/twelvekeys_switch_inputmode_scenario.txt
+build $
+    gen//data/test/session/scenario/twelvekeys_toggle_flick_alphabet_scenario.txt: $
+    copy $
+    ../../data/test/session/scenario/twelvekeys_toggle_flick_alphabet_scenario.txt
+build $
+    gen//data/test/session/scenario/twelvekeys_toggle_hiragana_preedit_scenario.txt: $
+    copy $
+    ../../data/test/session/scenario/twelvekeys_toggle_hiragana_preedit_scenario.txt
+build gen//data/test/session/scenario/undo.txt: copy $
+    ../../data/test/session/scenario/undo.txt
+build $
+    obj/data/test/session/scenario/install_session_handler_scenario_test_data.actions_rules_copies.stamp: $
+    stamp gen//data/test/session/scenario/auto_partial_suggestion.txt $
+    gen//data/test/session/scenario/b12751061_scenario.txt $
+    gen//data/test/session/scenario/b16123009_scenario.txt $
+    gen//data/test/session/scenario/b18112966_scenario.txt $
+    gen//data/test/session/scenario/b7132535_scenario.txt $
+    gen//data/test/session/scenario/b7321313_scenario.txt $
+    gen//data/test/session/scenario/b7548679_scenario.txt $
+    gen//data/test/session/scenario/b8690065_scenario.txt $
+    gen//data/test/session/scenario/b8703702_scenario.txt $
+    gen//data/test/session/scenario/change_request.txt $
+    gen//data/test/session/scenario/clear_user_prediction.txt $
+    gen//data/test/session/scenario/commit.txt $
+    gen//data/test/session/scenario/composition_display_as.txt $
+    gen//data/test/session/scenario/conversion.txt $
+    gen//data/test/session/scenario/conversion_display_as.txt $
+    gen//data/test/session/scenario/conversion_with_history_segment.txt $
+    gen//data/test/session/scenario/conversion_with_long_history_segments.txt $
+    gen//data/test/session/scenario/convert_from_full_ascii_to_t13n.txt $
+    gen//data/test/session/scenario/convert_from_full_katakana_to_t13n.txt $
+    gen//data/test/session/scenario/convert_from_half_ascii_to_t13n.txt $
+    gen//data/test/session/scenario/convert_from_half_katakana_to_t13n.txt $
+    gen//data/test/session/scenario/convert_from_hiragana_to_t13n.txt $
+    gen//data/test/session/scenario/delete_history.txt $
+    gen//data/test/session/scenario/desktop_t13n_candidates.txt $
+    gen//data/test/session/scenario/input_mode.txt $
+    gen//data/test/session/scenario/insert_characters.txt $
+    gen//data/test/session/scenario/mobile_qwerty_transliteration_scenario.txt $
+    gen//data/test/session/scenario/mobile_t13n_candidates.txt $
+    gen//data/test/session/scenario/on_off_cancel.txt $
+    gen//data/test/session/scenario/partial_suggestion.txt $
+    gen//data/test/session/scenario/pending_character.txt $
+    gen//data/test/session/scenario/predict_and_convert.txt $
+    gen//data/test/session/scenario/reconvert.txt $
+    gen//data/test/session/scenario/revert.txt $
+    gen//data/test/session/scenario/segment_focus.txt $
+    gen//data/test/session/scenario/segment_width.txt $
+    gen//data/test/session/scenario/twelvekeys_switch_inputmode_scenario.txt $
+    gen//data/test/session/scenario/twelvekeys_toggle_flick_alphabet_scenario.txt $
+    gen//data/test/session/scenario/twelvekeys_toggle_hiragana_preedit_scenario.txt $
+    gen//data/test/session/scenario/undo.txt
+

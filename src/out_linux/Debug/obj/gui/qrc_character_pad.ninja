@@ -1,0 +1,13 @@
+rule qrc_character_pad_target_qrc_d913dee0aa5e09ae8fd4f1b1d47b4411
+  command = cd ../../gui; /usr/lib/x86_64-linux-gnu/qt5/bin/rcc -o $
+      ../out_linux/Debug/gen/gui/character_pad/qrc_character_pad.cc -name $
+      qrc_character_pad character_pad/character_pad.qrc
+  description = ACTION Generating Resource file from character_pad.qrc
+  restat = 1
+
+build gen/gui/character_pad/qrc_character_pad.cc: $
+    qrc_character_pad_target_qrc_d913dee0aa5e09ae8fd4f1b1d47b4411 $
+    ../../gui/character_pad/character_pad.qrc $
+    ../../gui/character_pad/character_pad_en.qm $
+    ../../gui/character_pad/character_pad_ja.qm
+

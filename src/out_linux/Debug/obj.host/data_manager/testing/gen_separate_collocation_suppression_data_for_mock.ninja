@@ -1,0 +1,17 @@
+rule $
+    gen_separate_collocation_suppression_data_for_mock_gen_separate_collocation_suppression_data_2bce679469938b7bd9ce1048da49e692
+  command = cd ../../data_manager/testing; $
+      ../../out_linux/Debug/gen_collocation_suppression_data_main $
+      "--suppression_data=../../data/test/dictionary/collocation_suppression.txt" $
+      --binary_mode $
+      "--output=../../out_linux/Debug/gen/data_manager/testing/collocation_suppression_data.data"
+  description = ACTION(host) [mock] Generating $
+      gen/data_manager/testing/collocation_suppression_data.data
+  restat = 1
+
+build gen/data_manager/testing/collocation_suppression_data.data: $
+    gen_separate_collocation_suppression_data_for_mock_gen_separate_collocation_suppression_data_2bce679469938b7bd9ce1048da49e692 $
+    gen_collocation_suppression_data_main $
+    ../../data/test/dictionary/collocation_suppression.txt || $
+    gen_collocation_suppression_data_main
+

@@ -7,18 +7,15 @@ CFLAGS:=$(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
 CXXFLAGS:=$(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
 LDFLAGS:=$(shell dpkg-buildflags --get LDFLAGS) -Wl,--as-needed
 
-DEB_BUILD_MULTIARCH :=$(shell dpkg-architecture -qDEB_BUILD_MULTIARCH)
-
 # clear XDG_CONFIG_DIRS for qtchooser
 unexport XDG_CONFIG_DIRS
 
-BUILD_DIR=./out_linux
 TARGETS=unix/ibus/ibus.gyp:ibus_mozc \
 	unix/emacs/emacs.gyp:mozc_emacs_helper \
-	unix/uim/uim.gyp:uim-mozc \
-	unix/fcitx/fcitx.gyp:fcitx-mozc \
 	server/server.gyp:mozc_server gui/gui.gyp:mozc_tool \
 	renderer/renderer.gyp:mozc_renderer
+TARGET_UIM=unix/uim/uim.gyp:uim-mozc
+TARGET_FCITX=unix/fcitx/fcitx.gyp:fcitx-mozc
 
 # for architecture dependent variables and changelog vars
 vafilt = $(subst $(2)=,,$(filter $(2)=%,$(1)))
@@ -28,72 +25,81 @@ CHANGELOG_VARS := $(shell dpkg-parsechangelog | \
 SOURCE_VERSION := $(call vafilt,$(CHANGELOG_VARS),Version)
 
 %:
-	dh $@ 
+	dh $@ --parallel
 
 override_dh_auto_configure:
-	GYP_DEFINES="use_libprotobuf=1" python build_mozc.py gyp \
-		--gypdir=/usr/bin \
-		--build_base=$(BUILD_DIR)
+	cd src ; \
+	GYP_DEFINES="use_libprotobuf=1 use_libzinnia=1" python build_mozc.py gyp \
+		--gypdir=/usr/bin --target_platform=Linux --verbose
 
 override_dh_auto_build:
-	V=1 python build_mozc.py build $(TARGETS) -c Release --jobs=1
+	cd src ; \
+	V=1 python build_mozc.py build $(TARGETS) $(TARGET_UIM) $(TARGET_FCITX) -c Release
+
+override_dh_auto_test:
+	# cd src; python build_mozc.py runtests -c Debug
 
 override_dh_auto_clean:
+	cd src ; \
 	python build_mozc.py clean
-	rm -rf build_tools/__init__.pyc 
-	rm -rf build_tools/mozc_version.pyc
-	rm -rf build_tools/test_tools/__init__.pyc
-	rm -rf build_tools/test_tools/task_scheduler.pyc
-	rm -rf build_tools/util.pyc
-	rm -rf build_tools/code_generator_util.pyc
-	rm -rf build_tools/android_util.pyc
-	rm -rf rewriter/embedded_dictionary_compiler.pyc
-	rm -rf rewriter/__init__.pyc
-	rm -rf dictionary/pos_util.pyc
-	rm -rf dictionary/__init__.pyc
-	rm -rf third_party/rx/rx.Makefile
-	rm -rf build_tools/test_tools/test_launcher.pyc
-	rm -rf chrome/skk/skk_util_all_test.target.mk
-	rm -rf chrome/skk/skk_util_test.target.mk
+	-rm -rf src/build_tools/__init__.pyc
+	-rm -rf src/build_tools/mozc_version.pyc
+	-rm -rf src/build_tools/test_tools/__init__.pyc
+	-rm -rf src/build_tools/test_tools/task_scheduler.pyc
+	-rm -rf src/build_tools/util.pyc
+	-rm -rf src/build_tools/code_generator_util.pyc
+	-rm -rf src/build_tools/android_util.pyc
+	-rm -rf src/build_tools/serialized_string_array_builder.pyc
+	-rm -rf src/prediction/__init__.pyc
+	-rm -rf src/prediction/gen_zero_query_util.pyc
+	-rm -rf src/rewriter/embedded_dictionary_compiler.pyc
+	-rm -rf src/rewriter/__init__.pyc
+	-rm -rf src/dictionary/pos_util.pyc
+	-rm -rf src/dictionary/__init__.pyc
+	-rm -rf src/build_tools/test_tools/test_launcher.pyc
+	-rm -rf src/chrome/skk/skk_util_all_test.target.mk
+	-rm -rf src/chrome/skk/skk_util_test.target.mk
 
 	dh_auto_clean
 
 override_dh_auto_install:
 	# mozc-server
-	install -D -m 0755  $(BUILD_DIR)/Release/mozc_renderer \
+	install -D -m 0755 src/out_linux/Release/mozc_renderer \
 		$(CURDIR)/debian/mozc-server/usr/lib/mozc/mozc_renderer
+	install -D -m 0644 debian/mozc-server.apparmor \
+		$(CURDIR)/debian/mozc-server/etc/apparmor.d/abstractions/mozc-server
 
 	# mozc-utils-gui
 	desktop-file-install --dir=$(CURDIR)/debian/mozc-utils-gui/usr/share/applications \
 		$(CURDIR)/debian/setup-mozc.desktop
 
 	# ibus-mozc
-	install -D -m 0755  $(BUILD_DIR)/Release/ibus_mozc \
+	install -D -m 0755 src/out_linux/Release/ibus_mozc \
 		$(CURDIR)/debian/ibus-mozc/usr/lib/ibus-mozc/ibus-engine-mozc
 	install -d $(CURDIR)/debian/ibus-mozc/usr/share/ibus/component/
 	sed -e 's|/usr/libexec/ibus-engine-mozc|/usr/lib/ibus-mozc/ibus-engine-mozc|' \
 		-e 's|0\.0\.0\.0|$(SOURCE_VERSION)|g' < \
-		$(BUILD_DIR)/Release/gen/unix/ibus/mozc.xml > \
+		src/out_linux/Release/gen/unix/ibus/mozc.xml > \
 		$(CURDIR)/debian/ibus-mozc/usr/share/ibus/component/mozc.xml
-	
-	# uim-mozc
-	install -D -m 0755 $(BUILD_DIR)/Release/libuim-mozc.so  \
-		 $(CURDIR)/debian/uim-mozc/usr/lib/$(DEB_BUILD_MULTIARCH)/uim/plugin/libuim-mozc.so
+
+ 	# uim-mozc
+	install -D -m 0755 src/out_linux/Release/libuim-mozc.so \
+		$(CURDIR)/debian/uim-mozc/usr/lib/$(DEB_BUILD_MULTIARCH)/uim/plugin/libuim-mozc.so
 
 	# fcitx-mozc
-	install -D -m 0755 $(BUILD_DIR)/Release/fcitx-mozc.so \
+	install -D -m 0755 src/out_linux/Release/fcitx-mozc.so \
 		 $(CURDIR)/debian/fcitx-mozc/usr/lib/$(DEB_BUILD_MULTIARCH)/fcitx/fcitx-mozc.so
 	# mo
-	install -D -m 0644 $(BUILD_DIR)/Release/gen/unix/fcitx/po/ja.mo \
+	install -D -m 0644 src/out_linux/Release/gen/unix/fcitx/po/ja.mo \
 		$(CURDIR)/debian/fcitx-mozc/usr/share/locale/ja/LC_MESSAGES/fcitx-mozc.mo
-	install -D -m 0644 $(BUILD_DIR)/Release/gen/unix/fcitx/po/zh_TW.mo \
+	install -D -m 0644 src/out_linux/Release/gen/unix/fcitx/po/zh_TW.mo \
 		$(CURDIR)/debian/fcitx-mozc/usr/share/locale/zh_TW/LC_MESSAGES/fcitx-mozc.mo
-	install -D -m 0644 $(BUILD_DIR)/Release/gen/unix/fcitx/po/zh_CN.mo \
+	install -D -m 0644 src/out_linux/Release/gen/unix/fcitx/po/zh_CN.mo \
 		$(CURDIR)/debian/fcitx-mozc/usr/share/locale/zh_CN/LC_MESSAGES/fcitx-mozc.mo
 	# config file
-	install -D -m 0644 unix/fcitx/fcitx-mozc.conf \
+	install -D -m 0644 src/unix/fcitx/fcitx-mozc.conf \
 		$(CURDIR)/debian/fcitx-mozc/usr/share/fcitx/addon/fcitx-mozc.conf
-	install -D -m 0644 unix/fcitx/mozc.conf \
+	install -D -m 0644 src/unix/fcitx/mozc.conf \
 		$(CURDIR)/debian/fcitx-mozc/usr/share/fcitx/inputmethod/mozc.conf
 
 override_dh_fixperms-arch:

@@ -1,0 +1,28 @@
+rule $
+    gen_separate_user_pos_data_for_mock_gen_separate_user_pos_data_for_mock_6411fa298b71a66e32ce01abd04920bd
+  command = cd ../../data_manager/testing; python $
+      ../../dictionary/gen_user_pos_data.py $
+      "--id_file=../../data/test/dictionary/id.def" $
+      "--special_pos_file=../../data/rules/special_pos.def" $
+      "--user_pos_file=../../data/rules/user_pos.def" $
+      "--cforms_file=../../data/rules/cforms.def" $
+      "--output_token_array=../../out_linux/Debug/gen/data_manager/testing/user_pos_token_array.data" $
+      "--output_string_array=../../out_linux/Debug/gen/data_manager/testing/user_pos_string_array.data" $
+      "--output_pos_list=../../out_linux/Debug/gen/data_manager/testing/pos_list.data"
+  description = ACTION(host) [mock] Generating user pos data.
+  restat = 1
+
+build gen/data_manager/testing/user_pos_token_array.data $
+    gen/data_manager/testing/user_pos_string_array.data $
+    gen/data_manager/testing/pos_list.data: $
+    gen_separate_user_pos_data_for_mock_gen_separate_user_pos_data_for_mock_6411fa298b71a66e32ce01abd04920bd $
+    ../../dictionary/gen_user_pos_data.py ../../data/test/dictionary/id.def $
+    ../../data/rules/special_pos.def ../../data/rules/user_pos.def $
+    ../../data/rules/cforms.def
+
+build $
+    obj.host/data_manager/testing/gen_separate_user_pos_data_for_mock.actions_rules_copies.stamp: $
+    stamp gen/data_manager/testing/user_pos_token_array.data $
+    gen/data_manager/testing/user_pos_string_array.data $
+    gen/data_manager/testing/pos_list.data
+

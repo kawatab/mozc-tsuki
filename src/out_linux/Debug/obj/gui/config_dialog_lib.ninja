@@ -1,0 +1,119 @@
+build obj/gui/config_dialog_lib.actions_depends.stamp: stamp $
+    obj/config/libconfig_handler.a obj/protocol/libcommands_proto.a $
+    obj/protocol/libconfig_proto.a $
+    obj/gui/gen_config_dialog_files.actions_rules_copies.stamp $
+    gen/gui/config_dialog/qrc_config_dialog.cc
+
+build obj/gui/config_dialog_lib.compile_depends.stamp: stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj/protocol/commands_proto.compile_depends.stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj/gui/gen_config_dialog_files.actions_rules_copies.stamp $
+    gen/gui/config_dialog/qrc_config_dialog.cc
+
+defines = -DOS_LINUX -DMOZC_BUILD -DCHANNEL_DEV -DENABLE_GTK_RENDERER -DDEBUG
+includes = -I/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki/src -Igen $
+    -Igen/proto_out
+cflags = -Wall -Wno-char-subscripts -Wno-sign-compare $
+    -Wno-deprecated-declarations -Wwrite-strings $
+    -Wno-unknown-warning-option -Wno-inconsistent-missing-override -fPIC $
+    -fno-exceptions -fmessage-length=0 -fno-strict-aliasing -funsigned-char $
+    -pipe -pthread -fno-omit-frame-pointer -fstack-protector $
+    --param=ssp-buffer-size=4 -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB $
+    -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets $
+    -I/usr/include/x86_64-linux-gnu/qt5 $
+    -I/usr/include/x86_64-linux-gnu/qt5/QtGui $
+    -I/usr/include/x86_64-linux-gnu/qt5 $
+    -I/usr/include/x86_64-linux-gnu/qt5/QtCore $
+    -I/usr/include/x86_64-linux-gnu/qt5 -O0 -g
+cflags_c = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2
+cflags_cc = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2 -Wno-deprecated
+arflags = 
+
+build $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_character_form_editor.o: $
+    cxx gen/gui/config_dialog/moc_character_form_editor.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_combobox_delegate.o: $
+    cxx gen/gui/config_dialog/moc_combobox_delegate.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_config_dialog.o: $
+    cxx gen/gui/config_dialog/moc_config_dialog.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_generic_table_editor.o: $
+    cxx gen/gui/config_dialog/moc_generic_table_editor.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_keybinding_editor.o: $
+    cxx gen/gui/config_dialog/moc_keybinding_editor.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_keybinding_editor_delegate.o: $
+    cxx gen/gui/config_dialog/moc_keybinding_editor_delegate.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_keymap_editor.o: $
+    cxx gen/gui/config_dialog/moc_keymap_editor.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_roman_table_editor.o: $
+    cxx gen/gui/config_dialog/moc_roman_table_editor.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/gen/gui/config_dialog/config_dialog_lib.qrc_config_dialog.o: $
+    cxx gen/gui/config_dialog/qrc_config_dialog.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/config_dialog/config_dialog_lib.character_form_editor.o: cxx $
+    ../../gui/config_dialog/character_form_editor.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/config_dialog/config_dialog_lib.combobox_delegate.o: cxx $
+    ../../gui/config_dialog/combobox_delegate.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/config_dialog/config_dialog_lib.config_dialog.o: cxx $
+    ../../gui/config_dialog/config_dialog.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/config_dialog/config_dialog_lib.config_dialog_libmain.o: cxx $
+    ../../gui/config_dialog/config_dialog_libmain.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/config_dialog/config_dialog_lib.generic_table_editor.o: cxx $
+    ../../gui/config_dialog/generic_table_editor.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/config_dialog/config_dialog_lib.keybinding_editor.o: cxx $
+    ../../gui/config_dialog/keybinding_editor.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/config_dialog/config_dialog_lib.keybinding_editor_delegate.o: $
+    cxx ../../gui/config_dialog/keybinding_editor_delegate.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/config_dialog/config_dialog_lib.keymap_editor.o: cxx $
+    ../../gui/config_dialog/keymap_editor.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+build obj/gui/config_dialog/config_dialog_lib.roman_table_editor.o: cxx $
+    ../../gui/config_dialog/roman_table_editor.cc || $
+    obj/gui/config_dialog_lib.compile_depends.stamp
+
+build obj/gui/libconfig_dialog_lib.a: alink_thin $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_character_form_editor.o $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_combobox_delegate.o $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_config_dialog.o $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_generic_table_editor.o $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_keybinding_editor.o $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_keybinding_editor_delegate.o $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_keymap_editor.o $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.moc_roman_table_editor.o $
+    obj/gui/gen/gui/config_dialog/config_dialog_lib.qrc_config_dialog.o $
+    obj/gui/config_dialog/config_dialog_lib.character_form_editor.o $
+    obj/gui/config_dialog/config_dialog_lib.combobox_delegate.o $
+    obj/gui/config_dialog/config_dialog_lib.config_dialog.o $
+    obj/gui/config_dialog/config_dialog_lib.config_dialog_libmain.o $
+    obj/gui/config_dialog/config_dialog_lib.generic_table_editor.o $
+    obj/gui/config_dialog/config_dialog_lib.keybinding_editor.o $
+    obj/gui/config_dialog/config_dialog_lib.keybinding_editor_delegate.o $
+    obj/gui/config_dialog/config_dialog_lib.keymap_editor.o $
+    obj/gui/config_dialog/config_dialog_lib.roman_table_editor.o || $
+    obj/gui/config_dialog_lib.actions_depends.stamp

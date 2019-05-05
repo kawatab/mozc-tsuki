@@ -1,0 +1,44 @@
+build obj/gyp/unittests.actions_depends.stamp: stamp $
+    obj/base/base_all_test.actions_depends.stamp client_test $
+    obj/config/config_all_test.actions_depends.stamp $
+    obj/composer/composer_all_test.actions_depends.stamp $
+    obj/converter/converter_all_test.actions_depends.stamp $
+    obj/dictionary/dictionary_all_test.actions_depends.stamp $
+    obj/dictionary/file/dictionary_file_all_test.actions_depends.stamp $
+    obj/dictionary/system/system_dictionary_all_test.actions_depends.stamp $
+    engine_builder_test encoding_util_test handwriting_manager_test $
+    ipc_test obj/net/net_all_test.actions_depends.stamp prediction_test $
+    obj/renderer/renderer_all_test.actions_depends.stamp $
+    obj/rewriter/rewriter_all_test.actions_depends.stamp $
+    obj/session/session_all_test.actions_depends.stamp $
+    obj/storage/louds/storage_louds_all_test.actions_depends.stamp $
+    storage_test transliteration_test $
+    obj/usage_stats/usage_stats_all_test.actions_depends.stamp $
+    mozc_emacs_helper_lib_test $
+    obj/unix/ibus/ibus_all_test.actions_depends.stamp
+
+build obj/gyp/unittests.compile_depends.stamp: stamp $
+    obj/base/base_all_test.compile_depends.stamp $
+    obj/client/client_test.compile_depends.stamp $
+    obj/config/config_all_test.compile_depends.stamp $
+    obj/composer/composer_all_test.compile_depends.stamp $
+    obj/converter/converter_all_test.compile_depends.stamp $
+    obj/dictionary/dictionary_all_test.compile_depends.stamp $
+    obj/dictionary/file/dictionary_file_all_test.compile_depends.stamp $
+    obj/dictionary/system/system_dictionary_all_test.compile_depends.stamp $
+    obj/engine/engine_builder_test.compile_depends.stamp $
+    obj/gui/encoding_util_test.compile_depends.stamp $
+    obj/handwriting/handwriting_manager_test.compile_depends.stamp $
+    obj/ipc/ipc_test.compile_depends.stamp $
+    obj/net/net_all_test.compile_depends.stamp $
+    obj/prediction/prediction_test.compile_depends.stamp $
+    obj/renderer/renderer_all_test.compile_depends.stamp $
+    obj/rewriter/rewriter_all_test.compile_depends.stamp $
+    obj/session/session_all_test.compile_depends.stamp $
+    obj/storage/louds/storage_louds_all_test.compile_depends.stamp $
+    obj/storage/storage_test.compile_depends.stamp $
+    obj/transliteration/transliteration_test.compile_depends.stamp $
+    obj/usage_stats/usage_stats_all_test.compile_depends.stamp $
+    obj/unix/emacs/mozc_emacs_helper_lib_test.compile_depends.stamp $
+    obj/unix/ibus/ibus_all_test.compile_depends.stamp
+

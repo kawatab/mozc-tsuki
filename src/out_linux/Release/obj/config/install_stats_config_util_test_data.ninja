@@ -1,0 +1,12 @@
+build gen//data/test/config/mac_config1.db: copy $
+    ../../data/test/config/mac_config1.db
+build gen//data/test/config/linux_config1.db: copy $
+    ../../data/test/config/linux_config1.db
+build gen//data/test/config/win_config1.db: copy $
+    ../../data/test/config/win_config1.db
+build $
+    obj/config/install_stats_config_util_test_data.actions_rules_copies.stamp: $
+    stamp gen//data/test/config/mac_config1.db $
+    gen//data/test/config/linux_config1.db $
+    gen//data/test/config/win_config1.db
+

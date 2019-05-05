@@ -1,0 +1,11 @@
+build obj/storage/louds/storage_louds_all_test.actions_depends.stamp: stamp $
+    bit_stream_test bit_vector_based_array_test louds_test louds_trie_test $
+    simple_succinct_bit_vector_index_test
+
+build obj/storage/louds/storage_louds_all_test.compile_depends.stamp: stamp $
+    obj/storage/louds/bit_stream_test.compile_depends.stamp $
+    obj/storage/louds/bit_vector_based_array_test.compile_depends.stamp $
+    obj/storage/louds/louds_test.compile_depends.stamp $
+    obj/storage/louds/louds_trie_test.compile_depends.stamp $
+    obj/storage/louds/simple_succinct_bit_vector_index_test.compile_depends.stamp
+

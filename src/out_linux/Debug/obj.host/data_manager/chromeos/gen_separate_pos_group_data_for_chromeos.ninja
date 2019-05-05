@@ -1,0 +1,18 @@
+rule $
+    gen_separate_pos_group_data_for_chromeos_gen_separate_pos_group_data_for_chromeos_218739f04810546a3bd833b2be23cf82
+  command = cd ../../data_manager/chromeos; python $
+      ../../dictionary/gen_pos_rewrite_rule.py $
+      "--id_def=../../data/dictionary_chromeos/id.def" $
+      "--special_pos=../../data/rules/special_pos.def" $
+      "--pos_group_def=../../data/rules/user_segment_history_pos_group.def" $
+      "--output=../../out_linux/Debug/gen/data_manager/chromeos/pos_group.data"
+  description = ACTION(host) gen_separate_pos_group_data_for_chromeos: $
+      gen_separate_pos_group_data_for_chromeos_218739f04810546a3bd833b2be23cf82
+  restat = 1
+
+build gen/data_manager/chromeos/pos_group.data: $
+    gen_separate_pos_group_data_for_chromeos_gen_separate_pos_group_data_for_chromeos_218739f04810546a3bd833b2be23cf82 $
+    ../../dictionary/gen_pos_rewrite_rule.py $
+    ../../data/dictionary_chromeos/id.def ../../data/rules/special_pos.def $
+    ../../data/rules/user_segment_history_pos_group.def
+

@@ -1,0 +1,16 @@
+rule $
+    gen_separate_counter_suffix_data_for_mock_gen_separate_counter_suffix_data_for_mock_2b72e6e73b9f63cd1ab088299797bbe7
+  command = cd ../../data_manager/testing; python $
+      ../../rewriter/gen_counter_suffix_array.py $
+      "--id_file=../../data/test/dictionary/id.def" $
+      "--output=../../out_linux/Release/gen/data_manager/testing/counter_suffix.data" $
+      ../../data/test/dictionary/dictionary.txt
+  description = ACTION(host) [mock] Generating $
+      gen/data_manager/testing/counter_suffix.data
+  restat = 1
+
+build gen/data_manager/testing/counter_suffix.data: $
+    gen_separate_counter_suffix_data_for_mock_gen_separate_counter_suffix_data_for_mock_2b72e6e73b9f63cd1ab088299797bbe7 $
+    ../../data/test/dictionary/id.def $
+    ../../data/test/dictionary/dictionary.txt
+

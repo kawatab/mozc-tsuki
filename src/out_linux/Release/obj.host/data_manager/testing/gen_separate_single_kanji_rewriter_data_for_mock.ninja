@@ -1,0 +1,50 @@
+rule $
+    gen_separate_single_kanji_rewriter_data_for_mock_gen_single_kanji_data_for_mock_8a710403e26f368116c6a92bc118f362
+  command = cd ../../data_manager/testing; python $
+      ../../rewriter/gen_single_kanji_rewriter_data.py $
+      "--single_kanji_file=../../data/single_kanji/single_kanji.tsv" $
+      "--variant_file=../../data/single_kanji/variant_rule.txt" $
+      "--output_single_kanji_token=../../out_linux/Release/gen/data_manager/testing/single_kanji_token.data" $
+      "--output_single_kanji_string=../../out_linux/Release/gen/data_manager/testing/single_kanji_string.data" $
+      "--output_variant_types=../../out_linux/Release/gen/data_manager/testing/single_kanji_variant_type.data" $
+      "--output_variant_tokens=../../out_linux/Release/gen/data_manager/testing/single_kanji_variant_token.data" $
+      "--output_variant_strings=../../out_linux/Release/gen/data_manager/testing/single_kanji_variant_string.data"
+  description = ACTION(host) [mock] Generating single kanji data
+  restat = 1
+
+build gen/data_manager/testing/single_kanji_string.data $
+    gen/data_manager/testing/single_kanji_token.data $
+    gen/data_manager/testing/single_kanji_variant_type.data $
+    gen/data_manager/testing/single_kanji_variant_token.data $
+    gen/data_manager/testing/single_kanji_variant_string.data: $
+    gen_separate_single_kanji_rewriter_data_for_mock_gen_single_kanji_data_for_mock_8a710403e26f368116c6a92bc118f362 $
+    ../../rewriter/gen_single_kanji_rewriter_data.py $
+    ../../data/single_kanji/single_kanji.tsv $
+    ../../data/single_kanji/variant_rule.txt || $
+    gen_single_kanji_noun_prefix_data_main
+
+rule $
+    gen_separate_single_kanji_rewriter_data_for_mock_gen_noun_prefix_data_for_mock_8a710403e26f368116c6a92bc118f362
+  command = cd ../../data_manager/testing; $
+      ../../out_linux/Release/gen_single_kanji_noun_prefix_data_main $
+      "--output_token_array=../../out_linux/Release/gen/data_manager/testing/single_kanji_noun_prefix_token.data" $
+      "--output_string_array=../../out_linux/Release/gen/data_manager/testing/single_kanji_noun_prefix_string.data"
+  description = ACTION(host) [mock] Generating noun prefix data
+  restat = 1
+
+build gen/data_manager/testing/single_kanji_noun_prefix_token.data $
+    gen/data_manager/testing/single_kanji_noun_prefix_string.data: $
+    gen_separate_single_kanji_rewriter_data_for_mock_gen_noun_prefix_data_for_mock_8a710403e26f368116c6a92bc118f362 $
+    gen_single_kanji_noun_prefix_data_main || $
+    gen_single_kanji_noun_prefix_data_main
+
+build $
+    obj.host/data_manager/testing/gen_separate_single_kanji_rewriter_data_for_mock.actions_rules_copies.stamp: $
+    stamp gen/data_manager/testing/single_kanji_string.data $
+    gen/data_manager/testing/single_kanji_token.data $
+    gen/data_manager/testing/single_kanji_variant_type.data $
+    gen/data_manager/testing/single_kanji_variant_token.data $
+    gen/data_manager/testing/single_kanji_variant_string.data $
+    gen/data_manager/testing/single_kanji_noun_prefix_token.data $
+    gen/data_manager/testing/single_kanji_noun_prefix_string.data
+

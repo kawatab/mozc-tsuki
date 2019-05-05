@@ -1,0 +1,17 @@
+rule $
+    gen_fcitx_mozc_i18n_target_gen_fcitx_mozc_i18n_874fea2aba36274277a4f3fea1a8ac6c
+  command = cd ../../unix/fcitx; sh ./gen_fcitx_mozc_i18n.sh $
+      ../../out_linux/Release/gen/unix/fcitx/po
+  description = ACTION gen_fcitx_mozc_i18n: $
+      gen_fcitx_mozc_i18n_874fea2aba36274277a4f3fea1a8ac6c
+  restat = 1
+
+build gen/unix/fcitx/po/zh_CN.mo gen/unix/fcitx/po/zh_TW.mo $
+    gen/unix/fcitx/po/ja.mo gen/unix/fcitx/po/de.mo: $
+    gen_fcitx_mozc_i18n_target_gen_fcitx_mozc_i18n_874fea2aba36274277a4f3fea1a8ac6c $
+    ../../unix/fcitx/gen_fcitx_mozc_i18n.sh
+
+build obj/unix/fcitx/gen_fcitx_mozc_i18n.actions_rules_copies.stamp: stamp $
+    gen/unix/fcitx/po/zh_CN.mo gen/unix/fcitx/po/zh_TW.mo $
+    gen/unix/fcitx/po/ja.mo gen/unix/fcitx/po/de.mo
+

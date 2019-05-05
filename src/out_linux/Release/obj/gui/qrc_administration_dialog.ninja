@@ -1,0 +1,14 @@
+rule qrc_administration_dialog_target_qrc_9757ee2e9532fb8b04a8575f6a79e9c6
+  command = cd ../../gui; /usr/lib/x86_64-linux-gnu/qt5/bin/rcc -o $
+      ../out_linux/Release/gen/gui/administration_dialog/qrc_administration_dialog.cc $
+      -name qrc_administration_dialog $
+      administration_dialog/administration_dialog.qrc
+  description = ACTION Generating Resource file from administration_dialog.qrc
+  restat = 1
+
+build gen/gui/administration_dialog/qrc_administration_dialog.cc: $
+    qrc_administration_dialog_target_qrc_9757ee2e9532fb8b04a8575f6a79e9c6 $
+    ../../gui/administration_dialog/administration_dialog.qrc $
+    ../../gui/administration_dialog/administration_dialog_en.qm $
+    ../../gui/administration_dialog/administration_dialog_ja.qm
+

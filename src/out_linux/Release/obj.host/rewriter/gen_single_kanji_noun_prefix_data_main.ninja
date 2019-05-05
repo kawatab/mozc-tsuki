@@ -1,0 +1,55 @@
+build $
+    obj.host/rewriter/gen_single_kanji_noun_prefix_data_main.actions_depends.stamp: $
+    stamp obj.host/base/libbase.a $
+    obj.host/data_manager/libserialized_dictionary.a $
+    obj.host/base/libbase_core.a obj.host/base/libclock.a $
+    obj.host/base/libsingleton.a obj.host/base/libmutex.a $
+    obj.host/base/libflags.a gen/base/character_set.inc $
+    gen/base/version_def.h obj.host/base/libhash.a $
+    obj.host/base/libstring_piece.a obj.host/base/libserialized_string_array.a
+
+build $
+    obj.host/rewriter/gen_single_kanji_noun_prefix_data_main.compile_depends.stamp: $
+    stamp obj.host/base/base_core.compile_depends.stamp $
+    gen/base/character_set.inc gen/base/version_def.h
+
+ar = $ar_host
+cc = $cc_host
+cxx = $cxx_host
+ld = $ld_host
+ldxx = $ldxx_host
+nm = $nm_host
+readelf = $readelf_host
+defines = -DOS_LINUX -DMOZC_BUILD -DCHANNEL_DEV -DENABLE_GTK_RENDERER $
+    -DNDEBUG -DQT_NO_DEBUG -DNO_LOGGING -DIGNORE_HELP_FLAG $
+    -DIGNORE_INVALID_FLAG
+includes = -I/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki/src -Igen
+cflags = -Wall -Wno-char-subscripts -Wno-sign-compare $
+    -Wno-deprecated-declarations -Wwrite-strings $
+    -Wno-unknown-warning-option -Wno-inconsistent-missing-override -fPIC $
+    -fno-exceptions -fmessage-length=0 -fno-strict-aliasing -funsigned-char $
+    -pipe -pthread -fno-omit-frame-pointer -fstack-protector $
+    --param=ssp-buffer-size=4 -O2
+cflags_c = 
+cflags_cc = -Wno-deprecated
+arflags = 
+
+build $
+    obj.host/rewriter/gen_single_kanji_noun_prefix_data_main.gen_single_kanji_noun_prefix_data.o: $
+    cxx ../../rewriter/gen_single_kanji_noun_prefix_data.cc || $
+    obj.host/rewriter/gen_single_kanji_noun_prefix_data_main.compile_depends.stamp
+
+ldflags = -pthread
+libs = 
+build gen_single_kanji_noun_prefix_data_main: link $
+    obj.host/rewriter/gen_single_kanji_noun_prefix_data_main.gen_single_kanji_noun_prefix_data.o $
+    obj.host/base/libbase.a $
+    obj.host/data_manager/libserialized_dictionary.a $
+    obj.host/base/libbase_core.a obj.host/base/libclock.a $
+    obj.host/base/libsingleton.a obj.host/base/libmutex.a $
+    obj.host/base/libflags.a obj.host/base/libhash.a $
+    obj.host/base/libstring_piece.a $
+    obj.host/base/libserialized_string_array.a | gen/base/character_set.inc $
+    gen/base/version_def.h || $
+    obj.host/rewriter/gen_single_kanji_noun_prefix_data_main.actions_depends.stamp
+  ld = $ldxx

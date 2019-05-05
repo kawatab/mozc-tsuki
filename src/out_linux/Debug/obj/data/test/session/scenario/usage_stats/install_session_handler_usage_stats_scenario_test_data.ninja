@@ -1,0 +1,102 @@
+build gen//data/test/session/scenario/usage_stats/conversion.txt: copy $
+    ../../data/test/session/scenario/usage_stats/conversion.txt
+build gen//data/test/session/scenario/usage_stats/prediction.txt: copy $
+    ../../data/test/session/scenario/usage_stats/prediction.txt
+build gen//data/test/session/scenario/usage_stats/suggestion.txt: copy $
+    ../../data/test/session/scenario/usage_stats/suggestion.txt
+build gen//data/test/session/scenario/usage_stats/composition.txt: copy $
+    ../../data/test/session/scenario/usage_stats/composition.txt
+build gen//data/test/session/scenario/usage_stats/select_prediction.txt: $
+    copy ../../data/test/session/scenario/usage_stats/select_prediction.txt
+build $
+    gen//data/test/session/scenario/usage_stats/select_minor_conversion.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/select_minor_conversion.txt
+build $
+    gen//data/test/session/scenario/usage_stats/select_minor_prediction.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/select_minor_prediction.txt
+build $
+    gen//data/test/session/scenario/usage_stats/mouse_select_from_suggestion.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/mouse_select_from_suggestion.txt
+build gen//data/test/session/scenario/usage_stats/select_t13n_by_key.txt: $
+    copy ../../data/test/session/scenario/usage_stats/select_t13n_by_key.txt
+build $
+    gen//data/test/session/scenario/usage_stats/select_t13n_on_cascading_window.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/select_t13n_on_cascading_window.txt
+build gen//data/test/session/scenario/usage_stats/switch_kana_type.txt: $
+    copy ../../data/test/session/scenario/usage_stats/switch_kana_type.txt
+build gen//data/test/session/scenario/usage_stats/multiple_segments.txt: $
+    copy ../../data/test/session/scenario/usage_stats/multiple_segments.txt
+build $
+    gen//data/test/session/scenario/usage_stats/select_candidates_in_multiple_segments.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/select_candidates_in_multiple_segments.txt
+build $
+    gen//data/test/session/scenario/usage_stats/select_candidates_in_multiple_segments_and_expand_segment.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/select_candidates_in_multiple_segments_and_expand_segment.txt
+build gen//data/test/session/scenario/usage_stats/continue_input.txt: copy $
+    ../../data/test/session/scenario/usage_stats/continue_input.txt
+build gen//data/test/session/scenario/usage_stats/continuous_input.txt: $
+    copy ../../data/test/session/scenario/usage_stats/continuous_input.txt
+build gen//data/test/session/scenario/usage_stats/multiple_sessions.txt: $
+    copy ../../data/test/session/scenario/usage_stats/multiple_sessions.txt
+build $
+    gen//data/test/session/scenario/usage_stats/backspace_after_commit.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/backspace_after_commit.txt
+build $
+    gen//data/test/session/scenario/usage_stats/backspace_after_commit_after_backspace.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/backspace_after_commit_after_backspace.txt
+build $
+    gen//data/test/session/scenario/usage_stats/multiple_backspace_after_commit.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/multiple_backspace_after_commit.txt
+build $
+    gen//data/test/session/scenario/usage_stats/zero_query_suggestion.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/zero_query_suggestion.txt
+build $
+    gen//data/test/session/scenario/usage_stats/auto_partial_suggestion.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/auto_partial_suggestion.txt
+build gen//data/test/session/scenario/usage_stats/insert_space.txt: copy $
+    ../../data/test/session/scenario/usage_stats/insert_space.txt
+build $
+    gen//data/test/session/scenario/usage_stats/numpad_in_direct_input_mode.txt: $
+    copy $
+    ../../data/test/session/scenario/usage_stats/numpad_in_direct_input_mode.txt
+build gen//data/test/session/scenario/usage_stats/language_aware_input.txt: $
+    copy ../../data/test/session/scenario/usage_stats/language_aware_input.txt
+build $
+    obj/data/test/session/scenario/usage_stats/install_session_handler_usage_stats_scenario_test_data.actions_rules_copies.stamp: $
+    stamp gen//data/test/session/scenario/usage_stats/conversion.txt $
+    gen//data/test/session/scenario/usage_stats/prediction.txt $
+    gen//data/test/session/scenario/usage_stats/suggestion.txt $
+    gen//data/test/session/scenario/usage_stats/composition.txt $
+    gen//data/test/session/scenario/usage_stats/select_prediction.txt $
+    gen//data/test/session/scenario/usage_stats/select_minor_conversion.txt $
+    gen//data/test/session/scenario/usage_stats/select_minor_prediction.txt $
+    gen//data/test/session/scenario/usage_stats/mouse_select_from_suggestion.txt $
+    gen//data/test/session/scenario/usage_stats/select_t13n_by_key.txt $
+    gen//data/test/session/scenario/usage_stats/select_t13n_on_cascading_window.txt $
+    gen//data/test/session/scenario/usage_stats/switch_kana_type.txt $
+    gen//data/test/session/scenario/usage_stats/multiple_segments.txt $
+    gen//data/test/session/scenario/usage_stats/select_candidates_in_multiple_segments.txt $
+    gen//data/test/session/scenario/usage_stats/select_candidates_in_multiple_segments_and_expand_segment.txt $
+    gen//data/test/session/scenario/usage_stats/continue_input.txt $
+    gen//data/test/session/scenario/usage_stats/continuous_input.txt $
+    gen//data/test/session/scenario/usage_stats/multiple_sessions.txt $
+    gen//data/test/session/scenario/usage_stats/backspace_after_commit.txt $
+    gen//data/test/session/scenario/usage_stats/backspace_after_commit_after_backspace.txt $
+    gen//data/test/session/scenario/usage_stats/multiple_backspace_after_commit.txt $
+    gen//data/test/session/scenario/usage_stats/zero_query_suggestion.txt $
+    gen//data/test/session/scenario/usage_stats/auto_partial_suggestion.txt $
+    gen//data/test/session/scenario/usage_stats/insert_space.txt $
+    gen//data/test/session/scenario/usage_stats/numpad_in_direct_input_mode.txt $
+    gen//data/test/session/scenario/usage_stats/language_aware_input.txt
+

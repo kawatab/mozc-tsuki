@@ -1,0 +1,13 @@
+Package: fcitx-mozc-dbgsym
+Source: mozc
+Version: 2.23.2815.102+dfsg-4
+Auto-Built-Package: debug-symbols
+Architecture: amd64
+Maintainer: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Installed-Size: 4183
+Depends: fcitx-mozc (= 2.23.2815.102+dfsg-4)
+Section: debug
+Priority: optional
+Multi-Arch: same
+Description: debug symbols for fcitx-mozc
+Build-Ids: d6e5ddb0721caa0a7c58a8cb0a4d2e27000d1d67

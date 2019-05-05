@@ -1,0 +1,24 @@
+rule $
+    gen_separate_reading_correction_data_for_mock_gen_reading_correction_data_a01bfc13150880a808baada01b58e630
+  command = cd ../../data_manager/testing; python $
+      ../../rewriter/gen_reading_correction_data.py $
+      "--input=../../data/test/dictionary/reading_correction.tsv" $
+      "--output_value_array=../../out_linux/Debug/gen/data_manager/testing/reading_correction_value.data" $
+      "--output_error_array=../../out_linux/Debug/gen/data_manager/testing/reading_correction_error.data" $
+      "--output_correction_array=../../out_linux/Debug/gen/data_manager/testing/reading_correction_correction.data"
+  description = ACTION(host) [mock] Generating $
+      gen/data_manager/testing/reading_correction*
+  restat = 1
+
+build gen/data_manager/testing/reading_correction_value.data $
+    gen/data_manager/testing/reading_correction_error.data $
+    gen/data_manager/testing/reading_correction_correction.data: $
+    gen_separate_reading_correction_data_for_mock_gen_reading_correction_data_a01bfc13150880a808baada01b58e630 $
+    ../../data/test/dictionary/reading_correction.tsv
+
+build $
+    obj.host/data_manager/testing/gen_separate_reading_correction_data_for_mock.actions_rules_copies.stamp: $
+    stamp gen/data_manager/testing/reading_correction_value.data $
+    gen/data_manager/testing/reading_correction_error.data $
+    gen/data_manager/testing/reading_correction_correction.data
+

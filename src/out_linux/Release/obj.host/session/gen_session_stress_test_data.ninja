@@ -1,0 +1,12 @@
+rule $
+    gen_session_stress_test_data_gen_session_stress_test_data_a4aea78a8d39853d993181a50962f549
+  command = cd ../../session; python ../build_tools/redirect.py $
+      ../out_linux/Release/gen/session/session_stress_test_data.h $
+      gen_session_stress_test_data.py ../data/test/stress_test/sentences.txt
+  description = ACTION(host) Generating gen/session/session_stress_test_data.h
+  restat = 1
+
+build gen/session/session_stress_test_data.h: $
+    gen_session_stress_test_data_gen_session_stress_test_data_a4aea78a8d39853d993181a50962f549 $
+    ../../data/test/stress_test/sentences.txt
+

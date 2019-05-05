@@ -1,0 +1,18 @@
+rule gen_character_set_gen_character_set_a861bea72409918f0df631538157ea56
+  command = cd ../../base; python gen_character_set.py $
+      "--cp932file=../data/unicode/CP932.TXT" $
+      "--jisx0201file=../data/unicode/JIS0201.TXT" $
+      "--jisx0208file=../data/unicode/JIS0208.TXT" $
+      "--jisx0212file=../data/unicode/JIS0212.TXT" $
+      "--jisx0213file=../data/unicode/jisx0213-2004-std.txt" $
+      "--output=../out_linux/Release/gen/base/character_set.inc"
+  description = ACTION(host) gen_character_set: $
+      gen_character_set_a861bea72409918f0df631538157ea56
+  restat = 1
+
+build gen/base/character_set.inc: $
+    gen_character_set_gen_character_set_a861bea72409918f0df631538157ea56 $
+    ../../base/gen_character_set.py ../../data/unicode/CP932.TXT $
+    ../../data/unicode/JIS0201.TXT ../../data/unicode/JIS0208.TXT $
+    ../../data/unicode/JIS0212.TXT ../../data/unicode/jisx0213-2004-std.txt
+

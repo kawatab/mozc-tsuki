@@ -1,0 +1,158 @@
+build $
+    obj.host/data_manager/testing/gen_mozc_dataset_for_mock.actions_depends.stamp: $
+    stamp dataset_writer_main $
+    obj.host/rewriter/gen_rewriter_files.actions_rules_copies.stamp $
+    gen/data_manager/testing/pos_matcher.data $
+    obj.host/data_manager/testing/gen_separate_user_pos_data_for_mock.actions_rules_copies.stamp $
+    gen/data_manager/testing/connection.data $
+    gen/data_manager/testing/system.dictionary $
+    gen/data_manager/testing/collocation_data.data $
+    gen/data_manager/testing/collocation_suppression_data.data $
+    gen/data_manager/testing/suggestion_filter_data.data $
+    gen/data_manager/testing/pos_group.data $
+    gen/data_manager/testing/boundary.data $
+    gen/data_manager/testing/counter_suffix.data $
+    obj.host/data_manager/testing/gen_separate_suffix_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_reading_correction_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_symbol_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_emoticon_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_emoji_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_single_kanji_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_zero_query_data_for_mock.actions_rules_copies.stamp $
+    gen/data_manager/testing/version.data $
+    obj.host/data_manager/testing/gen_typing_model_for_mock.actions_rules_copies.stamp
+
+build $
+    obj.host/data_manager/testing/gen_mozc_dataset_for_mock.compile_depends.stamp: $
+    stamp obj.host/data_manager/dataset_writer_main.compile_depends.stamp $
+    obj.host/rewriter/gen_rewriter_files.actions_rules_copies.stamp $
+    gen/data_manager/testing/pos_matcher.data $
+    obj.host/data_manager/testing/gen_separate_user_pos_data_for_mock.actions_rules_copies.stamp $
+    gen/data_manager/testing/connection.data $
+    gen/data_manager/testing/system.dictionary $
+    gen/data_manager/testing/collocation_data.data $
+    gen/data_manager/testing/collocation_suppression_data.data $
+    gen/data_manager/testing/suggestion_filter_data.data $
+    gen/data_manager/testing/pos_group.data $
+    gen/data_manager/testing/boundary.data $
+    gen/data_manager/testing/counter_suffix.data $
+    obj.host/data_manager/testing/gen_separate_suffix_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_reading_correction_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_symbol_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_emoticon_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_emoji_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_single_kanji_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_zero_query_data_for_mock.actions_rules_copies.stamp $
+    gen/data_manager/testing/version.data $
+    obj.host/data_manager/testing/gen_typing_model_for_mock.actions_rules_copies.stamp
+
+rule $
+    gen_mozc_dataset_for_mock_gen_mozc_dataset_for_mock_758c667bad3c97a8c79905d666d69676
+  command = cd ../../data_manager/testing; $
+      ../../out_linux/Release/dataset_writer_main $
+      "--magic=\\x4D\\x4F\\x43\\x4B" $
+      "--output=../../out_linux/Release/gen/data_manager/testing/mock_mozc.data" $
+      pos_matcher:32:../../out_linux/Release/gen/data_manager/testing/pos_matcher.data $
+      user_pos_token:32:../../out_linux/Release/gen/data_manager/testing/user_pos_token_array.data $
+      user_pos_string:32:../../out_linux/Release/gen/data_manager/testing/user_pos_string_array.data $
+      coll:32:../../out_linux/Release/gen/data_manager/testing/collocation_data.data $
+      cols:32:../../out_linux/Release/gen/data_manager/testing/collocation_suppression_data.data $
+      conn:32:../../out_linux/Release/gen/data_manager/testing/connection.data $
+      dict:32:../../out_linux/Release/gen/data_manager/testing/system.dictionary $
+      sugg:32:../../out_linux/Release/gen/data_manager/testing/suggestion_filter_data.data $
+      posg:32:../../out_linux/Release/gen/data_manager/testing/pos_group.data $
+      bdry:32:../../out_linux/Release/gen/data_manager/testing/boundary.data $
+      segmenter_sizeinfo:32:../../out_linux/Release/gen/data_manager/testing/segmenter_sizeinfo.data $
+      segmenter_ltable:32:../../out_linux/Release/gen/data_manager/testing/segmenter_ltable.data $
+      segmenter_rtable:32:../../out_linux/Release/gen/data_manager/testing/segmenter_rtable.data $
+      segmenter_bitarray:32:../../out_linux/Release/gen/data_manager/testing/segmenter_bitarray.data $
+      counter_suffix:32:../../out_linux/Release/gen/data_manager/testing/counter_suffix.data $
+      suffix_key:32:../../out_linux/Release/gen/data_manager/testing/suffix_key.data $
+      suffix_value:32:../../out_linux/Release/gen/data_manager/testing/suffix_value.data $
+      suffix_token:32:../../out_linux/Release/gen/data_manager/testing/suffix_token.data $
+      reading_correction_value:32:../../out_linux/Release/gen/data_manager/testing/reading_correction_value.data $
+      reading_correction_error:32:../../out_linux/Release/gen/data_manager/testing/reading_correction_error.data $
+      reading_correction_correction:32:../../out_linux/Release/gen/data_manager/testing/reading_correction_correction.data $
+      symbol_token:32:../../out_linux/Release/gen/data_manager/testing/symbol_token.data $
+      symbol_string:32:../../out_linux/Release/gen/data_manager/testing/symbol_string.data $
+      emoticon_token:32:../../out_linux/Release/gen/data_manager/testing/emoticon_token.data $
+      emoticon_string:32:../../out_linux/Release/gen/data_manager/testing/emoticon_string.data $
+      emoji_token:32:../../out_linux/Release/gen/data_manager/testing/emoji_token.data $
+      emoji_string:32:../../out_linux/Release/gen/data_manager/testing/emoji_string.data $
+      single_kanji_token:32:../../out_linux/Release/gen/data_manager/testing/single_kanji_token.data $
+      single_kanji_string:32:../../out_linux/Release/gen/data_manager/testing/single_kanji_string.data $
+      single_kanji_variant_type:32:../../out_linux/Release/gen/data_manager/testing/single_kanji_variant_type.data $
+      single_kanji_variant_token:32:../../out_linux/Release/gen/data_manager/testing/single_kanji_variant_token.data $
+      single_kanji_variant_string:32:../../out_linux/Release/gen/data_manager/testing/single_kanji_variant_string.data $
+      single_kanji_noun_prefix_token:32:../../out_linux/Release/gen/data_manager/testing/single_kanji_noun_prefix_token.data $
+      single_kanji_noun_prefix_string:32:../../out_linux/Release/gen/data_manager/testing/single_kanji_noun_prefix_string.data $
+      zero_query_token_array:32:../../out_linux/Release/gen/data_manager/testing/zero_query_token.data $
+      zero_query_string_array:32:../../out_linux/Release/gen/data_manager/testing/zero_query_string.data $
+      zero_query_number_token_array:32:../../out_linux/Release/gen/data_manager/testing/zero_query_number_token.data $
+      zero_query_number_string_array:32:../../out_linux/Release/gen/data_manager/testing/zero_query_number_string.data $
+      version:32:../../out_linux/Release/gen/data_manager/testing/version.data $
+      usage_base_conjugation_suffix:32:../../out_linux/Release/gen/rewriter/usage_base_conj_suffix.data $
+      usage_conjugation_suffix:32:../../out_linux/Release/gen/rewriter/usage_conj_suffix.data $
+      usage_conjugation_index:32:../../out_linux/Release/gen/rewriter/usage_conj_index.data $
+      usage_item_array:32:../../out_linux/Release/gen/rewriter/usage_item_array.data $
+      usage_string_array:32:../../out_linux/Release/gen/rewriter/usage_string_array.data $
+      typing_model_qwerty_mobile-hiragana.tsv:32:../../out_linux/Release/gen/data_manager/testing/typing_model_qwerty_mobile-hiragana.data $
+      typing_model_12keys-hiragana.tsv:32:../../out_linux/Release/gen/data_manager/testing/typing_model_12keys-hiragana.data $
+      typing_model_flick-hiragana.tsv:32:../../out_linux/Release/gen/data_manager/testing/typing_model_flick-hiragana.data $
+      typing_model_godan-hiragana.tsv:32:../../out_linux/Release/gen/data_manager/testing/typing_model_godan-hiragana.data $
+      typing_model_toggle_flick-hiragana.tsv:32:../../out_linux/Release/gen/data_manager/testing/typing_model_toggle_flick-hiragana.data
+  description = ACTION(host) gen_mozc_dataset_for_mock: $
+      gen_mozc_dataset_for_mock_758c667bad3c97a8c79905d666d69676
+  restat = 1
+
+build gen/data_manager/testing/mock_mozc.data: $
+    gen_mozc_dataset_for_mock_gen_mozc_dataset_for_mock_758c667bad3c97a8c79905d666d69676 $
+    gen/data_manager/testing/pos_matcher.data $
+    gen/data_manager/testing/user_pos_token_array.data $
+    gen/data_manager/testing/user_pos_string_array.data $
+    gen/data_manager/testing/system.dictionary $
+    gen/data_manager/testing/connection.data $
+    gen/data_manager/testing/collocation_data.data $
+    gen/data_manager/testing/collocation_suppression_data.data $
+    gen/data_manager/testing/suggestion_filter_data.data $
+    gen/data_manager/testing/pos_group.data $
+    gen/data_manager/testing/boundary.data $
+    gen/data_manager/testing/segmenter_sizeinfo.data $
+    gen/data_manager/testing/segmenter_ltable.data $
+    gen/data_manager/testing/segmenter_rtable.data $
+    gen/data_manager/testing/segmenter_bitarray.data $
+    gen/data_manager/testing/counter_suffix.data $
+    gen/data_manager/testing/suffix_key.data $
+    gen/data_manager/testing/suffix_value.data $
+    gen/data_manager/testing/suffix_token.data $
+    gen/data_manager/testing/reading_correction_value.data $
+    gen/data_manager/testing/reading_correction_error.data $
+    gen/data_manager/testing/reading_correction_correction.data $
+    gen/data_manager/testing/symbol_token.data $
+    gen/data_manager/testing/symbol_string.data $
+    gen/data_manager/testing/emoticon_token.data $
+    gen/data_manager/testing/emoticon_string.data $
+    gen/data_manager/testing/emoji_token.data $
+    gen/data_manager/testing/emoji_string.data $
+    gen/data_manager/testing/single_kanji_token.data $
+    gen/data_manager/testing/single_kanji_string.data $
+    gen/data_manager/testing/single_kanji_variant_type.data $
+    gen/data_manager/testing/single_kanji_variant_token.data $
+    gen/data_manager/testing/single_kanji_variant_string.data $
+    gen/data_manager/testing/single_kanji_noun_prefix_token.data $
+    gen/data_manager/testing/single_kanji_noun_prefix_string.data $
+    gen/data_manager/testing/zero_query_token.data $
+    gen/data_manager/testing/zero_query_string.data $
+    gen/data_manager/testing/zero_query_number_token.data $
+    gen/data_manager/testing/zero_query_number_string.data $
+    gen/data_manager/testing/version.data $
+    gen/rewriter/usage_base_conj_suffix.data $
+    gen/rewriter/usage_conj_index.data gen/rewriter/usage_conj_suffix.data $
+    gen/rewriter/usage_item_array.data gen/rewriter/usage_string_array.data $
+    gen/data_manager/testing/typing_model_qwerty_mobile-hiragana.data $
+    gen/data_manager/testing/typing_model_12keys-hiragana.data $
+    gen/data_manager/testing/typing_model_flick-hiragana.data $
+    gen/data_manager/testing/typing_model_godan-hiragana.data $
+    gen/data_manager/testing/typing_model_toggle_flick-hiragana.data || $
+    obj.host/data_manager/testing/gen_mozc_dataset_for_mock.actions_depends.stamp
+

@@ -1,1 +1,1 @@
-unix/emacs/mozc.el usr/share/emacs/site-lisp/emacs-mozc
+src/unix/emacs/mozc.el usr/share/emacs/site-lisp/emacs-mozc

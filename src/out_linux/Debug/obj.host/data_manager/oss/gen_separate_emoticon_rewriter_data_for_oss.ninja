@@ -1,0 +1,21 @@
+rule $
+    gen_separate_emoticon_rewriter_data_for_oss_gen_separate_emoticon_rewriter_data_for_oss_edc77354261afdf023a06df8111e8931
+  command = cd ../../data_manager/oss; $
+      ../../out_linux/Debug/gen_emoticon_rewriter_data_main $
+      "--input=../../data/emoticon/emoticon.tsv" $
+      "--output_token_array=../../out_linux/Debug/gen/data_manager/oss/emoticon_token.data" $
+      "--output_string_array=../../out_linux/Debug/gen/data_manager/oss/emoticon_string.data"
+  description = ACTION(host) [oss] Generating emoticon data
+  restat = 1
+
+build gen/data_manager/oss/emoticon_token.data $
+    gen/data_manager/oss/emoticon_string.data: $
+    gen_separate_emoticon_rewriter_data_for_oss_gen_separate_emoticon_rewriter_data_for_oss_edc77354261afdf023a06df8111e8931 $
+    gen_emoticon_rewriter_data_main ../../data/emoticon/emoticon.tsv || $
+    gen_emoticon_rewriter_data_main
+
+build $
+    obj.host/data_manager/oss/gen_separate_emoticon_rewriter_data_for_oss.actions_rules_copies.stamp: $
+    stamp gen/data_manager/oss/emoticon_token.data $
+    gen/data_manager/oss/emoticon_string.data
+

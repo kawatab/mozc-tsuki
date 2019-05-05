@@ -1,0 +1,8 @@
+build obj/converter/converter_all_test.actions_depends.stamp: stamp $
+    connector_test converter_regression_test converter_test
+
+build obj/converter/converter_all_test.compile_depends.stamp: stamp $
+    obj/converter/connector_test.compile_depends.stamp $
+    obj/converter/converter_regression_test.compile_depends.stamp $
+    obj/converter/converter_test.compile_depends.stamp
+

@@ -4,15 +4,16 @@ Priority: optional
 Maintainer: Nobuhiro Iwamatsu <iwamatsu@debian.org>
 Build-Depends: debhelper (>= 9),
 	libibus-1.0-dev (>= 1.4.1) | libibus-dev (>= 1.4.1),
-	libssl-dev, pkg-config, libxcb-xfixes0-dev, libgtk2.0-dev,
-	python-dev, gyp (>= 0.1~svn1729-2), protobuf-compiler,
-	libprotobuf-dev (>= 2.5.0-9), libqt4-dev, libuim-dev,
+	pkg-config, libxcb-xfixes0-dev, libgtk2.0-dev,
+	python-dev, gyp (>= 0.1~svn1729-2), protobuf-compiler (>= 3.0.0),
+	libprotobuf-dev (>= 3.0.0), qtbase5-dev, libqwt-qt5-dev,
+	libgwengui-qt5-dev, libuim-dev,
 	libzinnia-dev, fcitx-libs-dev, gettext,
 	desktop-file-utils, ninja-build
-Standards-Version: 3.9.5
-Homepage: http://code.google.com/p/mozc/
-Vcs-Git: git://anonscm.debian.org/collab-maint/mozc.git
-Vcs-Browser: http://anonscm.debian.org/gitweb/?p=collab-maint/mozc.git;a=summary
+Standards-Version: 4.2.1
+Homepage: https://github.com/google/mozc.git
+Vcs-Git: https://salsa.debian.org/debian/mozc.git
+Vcs-Browser: https://salsa.debian.org/debian/mozc
 
 Package: mozc-data
 Architecture: all
@@ -27,7 +28,7 @@ Description: Mozc input method - data files
  This open-source project originates from Google Japanese Input.
 
 Package: ibus-mozc
-Architecture: i386 amd64 armel armhf
+Architecture: i386 amd64 armel armhf arm64
 Depends: ${misc:Depends}, ${shlibs:Depends}, mozc-data,
 	ibus (>= 1.2), mozc-server (= ${binary:Version}), tegaki-zinnia-japanese
 Recommends: mozc-utils-gui (= ${binary:Version})
@@ -44,8 +45,8 @@ Description: Mozc engine for IBus - Client of the Mozc input method
  This open-source project originates from Google Japanese Input.
 
 Package: uim-mozc
-Architecture: i386 amd64 armel armhf
-Depends: ${misc:Depends}, ${shlibs:Depends}, uim-utils (>= 1:1.8.1-2),
+Architecture: i386 amd64 armel armhf arm64
+Depends: ${misc:Depends}, ${shlibs:Depends},
 	mozc-data, mozc-server (= ${binary:Version})
 Recommends: mozc-utils-gui (= ${binary:Version})
 Multi-Arch: same
@@ -63,7 +64,7 @@ Description: Mozc engine for uim - Client of the Mozc input method
  uim-mozc provides client part of the Mozc input method.
 
 Package: fcitx-mozc
-Architecture: i386 amd64 armel armhf
+Architecture: i386 amd64 armel armhf arm64
 Depends: ${misc:Depends}, ${shlibs:Depends}, fcitx-bin, fcitx-data, fcitx-modules,
 	mozc-server (= ${binary:Version}), mozc-data, tegaki-zinnia-japanese
 Recommends: fcitx, mozc-utils-gui (= ${binary:Version})
@@ -82,7 +83,7 @@ Description: Mozc engine for fcitx - Client of the Mozc input method
  fcitx-mozc provides client part of the Mozc input method.
 
 Package: emacs-mozc
-Architecture: i386 amd64 armel armhf
+Architecture: i386 amd64 armel armhf arm64
 Depends: ${misc:Depends}, emacs | emacs23 | emacs24, emacs-mozc-bin (= ${binary:Version})
 Conflicts: emacsen-common (<< 2.0.0)
 Description: Mozc for Emacs
@@ -94,7 +95,7 @@ Description: Mozc for Emacs
  This open-source project originates from Google Japanese Input.
 
 Package: emacs-mozc-bin
-Architecture: i386 amd64 armel armhf
+Architecture: i386 amd64 armel armhf arm64
 Depends: ${misc:Depends}, ${shlibs:Depends}, mozc-server (= ${binary:Version})
 Description: Helper module for emacs-mozc
  Mozc is a Japanese Input Method Editor (IME) designed for multi-platform 
@@ -105,7 +106,7 @@ Description: Helper module for emacs-mozc
  This open-source project originates from Google Japanese Input.
 
 Package: mozc-server
-Architecture: i386 amd64 armel armhf
+Architecture: i386 amd64 armel armhf arm64
 Depends: ${misc:Depends}, ${shlibs:Depends}
 Multi-Arch: foreign
 Description: Server of the Mozc input method
@@ -117,10 +118,10 @@ Description: Server of the Mozc input method
  This open-source project originates from Google Japanese Input.
 
 Package: mozc-utils-gui
-Architecture: i386 amd64 armel armhf
-Depends: ${misc:Depends}, ${shlibs:Depends}, mozc-data
+Architecture: i386 amd64 armel armhf arm64
+Depends: ${misc:Depends}, ${shlibs:Depends}, mozc-data, tegaki-zinnia-japanese
 Recommends: mozc-server (= ${binary:Version})
-Suggests: ibus-qt4
+Suggests: ibus-qt5
 Description: GUI utilities of the Mozc input method
  Mozc is a Japanese Input Method Editor (IME) designed for multi-platform 
  such as Chromium OS, Windows, Mac and Linux.

@@ -1,0 +1,24 @@
+rule $
+    gen_separate_segmenter_data_for_oss_gen_separate_segmenter_data_for_oss_e170859c25369183f9dc9e1702bea3ea
+  command = cd ../../data_manager/oss; ../../out_linux/Release/gen_oss_sbm $
+      "--output_size_info=../../out_linux/Release/gen/data_manager/oss/segmenter_sizeinfo.data" $
+      "--output_ltable=../../out_linux/Release/gen/data_manager/oss/segmenter_ltable.data" $
+      "--output_rtable=../../out_linux/Release/gen/data_manager/oss/segmenter_rtable.data" $
+      "--output_bitarray=../../out_linux/Release/gen/data_manager/oss/segmenter_bitarray.data"
+  description = ACTION(host) [oss] Generating segmenter data files
+  restat = 1
+
+build gen/data_manager/oss/segmenter_sizeinfo.data $
+    gen/data_manager/oss/segmenter_ltable.data $
+    gen/data_manager/oss/segmenter_rtable.data $
+    gen/data_manager/oss/segmenter_bitarray.data: $
+    gen_separate_segmenter_data_for_oss_gen_separate_segmenter_data_for_oss_e170859c25369183f9dc9e1702bea3ea $
+    gen_oss_sbm || gen_oss_sbm
+
+build $
+    obj.host/data_manager/oss/gen_separate_segmenter_data_for_oss.actions_rules_copies.stamp: $
+    stamp gen/data_manager/oss/segmenter_sizeinfo.data $
+    gen/data_manager/oss/segmenter_ltable.data $
+    gen/data_manager/oss/segmenter_rtable.data $
+    gen/data_manager/oss/segmenter_bitarray.data
+

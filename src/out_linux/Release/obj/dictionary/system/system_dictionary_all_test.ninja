@@ -1,0 +1,13 @@
+build $
+    obj/dictionary/system/system_dictionary_all_test.actions_depends.stamp: $
+    stamp key_expansion_table_test system_dictionary_codec_test $
+    system_dictionary_test value_dictionary_test
+
+build $
+    obj/dictionary/system/system_dictionary_all_test.compile_depends.stamp: $
+    stamp $
+    obj/dictionary/system/key_expansion_table_test.compile_depends.stamp $
+    obj/dictionary/system/system_dictionary_codec_test.compile_depends.stamp $
+    obj/dictionary/system/system_dictionary_test.compile_depends.stamp $
+    obj/dictionary/system/value_dictionary_test.compile_depends.stamp
+

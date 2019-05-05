@@ -1,0 +1,24 @@
+rule $
+    gen_separate_reading_correction_data_for_oss_gen_reading_correction_data_56802f88821832aec4d106341a08011d
+  command = cd ../../data_manager/oss; python $
+      ../../rewriter/gen_reading_correction_data.py $
+      "--input=../../data/dictionary_oss/reading_correction.tsv" $
+      "--output_value_array=../../out_linux/Debug/gen/data_manager/oss/reading_correction_value.data" $
+      "--output_error_array=../../out_linux/Debug/gen/data_manager/oss/reading_correction_error.data" $
+      "--output_correction_array=../../out_linux/Debug/gen/data_manager/oss/reading_correction_correction.data"
+  description = ACTION(host) [oss] Generating $
+      gen/data_manager/oss/reading_correction*
+  restat = 1
+
+build gen/data_manager/oss/reading_correction_value.data $
+    gen/data_manager/oss/reading_correction_error.data $
+    gen/data_manager/oss/reading_correction_correction.data: $
+    gen_separate_reading_correction_data_for_oss_gen_reading_correction_data_56802f88821832aec4d106341a08011d $
+    ../../data/dictionary_oss/reading_correction.tsv
+
+build $
+    obj.host/data_manager/oss/gen_separate_reading_correction_data_for_oss.actions_rules_copies.stamp: $
+    stamp gen/data_manager/oss/reading_correction_value.data $
+    gen/data_manager/oss/reading_correction_error.data $
+    gen/data_manager/oss/reading_correction_correction.data
+

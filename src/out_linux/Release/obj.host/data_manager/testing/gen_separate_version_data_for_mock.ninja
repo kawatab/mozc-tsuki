@@ -1,0 +1,14 @@
+rule $
+    gen_separate_version_data_for_mock_gen_separate_version_data_for_mock_7b6bb6385a85131a5863215b425f81ff
+  command = cd ../../data_manager/testing; python $
+      ../../data_manager/gen_data_version.py "--tag=mock" $
+      "--mozc_version_template=../../data/version/mozc_version_template.bzl" $
+      "--output=../../out_linux/Release/gen/data_manager/testing/version.data"
+  description = ACTION(host) [mock] Generating version.data
+  restat = 1
+
+build gen/data_manager/testing/version.data: $
+    gen_separate_version_data_for_mock_gen_separate_version_data_for_mock_7b6bb6385a85131a5863215b425f81ff $
+    ../../data_manager/gen_data_version.py $
+    ../../data/version/mozc_version_template.bzl
+

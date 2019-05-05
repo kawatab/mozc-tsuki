@@ -1,0 +1,7 @@
+build obj/dictionary/file/dictionary_file_all_test.actions_depends.stamp: $
+    stamp codec_test dictionary_file_test
+
+build obj/dictionary/file/dictionary_file_all_test.compile_depends.stamp: $
+    stamp obj/dictionary/file/codec_test.compile_depends.stamp $
+    obj/dictionary/file/dictionary_file_test.compile_depends.stamp
+

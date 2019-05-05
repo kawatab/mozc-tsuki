@@ -1,0 +1,13 @@
+rule $
+    gen_embedded_file_test_data_gen_embedded_file_test_data_aa3fd96eb1ae2b3bdd7ec2c4e9b05b97
+  command = cd ../../base; python ../build_tools/embed_file.py --input $
+      embedded_file.h --name kEmbeddedFileTestData --output $
+      ../out_linux/Release/gen/base/embedded_file_test_data.inc
+  description = ACTION(host) gen_embedded_file_test_data: $
+      gen_embedded_file_test_data_aa3fd96eb1ae2b3bdd7ec2c4e9b05b97
+  restat = 1
+
+build gen/base/embedded_file_test_data.inc: $
+    gen_embedded_file_test_data_gen_embedded_file_test_data_aa3fd96eb1ae2b3bdd7ec2c4e9b05b97 $
+    ../../base/embedded_file.h
+

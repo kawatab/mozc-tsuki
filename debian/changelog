@@ -1,3 +1,83 @@
+mozc (2.23.2815.102+dfsg-4) unstable; urgency=medium
+
+  * Add d/patches/add_support_new_japanese_era.patch.
+    This adds Japan's new era 令和 (Reiwa) support. (Closes: #927030)
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Sun, 14 Apr 2019 06:25:53 +0900
+
+mozc (2.23.2815.102+dfsg-3) unstable; urgency=medium
+
+  * Update .desktop file.
+    Use 128x128 image. (LP: #1765948)
+  * Bump Standards-Version to 4.2.1.
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Sat, 01 Dec 2018 07:40:07 +0900
+
+mozc (2.23.2815.102+dfsg-2) unstable; urgency=medium
+
+  * Fix build with gcc8 (Closes: #897814)
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Tue, 24 Jul 2018 16:58:04 +0900
+
+mozc (2.23.2815.102+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Bump Standards-Version to 4.1.3.
+  * Update patches/uim-mozc.patch.
+  * Add patches/fcitx-mozc-updates.patch.
+  * Update Vcs-Git and Vcs-Browser to salsa.
+  * Update copyright.
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Tue, 03 Apr 2018 08:04:52 +0900
+
+mozc (2.20.2673.102+dfsg-2) unstable; urgency=medium
+
+  * Update debian/control.
+    - Remove uim-utils from Depends of uim-mozc. (Closes: #875758)
+    - Update Standards-Version to 4.1.0.
+  * Add apparmor profile for mozc-server. (Closes: #818527)
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Tue, 26 Sep 2017 00:13:44 +0900
+
+mozc (2.20.2673.102+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Add support arm64. (Closes: #864261)
+  * Update Standards-Version to 4.0.0.
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Thu, 10 Aug 2017 08:18:05 +0900
+
+mozc (2.19.2623.102+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Update to Qt5.
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Wed, 16 Nov 2016 06:24:50 +0900
+
+mozc (2.18.2595.102+dfsg-1) unstable; urgency=medium
+
+  * New upstream release. (Closes: #815790)
+  * Update patches/gcc.patch
+  * Update patches/uim-mozc.patch to latest version
+  * Update patches/fcitx-mozc.patch to latest version
+  * Update Standards-Version to 3.9.8
+  * Update debian/copyright
+    Update URL of mozc project and macuim.
+  * Add debian/source.lintian-overrides
+  * Use a secure transport for the Vcs-Git and Vcs-Browser URL.
+  * Add tegaki-zinnia-japanese to Depends of mozc-utils-gui. (Closes: 800472)
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Wed, 24 Aug 2016 06:45:33 +0900
+
+mozc (2.17.2116.102+gitfd0f5b34+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Add support parallel building. (Closes: #795709)
+  * Remove libss-dev from Build-Depends. (Closes: #759135)
+  * Bump Standards-Version to 3.9.6.
+
+ -- Nobuhiro Iwamatsu <iwamatsu@debian.org>  Sat, 12 Sep 2015 13:59:18 +0900
+
 mozc (1.15.1857.102-1) unstable; urgency=medium
 
   * New upstream release.

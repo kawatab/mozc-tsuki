@@ -1,0 +1,31 @@
+build $
+    obj.host/data_manager/oss/gen_user_pos_manager_data_for_oss.actions_depends.stamp: $
+    stamp dataset_writer_main $
+    obj.host/data_manager/oss/gen_separate_user_pos_data_for_oss.actions_rules_copies.stamp $
+    gen/data_manager/oss/pos_matcher.data
+
+build $
+    obj.host/data_manager/oss/gen_user_pos_manager_data_for_oss.compile_depends.stamp: $
+    stamp obj.host/data_manager/dataset_writer_main.compile_depends.stamp $
+    obj.host/data_manager/oss/gen_separate_user_pos_data_for_oss.actions_rules_copies.stamp $
+    gen/data_manager/oss/pos_matcher.data
+
+rule $
+    gen_user_pos_manager_data_for_oss_gen_user_pos_manager_data_for_oss_4ecfa158a6f0ed2b9e88d60e94a69211
+  command = cd ../../data_manager/oss; $
+      ../../out_linux/Debug/dataset_writer_main $
+      "--output=../../out_linux/Debug/gen/data_manager/oss/user_pos_manager.data" $
+      pos_matcher:32:../../out_linux/Debug/gen/data_manager/oss/pos_matcher.data $
+      user_pos_token:32:../../out_linux/Debug/gen/data_manager/oss/user_pos_token_array.data $
+      user_pos_string:32:../../out_linux/Debug/gen/data_manager/oss/user_pos_string_array.data
+  description = ACTION(host) gen_user_pos_manager_data_for_oss: $
+      gen_user_pos_manager_data_for_oss_4ecfa158a6f0ed2b9e88d60e94a69211
+  restat = 1
+
+build gen/data_manager/oss/user_pos_manager.data: $
+    gen_user_pos_manager_data_for_oss_gen_user_pos_manager_data_for_oss_4ecfa158a6f0ed2b9e88d60e94a69211 $
+    gen/data_manager/oss/pos_matcher.data $
+    gen/data_manager/oss/user_pos_token_array.data $
+    gen/data_manager/oss/user_pos_string_array.data || $
+    obj.host/data_manager/oss/gen_user_pos_manager_data_for_oss.actions_depends.stamp
+

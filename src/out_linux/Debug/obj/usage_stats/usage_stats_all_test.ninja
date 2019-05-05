@@ -1,0 +1,7 @@
+build obj/usage_stats/usage_stats_all_test.actions_depends.stamp: stamp $
+    usage_stats_test usage_stats_uploader_test
+
+build obj/usage_stats/usage_stats_all_test.compile_depends.stamp: stamp $
+    obj/usage_stats/usage_stats_test.compile_depends.stamp $
+    obj/usage_stats/usage_stats_uploader_test.compile_depends.stamp
+

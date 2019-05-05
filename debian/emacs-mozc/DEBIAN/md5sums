@@ -1,0 +1,7 @@
+897316929176464ebc9ad085f31e7284  usr/lib/emacsen-common/packages/compat/emacs-mozc
+eececf50cb8a97613635961df035dfa2  usr/lib/emacsen-common/packages/install/emacs-mozc
+9bb674f61de203de030bda93368601d7  usr/lib/emacsen-common/packages/remove/emacs-mozc
+d769cf7fed14767587c5e217d47ccf9e  usr/share/doc/emacs-mozc/README.Debian
+9ac35afd670c67ca35baf98b8b3d20b5  usr/share/doc/emacs-mozc/changelog.Debian.gz
+e73055c60557cb8103bc66f27a19c849  usr/share/doc/emacs-mozc/copyright
+ecbbcd4c0aa309a4bb173ec213794120  usr/share/emacs/site-lisp/emacs-mozc/mozc.el

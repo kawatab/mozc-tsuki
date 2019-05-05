@@ -1,0 +1,18 @@
+rule $
+    gen_separate_pos_group_data_for_mock_gen_separate_pos_group_data_for_mock_1932b748e3be8f4c15bb797f7cd0a256
+  command = cd ../../data_manager/testing; python $
+      ../../dictionary/gen_pos_rewrite_rule.py $
+      "--id_def=../../data/test/dictionary/id.def" $
+      "--special_pos=../../data/rules/special_pos.def" $
+      "--pos_group_def=../../data/rules/user_segment_history_pos_group.def" $
+      "--output=../../out_linux/Release/gen/data_manager/testing/pos_group.data"
+  description = ACTION(host) gen_separate_pos_group_data_for_mock: $
+      gen_separate_pos_group_data_for_mock_1932b748e3be8f4c15bb797f7cd0a256
+  restat = 1
+
+build gen/data_manager/testing/pos_group.data: $
+    gen_separate_pos_group_data_for_mock_gen_separate_pos_group_data_for_mock_1932b748e3be8f4c15bb797f7cd0a256 $
+    ../../dictionary/gen_pos_rewrite_rule.py $
+    ../../data/test/dictionary/id.def ../../data/rules/special_pos.def $
+    ../../data/rules/user_segment_history_pos_group.def
+

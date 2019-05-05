@@ -1,0 +1,17 @@
+rule $
+    gen_separate_collocation_data_for_chromeos_gen_separate_collocation_data_477c16699939d48cd49c74cde9198a87
+  command = cd ../../data_manager/chromeos; $
+      ../../out_linux/Release/gen_collocation_data_main $
+      "--collocation_data=../../data/dictionary_chromeos/collocation.txt" $
+      "--output=../../out_linux/Release/gen/data_manager/chromeos/collocation_data.data" $
+      --binary_mode
+  description = ACTION(host) [chromeos] Generating $
+      gen/data_manager/chromeos/collocation_data.data
+  restat = 1
+
+build gen/data_manager/chromeos/collocation_data.data: $
+    gen_separate_collocation_data_for_chromeos_gen_separate_collocation_data_477c16699939d48cd49c74cde9198a87 $
+    gen_collocation_data_main $
+    ../../data/dictionary_chromeos/collocation.txt || $
+    gen_collocation_data_main
+

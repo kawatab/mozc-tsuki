@@ -1,0 +1,14 @@
+rule qrc_config_dialog_target_qrc_5732fe7a3a08b04d1d3df294a9b3b875
+  command = cd ../../gui; /usr/lib/x86_64-linux-gnu/qt5/bin/rcc -o $
+      ../out_linux/Release/gen/gui/config_dialog/qrc_config_dialog.cc -name $
+      qrc_config_dialog config_dialog/config_dialog.qrc
+  description = ACTION Generating Resource file from config_dialog.qrc
+  restat = 1
+
+build gen/gui/config_dialog/qrc_config_dialog.cc: $
+    qrc_config_dialog_target_qrc_5732fe7a3a08b04d1d3df294a9b3b875 $
+    ../../gui/config_dialog/config_dialog.qrc $
+    ../../gui/config_dialog/config_dialog_en.qm $
+    ../../gui/config_dialog/config_dialog_ja.qm $
+    ../../gui/config_dialog/keymap_en.qm ../../gui/config_dialog/keymap_ja.qm
+

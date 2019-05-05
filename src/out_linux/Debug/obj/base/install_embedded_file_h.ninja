@@ -1,0 +1,1 @@
+build gen//base/embedded_file.h: copy ../../base/embedded_file.h

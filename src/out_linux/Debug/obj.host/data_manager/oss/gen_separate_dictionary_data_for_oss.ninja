@@ -1,0 +1,47 @@
+build $
+    obj.host/data_manager/oss/gen_separate_dictionary_data_for_oss.actions_depends.stamp: $
+    stamp gen_system_dictionary_data_main $
+    gen/data_manager/oss/user_pos_manager.data
+
+build $
+    obj.host/data_manager/oss/gen_separate_dictionary_data_for_oss.compile_depends.stamp: $
+    stamp $
+    obj.host/dictionary/gen_system_dictionary_data_main.compile_depends.stamp $
+    gen/data_manager/oss/user_pos_manager.data
+
+rule $
+    gen_separate_dictionary_data_for_oss_gen_separate_dictionary_data_fa60339e7749e08ea5a2f6499ac1f208
+  command = cd ../../data_manager/oss; $
+      ../../out_linux/Debug/gen_system_dictionary_data_main $
+      "--input=../../data/dictionary_oss/dictionary00.txt $
+      ../../data/dictionary_oss/dictionary01.txt $
+      ../../data/dictionary_oss/dictionary02.txt $
+      ../../data/dictionary_oss/dictionary03.txt $
+      ../../data/dictionary_oss/dictionary04.txt $
+      ../../data/dictionary_oss/dictionary05.txt $
+      ../../data/dictionary_oss/dictionary06.txt $
+      ../../data/dictionary_oss/dictionary07.txt $
+      ../../data/dictionary_oss/dictionary08.txt $
+      ../../data/dictionary_oss/dictionary09.txt $
+      ../../data/dictionary_oss/reading_correction.tsv" $
+      "--user_pos_manager_data=../../out_linux/Debug/gen/data_manager/oss/user_pos_manager.data" $
+      "--output=../../out_linux/Debug/gen/data_manager/oss/system.dictionary"
+  description = ACTION(host) Generating $
+      gen/data_manager/oss/system.dictionary.
+  restat = 1
+
+build gen/data_manager/oss/system.dictionary: $
+    gen_separate_dictionary_data_for_oss_gen_separate_dictionary_data_fa60339e7749e08ea5a2f6499ac1f208 $
+    ../../data/dictionary_oss/dictionary00.txt $
+    ../../data/dictionary_oss/dictionary01.txt $
+    ../../data/dictionary_oss/dictionary02.txt $
+    ../../data/dictionary_oss/dictionary03.txt $
+    ../../data/dictionary_oss/dictionary04.txt $
+    ../../data/dictionary_oss/dictionary05.txt $
+    ../../data/dictionary_oss/dictionary06.txt $
+    ../../data/dictionary_oss/dictionary07.txt $
+    ../../data/dictionary_oss/dictionary08.txt $
+    ../../data/dictionary_oss/dictionary09.txt $
+    ../../data/dictionary_oss/reading_correction.tsv || $
+    obj.host/data_manager/oss/gen_separate_dictionary_data_for_oss.actions_depends.stamp
+

@@ -1,0 +1,14 @@
+rule gen_mozc_xml_target_gen_mozc_xml_2171d41312535429586da2aebbfb0b19
+  command = cd ../../unix/ibus; python ../../build_tools/redirect.py $
+      ../../out_linux/Release/gen/unix/ibus/mozc.xml ./gen_mozc_xml.py $
+      "--branding=Mozc" "--server_dir=/usr/lib/mozc" $
+      "--ibus_mozc_path=/usr/lib/ibus-mozc/ibus-engine-mozc" $
+      "--ibus_mozc_icon_path=/usr/share/ibus-mozc/product_icon.png"
+  description = ACTION gen_mozc_xml: $
+      gen_mozc_xml_2171d41312535429586da2aebbfb0b19
+  restat = 1
+
+build gen/unix/ibus/mozc.xml: $
+    gen_mozc_xml_target_gen_mozc_xml_2171d41312535429586da2aebbfb0b19 $
+    ../../unix/ibus/gen_mozc_xml.py
+

@@ -1,0 +1,8 @@
+build obj/dictionary/dictionary_all_test.actions_depends.stamp: stamp $
+    dictionary_test suppression_dictionary_test text_dictionary_loader_test
+
+build obj/dictionary/dictionary_all_test.compile_depends.stamp: stamp $
+    obj/dictionary/dictionary_test.compile_depends.stamp $
+    obj/dictionary/suppression_dictionary_test.compile_depends.stamp $
+    obj/dictionary/text_dictionary_loader_test.compile_depends.stamp
+

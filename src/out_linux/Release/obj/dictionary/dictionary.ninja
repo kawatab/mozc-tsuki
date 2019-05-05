@@ -1,0 +1,12 @@
+build obj/dictionary/dictionary.actions_depends.stamp: stamp $
+    obj/base/libbase.a obj/dictionary/libsuppression_dictionary.a $
+    obj/dictionary/libuser_dictionary.a obj/dictionary/libdictionary_impl.a $
+    obj/dictionary/libsuffix_dictionary.a $
+    obj/dictionary/system/libsystem_dictionary.a $
+    obj/dictionary/system/libvalue_dictionary.a
+
+build obj/dictionary/dictionary.compile_depends.stamp: stamp $
+    obj/dictionary/user_dictionary.compile_depends.stamp $
+    obj/dictionary/dictionary_impl.compile_depends.stamp $
+    gen/dictionary/pos_matcher.h
+

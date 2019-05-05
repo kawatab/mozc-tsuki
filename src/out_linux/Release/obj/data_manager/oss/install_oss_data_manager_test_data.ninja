@@ -1,0 +1,51 @@
+build gen//data/dictionary_oss/connection_single_column.txt: copy $
+    gen/data_manager/oss/connection_single_column.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/dictionary00.txt: copy $
+    ../../data/dictionary_oss/dictionary00.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/dictionary01.txt: copy $
+    ../../data/dictionary_oss/dictionary01.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/dictionary02.txt: copy $
+    ../../data/dictionary_oss/dictionary02.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/dictionary03.txt: copy $
+    ../../data/dictionary_oss/dictionary03.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/dictionary04.txt: copy $
+    ../../data/dictionary_oss/dictionary04.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/dictionary05.txt: copy $
+    ../../data/dictionary_oss/dictionary05.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/dictionary06.txt: copy $
+    ../../data/dictionary_oss/dictionary06.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/dictionary07.txt: copy $
+    ../../data/dictionary_oss/dictionary07.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/dictionary08.txt: copy $
+    ../../data/dictionary_oss/dictionary08.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/dictionary09.txt: copy $
+    ../../data/dictionary_oss/dictionary09.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build gen//data/dictionary_oss/suggestion_filter.txt: copy $
+    ../../data/dictionary_oss/suggestion_filter.txt || $
+    gen/data_manager/oss/connection_single_column.txt
+build $
+    obj/data_manager/oss/install_oss_data_manager_test_data.actions_rules_copies.stamp: $
+    stamp gen//data/dictionary_oss/connection_single_column.txt $
+    gen//data/dictionary_oss/dictionary00.txt $
+    gen//data/dictionary_oss/dictionary01.txt $
+    gen//data/dictionary_oss/dictionary02.txt $
+    gen//data/dictionary_oss/dictionary03.txt $
+    gen//data/dictionary_oss/dictionary04.txt $
+    gen//data/dictionary_oss/dictionary05.txt $
+    gen//data/dictionary_oss/dictionary06.txt $
+    gen//data/dictionary_oss/dictionary07.txt $
+    gen//data/dictionary_oss/dictionary08.txt $
+    gen//data/dictionary_oss/dictionary09.txt $
+    gen//data/dictionary_oss/suggestion_filter.txt
+

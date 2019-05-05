@@ -1,0 +1,15 @@
+rule $
+    gen_embedded_mozc_dataset_for_oss_gen_embedded_mozc_dataset_for_oss_de53b6981ffd83d97d274124f25c4da0
+  command = cd ../../data_manager/oss; python $
+      ../../build_tools/embed_file.py $
+      "--input=../../out_linux/Release/gen/data_manager/oss/mozc.data" $
+      "--name=kOssMozcDataSet" $
+      "--output=../../out_linux/Release/gen/data_manager/oss/mozc_data.inc"
+  description = ACTION(host) gen_embedded_mozc_dataset_for_oss: $
+      gen_embedded_mozc_dataset_for_oss_de53b6981ffd83d97d274124f25c4da0
+  restat = 1
+
+build gen/data_manager/oss/mozc_data.inc: $
+    gen_embedded_mozc_dataset_for_oss_gen_embedded_mozc_dataset_for_oss_de53b6981ffd83d97d274124f25c4da0 $
+    gen/data_manager/oss/mozc.data || gen/data_manager/oss/mozc.data
+

@@ -1,0 +1,7 @@
+build obj/unix/ibus/ibus_all_test.actions_depends.stamp: stamp $
+    ibus_mozc_test gtk_candidate_window_handler_test
+
+build obj/unix/ibus/ibus_all_test.compile_depends.stamp: stamp $
+    obj/unix/ibus/ibus_mozc_test.compile_depends.stamp $
+    obj/unix/ibus/gtk_candidate_window_handler_test.compile_depends.stamp
+

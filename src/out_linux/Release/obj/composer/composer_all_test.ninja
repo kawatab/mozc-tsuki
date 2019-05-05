@@ -1,0 +1,8 @@
+build obj/composer/composer_all_test.actions_depends.stamp: stamp $
+    composer_test key_event_util_test key_parser_test
+
+build obj/composer/composer_all_test.compile_depends.stamp: stamp $
+    obj/composer/composer_test.compile_depends.stamp $
+    obj/composer/key_event_util_test.compile_depends.stamp $
+    obj/composer/key_parser_test.compile_depends.stamp
+

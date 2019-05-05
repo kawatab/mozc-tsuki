@@ -1,0 +1,25 @@
+rule $
+    gen_separate_segmenter_data_for_mock_gen_separate_segmenter_data_for_mock_99f827ab814fd6a865ea07a40f9d3c20
+  command = cd ../../data_manager/testing; $
+      ../../out_linux/Release/gen_mock_sbm $
+      "--output_size_info=../../out_linux/Release/gen/data_manager/testing/segmenter_sizeinfo.data" $
+      "--output_ltable=../../out_linux/Release/gen/data_manager/testing/segmenter_ltable.data" $
+      "--output_rtable=../../out_linux/Release/gen/data_manager/testing/segmenter_rtable.data" $
+      "--output_bitarray=../../out_linux/Release/gen/data_manager/testing/segmenter_bitarray.data"
+  description = ACTION(host) [mock] Generating segmenter data files
+  restat = 1
+
+build gen/data_manager/testing/segmenter_sizeinfo.data $
+    gen/data_manager/testing/segmenter_ltable.data $
+    gen/data_manager/testing/segmenter_rtable.data $
+    gen/data_manager/testing/segmenter_bitarray.data: $
+    gen_separate_segmenter_data_for_mock_gen_separate_segmenter_data_for_mock_99f827ab814fd6a865ea07a40f9d3c20 $
+    gen_mock_sbm || gen_mock_sbm
+
+build $
+    obj.host/data_manager/testing/gen_separate_segmenter_data_for_mock.actions_rules_copies.stamp: $
+    stamp gen/data_manager/testing/segmenter_sizeinfo.data $
+    gen/data_manager/testing/segmenter_ltable.data $
+    gen/data_manager/testing/segmenter_rtable.data $
+    gen/data_manager/testing/segmenter_bitarray.data
+

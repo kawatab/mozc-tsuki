@@ -1,0 +1,7 @@
+<!DOCTYPE RCC>
+<RCC version="1.0">
+<qresource>
+  <file>dictionary_tool_ja.qm</file>
+  <file>dictionary_tool_en.qm</file>
+</qresource>
+</RCC>

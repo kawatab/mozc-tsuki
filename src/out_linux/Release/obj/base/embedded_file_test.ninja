@@ -1,0 +1,55 @@
+build obj/base/embedded_file_test.actions_depends.stamp: stamp $
+    obj/testing/libgtest_main.a obj/testing/libmozctest.a $
+    gen/base/embedded_file_test_data.inc gen//base/embedded_file.h $
+    obj/base/libbase.a obj/base/libbase_core.a obj/base/libclock.a $
+    obj/base/libsingleton.a obj/base/libmutex.a obj/base/libflags.a $
+    gen/base/character_set.inc gen/base/version_def.h obj/base/libhash.a $
+    obj/base/libstring_piece.a gen/testing/mozc_data_dir.h $
+    obj/testing/libgoogletest_lib.a obj/testing/libtesting.a
+
+build obj/base/embedded_file_test.compile_depends.stamp: stamp $
+    gen/testing/mozc_data_dir.h gen/base/embedded_file_test_data.inc $
+    gen//base/embedded_file.h obj/base/base_core.compile_depends.stamp $
+    gen/base/character_set.inc gen/base/version_def.h $
+    gen/testing/mozc_data_dir.h gen/testing/mozc_data_dir.h
+
+defines = -DOS_LINUX -DMOZC_BUILD -DCHANNEL_DEV -DENABLE_GTK_RENDERER $
+    -DGTEST_LANG_CXX11=1 -DGTEST_HAS_TR1_TUPLE=0 -DNDEBUG -DQT_NO_DEBUG $
+    -DNO_LOGGING -DIGNORE_HELP_FLAG -DIGNORE_INVALID_FLAG
+includes = -I/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki/src -Igen $
+    -I../../third_party/gtest/googlemock/include $
+    -I../../third_party/gtest/googletest/include
+cflags = -Wall -Wno-char-subscripts -Wno-sign-compare $
+    -Wno-deprecated-declarations -Wwrite-strings $
+    -Wno-unknown-warning-option -Wno-inconsistent-missing-override -fPIC $
+    -fno-exceptions -fmessage-length=0 -fno-strict-aliasing -funsigned-char $
+    -pipe -pthread -fno-omit-frame-pointer -fstack-protector $
+    --param=ssp-buffer-size=4 -O2
+cflags_c = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2
+cflags_cc = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2 -Wno-deprecated
+arflags = 
+
+build obj/base/embedded_file_test.embedded_file_test.o: cxx $
+    ../../base/embedded_file_test.cc || $
+    obj/base/embedded_file_test.compile_depends.stamp
+
+ldflags = -Wl,-z,relro -Wl,--as-needed -pthread
+libs = 
+build embedded_file_test: link $
+    obj/base/embedded_file_test.embedded_file_test.o $
+    obj/testing/libgtest_main.a obj/testing/libmozctest.a $
+    obj/base/libbase.a obj/base/libbase_core.a obj/base/libclock.a $
+    obj/base/libsingleton.a obj/base/libmutex.a obj/base/libflags.a $
+    obj/base/libhash.a obj/base/libstring_piece.a $
+    obj/testing/libgoogletest_lib.a obj/testing/libtesting.a | $
+    gen//base/embedded_file.h gen/base/character_set.inc $
+    gen/base/embedded_file_test_data.inc gen/base/version_def.h $
+    gen/testing/mozc_data_dir.h || $
+    obj/base/embedded_file_test.actions_depends.stamp
+  ld = $ldxx

@@ -1,0 +1,163 @@
+build obj/rewriter/rewriter.actions_depends.stamp: stamp $
+    obj/config/libconfig_handler.a $
+    obj/dictionary/dictionary.actions_depends.stamp $
+    gen/dictionary/pos_matcher.h obj/protocol/libcommands_proto.a $
+    obj/protocol/libconfig_proto.a obj/usage_stats/libusage_stats.a $
+    obj.host/rewriter/gen_rewriter_files.actions_rules_copies.stamp
+
+build obj/rewriter/rewriter.compile_depends.stamp: stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj/dictionary/dictionary.compile_depends.stamp $
+    gen/dictionary/pos_matcher.h $
+    obj/protocol/commands_proto.compile_depends.stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj/usage_stats/usage_stats.compile_depends.stamp $
+    obj.host/rewriter/gen_rewriter_files.actions_rules_copies.stamp
+
+defines = -DOS_LINUX -DMOZC_BUILD -DCHANNEL_DEV -DENABLE_GTK_RENDERER $
+    -DNDEBUG -DQT_NO_DEBUG -DNO_LOGGING -DIGNORE_HELP_FLAG $
+    -DIGNORE_INVALID_FLAG
+includes = -I/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki/src -Igen $
+    -Igen/proto_out
+cflags = -Wall -Wno-char-subscripts -Wno-sign-compare $
+    -Wno-deprecated-declarations -Wwrite-strings $
+    -Wno-unknown-warning-option -Wno-inconsistent-missing-override -fPIC $
+    -fno-exceptions -fmessage-length=0 -fno-strict-aliasing -funsigned-char $
+    -pipe -pthread -fno-omit-frame-pointer -fstack-protector $
+    --param=ssp-buffer-size=4 -O2
+cflags_c = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2
+cflags_cc = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2 -Wno-deprecated
+arflags = 
+
+build obj/rewriter/rewriter.calculator_rewriter.o: cxx $
+    ../../rewriter/calculator_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.collocation_rewriter.o: cxx $
+    ../../rewriter/collocation_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.collocation_util.o: cxx $
+    ../../rewriter/collocation_util.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.correction_rewriter.o: cxx $
+    ../../rewriter/correction_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.command_rewriter.o: cxx $
+    ../../rewriter/command_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.date_rewriter.o: cxx $
+    ../../rewriter/date_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.dice_rewriter.o: cxx $
+    ../../rewriter/dice_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.dictionary_generator.o: cxx $
+    ../../rewriter/dictionary_generator.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.emoji_rewriter.o: cxx $
+    ../../rewriter/emoji_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.emoticon_rewriter.o: cxx $
+    ../../rewriter/emoticon_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.english_variants_rewriter.o: cxx $
+    ../../rewriter/english_variants_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.focus_candidate_rewriter.o: cxx $
+    ../../rewriter/focus_candidate_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.fortune_rewriter.o: cxx $
+    ../../rewriter/fortune_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.katakana_promotion_rewriter.o: cxx $
+    ../../rewriter/katakana_promotion_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.language_aware_rewriter.o: cxx $
+    ../../rewriter/language_aware_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.normalization_rewriter.o: cxx $
+    ../../rewriter/normalization_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.number_compound_util.o: cxx $
+    ../../rewriter/number_compound_util.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.number_rewriter.o: cxx $
+    ../../rewriter/number_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.remove_redundant_candidate_rewriter.o: cxx $
+    ../../rewriter/remove_redundant_candidate_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.rewriter.o: cxx ../../rewriter/rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.single_kanji_rewriter.o: cxx $
+    ../../rewriter/single_kanji_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.symbol_rewriter.o: cxx $
+    ../../rewriter/symbol_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.transliteration_rewriter.o: cxx $
+    ../../rewriter/transliteration_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.unicode_rewriter.o: cxx $
+    ../../rewriter/unicode_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.usage_rewriter.o: cxx $
+    ../../rewriter/usage_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.user_boundary_history_rewriter.o: cxx $
+    ../../rewriter/user_boundary_history_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.user_dictionary_rewriter.o: cxx $
+    ../../rewriter/user_dictionary_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.user_segment_history_rewriter.o: cxx $
+    ../../rewriter/user_segment_history_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.variants_rewriter.o: cxx $
+    ../../rewriter/variants_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.version_rewriter.o: cxx $
+    ../../rewriter/version_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+build obj/rewriter/rewriter.zipcode_rewriter.o: cxx $
+    ../../rewriter/zipcode_rewriter.cc || $
+    obj/rewriter/rewriter.compile_depends.stamp
+
+build obj/rewriter/librewriter.a: alink_thin $
+    obj/rewriter/rewriter.calculator_rewriter.o $
+    obj/rewriter/rewriter.collocation_rewriter.o $
+    obj/rewriter/rewriter.collocation_util.o $
+    obj/rewriter/rewriter.correction_rewriter.o $
+    obj/rewriter/rewriter.command_rewriter.o $
+    obj/rewriter/rewriter.date_rewriter.o $
+    obj/rewriter/rewriter.dice_rewriter.o $
+    obj/rewriter/rewriter.dictionary_generator.o $
+    obj/rewriter/rewriter.emoji_rewriter.o $
+    obj/rewriter/rewriter.emoticon_rewriter.o $
+    obj/rewriter/rewriter.english_variants_rewriter.o $
+    obj/rewriter/rewriter.focus_candidate_rewriter.o $
+    obj/rewriter/rewriter.fortune_rewriter.o $
+    obj/rewriter/rewriter.katakana_promotion_rewriter.o $
+    obj/rewriter/rewriter.language_aware_rewriter.o $
+    obj/rewriter/rewriter.normalization_rewriter.o $
+    obj/rewriter/rewriter.number_compound_util.o $
+    obj/rewriter/rewriter.number_rewriter.o $
+    obj/rewriter/rewriter.remove_redundant_candidate_rewriter.o $
+    obj/rewriter/rewriter.rewriter.o $
+    obj/rewriter/rewriter.single_kanji_rewriter.o $
+    obj/rewriter/rewriter.symbol_rewriter.o $
+    obj/rewriter/rewriter.transliteration_rewriter.o $
+    obj/rewriter/rewriter.unicode_rewriter.o $
+    obj/rewriter/rewriter.usage_rewriter.o $
+    obj/rewriter/rewriter.user_boundary_history_rewriter.o $
+    obj/rewriter/rewriter.user_dictionary_rewriter.o $
+    obj/rewriter/rewriter.user_segment_history_rewriter.o $
+    obj/rewriter/rewriter.variants_rewriter.o $
+    obj/rewriter/rewriter.version_rewriter.o $
+    obj/rewriter/rewriter.zipcode_rewriter.o || $
+    obj/rewriter/rewriter.actions_depends.stamp

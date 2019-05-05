@@ -1,0 +1,13 @@
+rule gen_version_def_gen_version_def_ceb150e19cb1cf4e9803d3d24dd9eb21
+  command = cd ../../base; python ../build_tools/replace_version.py $
+      --version_file ../mozc_version.txt --input version_def_template.h $
+      --output ../out_linux/Debug/gen/base/version_def.h --branding Mozc
+  description = ACTION(host) gen_version_def: $
+      gen_version_def_ceb150e19cb1cf4e9803d3d24dd9eb21
+  restat = 1
+
+build gen/base/version_def.h: $
+    gen_version_def_gen_version_def_ceb150e19cb1cf4e9803d3d24dd9eb21 $
+    ../../mozc_version.txt ../../build_tools/replace_version.py $
+    ../../base/version_def_template.h
+

@@ -1,0 +1,13 @@
+rule $
+    install_zinnia_handwriting_data_target_copy_zinnia_model_file_2050f0ac24e0392b1d3d31a1fb1aa5ad
+  command = cd ../../handwriting; python ../build_tools/copy_file.py $
+      --preserve /usr/share/tegaki/models/zinnia/handwriting-ja.model $
+      ../out_linux/Release/gen//handwriting/handwriting-ja.model
+  description = ACTION install_zinnia_handwriting_data: $
+      copy_zinnia_model_file_2050f0ac24e0392b1d3d31a1fb1aa5ad
+  restat = 1
+
+build gen//handwriting/handwriting-ja.model: $
+    install_zinnia_handwriting_data_target_copy_zinnia_model_file_2050f0ac24e0392b1d3d31a1fb1aa5ad $
+    /usr/share/tegaki/models/zinnia/handwriting-ja.model
+

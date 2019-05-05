@@ -1,0 +1,32 @@
+defines = -DOS_LINUX -DMOZC_BUILD -DCHANNEL_DEV -DENABLE_GTK_RENDERER $
+    -DJSON_USE_EXCEPTION=0 -DNDEBUG -DQT_NO_DEBUG -DNO_LOGGING $
+    -DIGNORE_HELP_FLAG -DIGNORE_INVALID_FLAG
+includes = -I/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki/src -Igen $
+    -I../../third_party/jsoncpp/include
+cflags = -Wall -Wno-char-subscripts -Wno-sign-compare $
+    -Wno-deprecated-declarations -Wwrite-strings $
+    -Wno-unknown-warning-option -Wno-inconsistent-missing-override -fPIC $
+    -fno-exceptions -fmessage-length=0 -fno-strict-aliasing -funsigned-char $
+    -pipe -pthread -fno-omit-frame-pointer -fstack-protector $
+    --param=ssp-buffer-size=4 -O2
+cflags_c = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2
+cflags_cc = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2 -Wno-deprecated
+arflags = 
+
+build obj/third_party/jsoncpp/src/lib_json/jsoncpp.json_reader.o: cxx $
+    ../../third_party/jsoncpp/src/lib_json/json_reader.cpp
+build obj/third_party/jsoncpp/src/lib_json/jsoncpp.json_value.o: cxx $
+    ../../third_party/jsoncpp/src/lib_json/json_value.cpp
+build obj/third_party/jsoncpp/src/lib_json/jsoncpp.json_writer.o: cxx $
+    ../../third_party/jsoncpp/src/lib_json/json_writer.cpp
+
+build obj/net/libjsoncpp.a: alink_thin $
+    obj/third_party/jsoncpp/src/lib_json/jsoncpp.json_reader.o $
+    obj/third_party/jsoncpp/src/lib_json/jsoncpp.json_value.o $
+    obj/third_party/jsoncpp/src/lib_json/jsoncpp.json_writer.o

@@ -1,0 +1,11 @@
+build obj/rewriter/rewriter_all_test.actions_depends.stamp: stamp $
+    calculator_test language_aware_rewriter_test rewriter_test $
+    single_kanji_rewriter_test transliteration_rewriter_test
+
+build obj/rewriter/rewriter_all_test.compile_depends.stamp: stamp $
+    obj/rewriter/calculator/calculator_test.compile_depends.stamp $
+    obj/rewriter/language_aware_rewriter_test.compile_depends.stamp $
+    obj/rewriter/rewriter_test.compile_depends.stamp $
+    obj/rewriter/single_kanji_rewriter_test.compile_depends.stamp $
+    obj/rewriter/transliteration_rewriter_test.compile_depends.stamp
+

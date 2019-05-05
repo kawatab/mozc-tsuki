@@ -1,0 +1,17 @@
+rule $
+    gen_separate_suggestion_filter_data_for_oss_gen_separate_suggestion_filter_data_137ab75e90424a35e1168176e0c5b582
+  command = cd ../../data_manager/oss; $
+      ../../out_linux/Release/gen_suggestion_filter_main $
+      "--input=../../data/dictionary_oss/suggestion_filter.txt" $
+      "--header=false" $
+      "--output=../../out_linux/Release/gen/data_manager/oss/suggestion_filter_data.data"
+  description = ACTION(host) [oss] Generating $
+      gen/data_manager/oss/suggestion_filter_data.data
+  restat = 1
+
+build gen/data_manager/oss/suggestion_filter_data.data: $
+    gen_separate_suggestion_filter_data_for_oss_gen_separate_suggestion_filter_data_137ab75e90424a35e1168176e0c5b582 $
+    gen_suggestion_filter_main $
+    ../../data/dictionary_oss/suggestion_filter.txt || $
+    gen_suggestion_filter_main
+

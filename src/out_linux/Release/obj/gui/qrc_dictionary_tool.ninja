@@ -1,0 +1,13 @@
+rule qrc_dictionary_tool_target_qrc_92d911965618f668864fedae9da168b7
+  command = cd ../../gui; /usr/lib/x86_64-linux-gnu/qt5/bin/rcc -o $
+      ../out_linux/Release/gen/gui/dictionary_tool/qrc_dictionary_tool.cc $
+      -name qrc_dictionary_tool dictionary_tool/dictionary_tool.qrc
+  description = ACTION Generating Resource file from dictionary_tool.qrc
+  restat = 1
+
+build gen/gui/dictionary_tool/qrc_dictionary_tool.cc: $
+    qrc_dictionary_tool_target_qrc_92d911965618f668864fedae9da168b7 $
+    ../../gui/dictionary_tool/dictionary_tool.qrc $
+    ../../gui/dictionary_tool/dictionary_tool_en.qm $
+    ../../gui/dictionary_tool/dictionary_tool_ja.qm
+

@@ -1,0 +1,8 @@
+build obj/config/config_all_test.actions_depends.stamp: stamp $
+    character_form_manager_test config_handler_test stats_config_util_test
+
+build obj/config/config_all_test.compile_depends.stamp: stamp $
+    obj/config/character_form_manager_test.compile_depends.stamp $
+    obj/config/config_handler_test.compile_depends.stamp $
+    obj/config/stats_config_util_test.compile_depends.stamp
+

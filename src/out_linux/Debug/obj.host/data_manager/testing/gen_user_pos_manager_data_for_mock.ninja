@@ -1,0 +1,31 @@
+build $
+    obj.host/data_manager/testing/gen_user_pos_manager_data_for_mock.actions_depends.stamp: $
+    stamp dataset_writer_main $
+    obj.host/data_manager/testing/gen_separate_user_pos_data_for_mock.actions_rules_copies.stamp $
+    gen/data_manager/testing/pos_matcher.data
+
+build $
+    obj.host/data_manager/testing/gen_user_pos_manager_data_for_mock.compile_depends.stamp: $
+    stamp obj.host/data_manager/dataset_writer_main.compile_depends.stamp $
+    obj.host/data_manager/testing/gen_separate_user_pos_data_for_mock.actions_rules_copies.stamp $
+    gen/data_manager/testing/pos_matcher.data
+
+rule $
+    gen_user_pos_manager_data_for_mock_gen_user_pos_manager_data_for_mock_b012572760b9cc28341b90ca8a4484e7
+  command = cd ../../data_manager/testing; $
+      ../../out_linux/Debug/dataset_writer_main $
+      "--output=../../out_linux/Debug/gen/data_manager/testing/user_pos_manager.data" $
+      pos_matcher:32:../../out_linux/Debug/gen/data_manager/testing/pos_matcher.data $
+      user_pos_token:32:../../out_linux/Debug/gen/data_manager/testing/user_pos_token_array.data $
+      user_pos_string:32:../../out_linux/Debug/gen/data_manager/testing/user_pos_string_array.data
+  description = ACTION(host) gen_user_pos_manager_data_for_mock: $
+      gen_user_pos_manager_data_for_mock_b012572760b9cc28341b90ca8a4484e7
+  restat = 1
+
+build gen/data_manager/testing/user_pos_manager.data: $
+    gen_user_pos_manager_data_for_mock_gen_user_pos_manager_data_for_mock_b012572760b9cc28341b90ca8a4484e7 $
+    gen/data_manager/testing/pos_matcher.data $
+    gen/data_manager/testing/user_pos_token_array.data $
+    gen/data_manager/testing/user_pos_string_array.data || $
+    obj.host/data_manager/testing/gen_user_pos_manager_data_for_mock.actions_depends.stamp
+

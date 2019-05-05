@@ -1,0 +1,44 @@
+rule gen_key_mappings_target_mac_kana_a0baca9b4e6162cc01e240c3a3ae5ea1
+  command = cd ../../mac; python ../build_tools/redirect.py $
+      ../out_linux/Debug/gen/mac/init_kanamap.h generate_mapping.py $
+      "--mapname=KanaMap" "--result_type=const char *" $
+      "--filename=../data/preedit/mac-kana.tsv"
+  description = ACTION gen_key_mappings: $
+      mac-kana_a0baca9b4e6162cc01e240c3a3ae5ea1
+  restat = 1
+
+build gen/mac/init_kanamap.h: $
+    gen_key_mappings_target_mac_kana_a0baca9b4e6162cc01e240c3a3ae5ea1 $
+    ../../data/preedit/mac-kana.tsv
+
+rule gen_key_mappings_target_mac_specialkeys_a0baca9b4e6162cc01e240c3a3ae5ea1
+  command = cd ../../mac; python ../build_tools/redirect.py $
+      ../out_linux/Debug/gen/mac/init_specialkeymap.h generate_mapping.py $
+      "--mapname=SpecialKeyMap" "--result_type=KeyEvent::SpecialKey" $
+      "--filename=../data/preedit/mac-specialkeys.tsv"
+  description = ACTION gen_key_mappings: $
+      mac-specialkeys_a0baca9b4e6162cc01e240c3a3ae5ea1
+  restat = 1
+
+build gen/mac/init_specialkeymap.h: $
+    gen_key_mappings_target_mac_specialkeys_a0baca9b4e6162cc01e240c3a3ae5ea1 $
+    ../../data/preedit/mac-specialkeys.tsv
+
+rule gen_key_mappings_target_mac_specialchars_a0baca9b4e6162cc01e240c3a3ae5ea1
+  command = cd ../../mac; python ../build_tools/redirect.py $
+      ../out_linux/Debug/gen/mac/init_specialcharmap.h generate_mapping.py $
+      "--mapname=SpecialCharMap" "--key_type=unichar" $
+      "--result_type=KeyEvent::SpecialKey" $
+      "--filename=../data/preedit/mac-specialchars.tsv"
+  description = ACTION gen_key_mappings: $
+      mac-specialchars_a0baca9b4e6162cc01e240c3a3ae5ea1
+  restat = 1
+
+build gen/mac/init_specialcharmap.h: $
+    gen_key_mappings_target_mac_specialchars_a0baca9b4e6162cc01e240c3a3ae5ea1 $
+    ../../data/preedit/mac-specialchars.tsv
+
+build obj/mac/gen_key_mappings.actions_rules_copies.stamp: stamp $
+    gen/mac/init_kanamap.h gen/mac/init_specialkeymap.h $
+    gen/mac/init_specialcharmap.h
+

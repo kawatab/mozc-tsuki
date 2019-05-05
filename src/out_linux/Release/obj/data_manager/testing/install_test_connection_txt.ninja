@@ -1,0 +1,3 @@
+build gen//data/test/dictionary/connection_single_column.txt: copy $
+    gen/data_manager/testing/connection_single_column.txt || $
+    gen/data_manager/testing/connection_single_column.txt

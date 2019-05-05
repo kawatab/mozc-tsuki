@@ -1,0 +1,1014 @@
+cc = /usr/bin/gcc
+cxx = /usr/bin/g++
+ld = /usr/bin/ld
+ldxx = $cxx
+ar = /usr/bin/ar
+nm = /usr/bin/nm
+readelf = /usr/bin/readelf
+ar_host = ar
+nm_host = nm
+readelf_host = readelf
+cc_host = /usr/bin/gcc
+cxx_host = /usr/bin/g++
+ld_host = $cc_host
+ldxx_host = $cxx_host
+
+pool link_pool
+  depth = 1
+
+rule cc
+  command = $cc -MMD -MF $out.d $defines $includes $cflags $cflags_c $cflags_pch_c -c $in -o $out
+  description = CC $out
+  depfile = $out.d
+  deps = gcc
+rule cc_s
+  command = $cc $defines $includes $cflags $cflags_c $cflags_pch_c -c $in -o $out
+  description = CC $out
+rule cxx
+  command = $cxx -MMD -MF $out.d $defines $includes $cflags $cflags_cc $cflags_pch_cc -c $in -o $out
+  description = CXX $out
+  depfile = $out.d
+  deps = gcc
+rule alink
+  command = rm -f $out && $ar rcs $arflags $out $in
+  description = AR $out
+rule alink_thin
+  command = rm -f $out && $ar rcsT $arflags $out $in
+  description = AR $out
+rule solink
+  command = if [ ! -e $lib -o ! -e $lib.TOC ]; then $ld -shared $ldflags -o $lib -Wl,-soname=$soname @$link_file_list $
+      && { $readelf -d $lib | grep SONAME ; $nm -gD -f p $lib | cut -f1-2 -d' '; } > $lib.TOC; else $ld -shared $
+      $ldflags -o $lib -Wl,-soname=$soname @$link_file_list && { $readelf -d $lib | grep SONAME ; $nm -gD -f p $lib | $
+      cut -f1-2 -d' '; } > $lib.tmp && if ! cmp -s $lib.tmp $lib.TOC; then mv $lib.tmp $lib.TOC ; fi; fi
+  description = SOLINK $lib
+  pool = link_pool
+  restat = 1
+  rspfile = $link_file_list
+  rspfile_content = -Wl,--whole-archive $in $solibs -Wl,--no-whole-archive $libs
+rule solink_module
+  command = if [ ! -e $lib -o ! -e $lib.TOC ]; then $ld -shared $ldflags -o $lib -Wl,-soname=$soname @$link_file_list $
+      && { $readelf -d $lib | grep SONAME ; $nm -gD -f p $lib | cut -f1-2 -d' '; } > $lib.TOC; else $ld -shared $
+      $ldflags -o $lib -Wl,-soname=$soname @$link_file_list && { $readelf -d $lib | grep SONAME ; $nm -gD -f p $lib | $
+      cut -f1-2 -d' '; } > $lib.tmp && if ! cmp -s $lib.tmp $lib.TOC; then mv $lib.tmp $lib.TOC ; fi; fi
+  description = SOLINK(module) $lib
+  pool = link_pool
+  restat = 1
+  rspfile = $link_file_list
+  rspfile_content = -Wl,--start-group $in $solibs $libs -Wl,--end-group
+rule link
+  command = $ld $ldflags -o $out -Wl,--start-group $in $solibs $libs -Wl,--end-group
+  description = LINK $out
+  pool = link_pool
+rule stamp
+  command = ${postbuilds}touch $out
+  description = STAMP $out
+rule copy
+  command = ln -f $in $out 2>/dev/null || (rm -rf $out && cp -af $in $out)
+  description = COPY $in $out
+
+subninja obj.host/usage_stats/genproto_usage_stats.ninja
+subninja obj.host/usage_stats/gen_usage_stats_list.ninja
+subninja obj/unix/ibus/gen_mozc_xml.ninja
+subninja obj/unix/fcitx/gen_fcitx_mozc_i18n.ninja
+subninja obj/testing/testing.ninja
+subninja obj.host/testing/gen_mozc_data_dir_header.ninja
+subninja obj.host/session/gen_session_stress_test_data.ninja
+subninja obj/rewriter/calculator/install_calculator_test_data.ninja
+subninja obj.host/protocol/genproto_user_dictionary_storage_proto.ninja
+subninja obj.host/protocol/genproto_segmenter_data_proto.ninja
+subninja obj.host/protocol/genproto_renderer_proto.ninja
+subninja obj.host/protocol/genproto_engine_builder_proto.ninja
+subninja obj.host/protocol/genproto_config_proto.ninja
+subninja obj.host/protocol/genproto_commands_proto.ninja
+subninja obj.host/protocol/genproto_candidates_proto.ninja
+subninja obj.host/protocol/genproto_state_proto.ninja
+subninja obj/usage_stats/usage_stats_protocol.ninja
+subninja obj/protocol/user_dictionary_storage_proto.ninja
+subninja obj/protocol/segmenter_data_proto.ninja
+subninja obj/protocol/engine_builder_proto.ninja
+subninja obj/protocol/config_proto.ninja
+subninja obj/protocol/candidates_proto.ninja
+subninja obj/protocol/commands_proto.ninja
+subninja obj/unix/uim/uim_mozc_lib.ninja
+subninja obj/session/request_test_util.ninja
+subninja obj/protocol/state_proto.ninja
+subninja obj/protocol/renderer_proto.ninja
+subninja obj/renderer/renderer_style_handler.ninja
+subninja obj.host/protocol/segmenter_data_proto.ninja
+subninja obj.host/protocol/engine_builder_proto.ninja
+subninja obj.host/prediction/genproto_prediction.ninja
+subninja obj/prediction/prediction_protocol.ninja
+subninja obj.host/net/genproto_json_util_test.ninja
+subninja obj/net/json_util_test_protocol.ninja
+subninja obj/net/jsoncpp.ninja
+subninja obj/mac/gen_key_mappings.ninja
+subninja obj.host/ipc/genproto_window_info.ninja
+subninja obj/ipc/window_info_protocol.ninja
+subninja obj.host/ipc/genproto_ipc.ninja
+subninja obj/ipc/ipc_protocol.ninja
+subninja obj/handwriting/install_zinnia_handwriting_data.ninja
+subninja obj/gui/qrc_word_register_dialog.ninja
+subninja obj/gui/qrc_set_default_dialog.ninja
+subninja obj/gui/qrc_post_install_dialog.ninja
+subninja obj/gui/qrc_error_message_dialog.ninja
+subninja obj/gui/qrc_dictionary_tool.ninja
+subninja obj/gui/qrc_confirmation_dialog.ninja
+subninja obj/gui/qrc_config_dialog.ninja
+subninja obj/gui/qrc_character_pad.ninja
+subninja obj/gui/qrc_administration_dialog.ninja
+subninja obj/gui/qrc_about_dialog.ninja
+subninja obj/gui/gen_word_register_dialog_files.ninja
+subninja obj/gui/gen_set_default_dialog_files.ninja
+subninja obj/gui/gen_post_install_dialog_files.ninja
+subninja obj/gui/gen_error_message_dialog_files.ninja
+subninja obj/gui/gen_dictionary_tool_files.ninja
+subninja obj/gui/gen_config_dialog_files.ninja
+subninja obj/gui/gen_character_pad_files.ninja
+subninja obj/gui/gen_character_pad_data.ninja
+subninja obj/gui/gen_character_pad_cp932_data.ninja
+subninja obj/gui/gen_base_files.ninja
+subninja obj/gui/gen_administration_dialog_files.ninja
+subninja obj/gui/gen_about_dialog_files.ninja
+subninja obj/engine/install_engine_builder_test_src.ninja
+subninja obj/dictionary/system/key_expansion_table.ninja
+subninja obj.host/dictionary/system/key_expansion_table.ninja
+subninja obj.host/dictionary/pos_util.ninja
+subninja obj.host/dictionary/gen_pos_matcher.ninja
+subninja obj.host/data_manager/testing/gen_separate_user_pos_data_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_mock_embedded_pos_list.ninja
+subninja obj.host/data_manager/testing/gen_separate_pos_matcher_data_for_mock.ninja
+subninja obj.host/data_manager/oss/gen_separate_user_pos_data_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_oss_embedded_pos_list.ninja
+subninja obj.host/data_manager/oss/gen_separate_pos_matcher_data_for_oss.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_user_pos_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_chromeos_embedded_pos_list.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_pos_matcher_data_for_chromeos.ninja
+subninja obj.host/dictionary/gen_pos_map.ninja
+subninja obj.host/data_manager/testing/gen_typing_model_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_separate_zero_query_data_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_separate_version_data_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_separate_suffix_data_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_separate_reading_correction_data_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_separate_pos_group_data_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_separate_emoji_rewriter_data_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_separate_counter_suffix_data_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_separate_boundary_data_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_mock_segmenter_inl_header.ninja
+subninja obj.host/data_manager/testing/gen_connection_single_column_txt_for_mock.ninja
+subninja obj/data_manager/testing/install_test_connection_txt.ninja
+subninja obj.host/data_manager/testing/gen_separate_connection_data_for_mock.ninja
+subninja obj.host/data_manager/oss/gen_typing_model_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_separate_zero_query_data_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_separate_version_data_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_separate_suffix_data_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_separate_reading_correction_data_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_separate_pos_group_data_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_separate_emoji_rewriter_data_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_separate_counter_suffix_data_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_separate_boundary_data_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_oss_segmenter_inl_header.ninja
+subninja obj.host/data_manager/oss/gen_connection_single_column_txt_for_oss.ninja
+subninja obj/data_manager/oss/install_oss_data_manager_test_data.ninja
+subninja obj.host/data_manager/oss/gen_separate_connection_data_for_oss.ninja
+subninja obj.host/data_manager/genproto_dataset_proto.ninja
+subninja obj/data_manager/dataset_proto.ninja
+subninja obj.host/data_manager/dataset_proto.ninja
+subninja obj.host/data_manager/chromeos/gen_typing_model_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_zero_query_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_version_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_suffix_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_reading_correction_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_pos_group_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_emoji_rewriter_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_counter_suffix_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_boundary_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_connection_single_column_txt_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_connection_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_chromeos_segmenter_inl_header.ninja
+subninja obj/data/test/session/scenario/usage_stats/install_session_handler_usage_stats_scenario_test_data.ninja
+subninja obj/data/test/session/scenario/install_session_handler_scenario_test_data.ninja
+subninja obj/config/install_stats_config_util_test_data.ninja
+subninja obj/base/install_util_test_data.ninja
+subninja obj/base/install_embedded_file_h.ninja
+subninja obj.host/base/gen_embedded_file_test_data.ninja
+subninja obj/base/clock_mock.ninja
+subninja obj/base/update_util.ninja
+subninja obj.host/base/update_util.ninja
+subninja obj/base/string_piece.ninja
+subninja obj/base/hash.ninja
+subninja obj.host/base/string_piece.ninja
+subninja obj.host/base/hash.ninja
+subninja obj/base/scoped_handle.ninja
+subninja obj.host/base/scoped_handle.ninja
+subninja obj/base/mutex.ninja
+subninja obj/base/singleton.ninja
+subninja obj/base/flags.ninja
+subninja obj/base/clock.ninja
+subninja obj.host/base/mutex.ninja
+subninja obj.host/base/singleton.ninja
+subninja obj.host/base/flags.ninja
+subninja obj.host/base/clock.ninja
+subninja obj.host/base/gen_version_def.ninja
+subninja obj.host/base/gen_config_file_stream_data.ninja
+subninja obj/base/config_file_stream.ninja
+subninja obj.host/base/gen_character_set.ninja
+subninja obj/base/base_core.ninja
+subninja obj/testing/testing_util.ninja
+subninja obj/gui/encoding_util.ninja
+subninja obj/dictionary/system/system_dictionary_codec.ninja
+subninja obj/dictionary/file/codec_util.ninja
+subninja obj/dictionary/file/codec.ninja
+subninja obj/dictionary/file/dictionary_file_builder.ninja
+subninja obj/dictionary/file/dictionary_file.ninja
+subninja obj/dictionary/file/codec_factory.ninja
+subninja obj/base/url.ninja
+subninja obj/base/serialized_string_array.ninja
+subninja obj/data_manager/pos_list_provider.ninja
+subninja obj/base/multifile.ninja
+subninja obj/base/base.ninja
+subninja obj/unix/ibus/selection_monitor.ninja
+subninja obj/unix/ibus/path_util.ninja
+subninja obj/unix/ibus/message_translator.ninja
+subninja obj/unix/ibus/ibus_property_handler.ninja
+subninja obj/unix/ibus/ibus_mozc_metadata.ninja
+subninja obj/transliteration/transliteration.ninja
+subninja obj/testing/googletest_lib.ninja
+subninja obj/testing/mozctest.ninja
+subninja obj/testing/gtest_main.ninja
+subninja obj/transliteration/transliteration_test.ninja
+subninja obj/session/request_test_util_test.ninja
+subninja obj/renderer/renderer_style_handler_test.ninja
+subninja obj/gui/encoding_util_test.ninja
+subninja obj/dictionary/system/system_dictionary_codec_test.ninja
+subninja obj/dictionary/system/key_expansion_table_test.ninja
+subninja obj/dictionary/file/dictionary_file_test.ninja
+subninja obj/dictionary/file/codec_test.ninja
+subninja obj/dictionary/file/dictionary_file_all_test.ninja
+subninja obj/base/util_test.ninja
+subninja obj/base/url_test.ninja
+subninja obj/base/update_util_test.ninja
+subninja obj/base/trie_test.ninja
+subninja obj/base/system_util_test.ninja
+subninja obj/base/serialized_string_array_test.ninja
+subninja obj/base/scheduler_test.ninja
+subninja obj/base/number_util_test.ninja
+subninja obj/base/mutex_test.ninja
+subninja obj/base/multifile_test.ninja
+subninja obj/base/hash_test.ninja
+subninja obj/base/file_util_test.ninja
+subninja obj/base/embedded_file_test.ninja
+subninja obj/base/config_file_stream_test.ninja
+subninja obj/base/clock_test.ninja
+subninja obj/base/clock_mock_test.ninja
+subninja obj/base/base_test.ninja
+subninja obj/base/base_core_test.ninja
+subninja obj/storage/louds/simple_succinct_bit_vector_index.ninja
+subninja obj/storage/louds/simple_succinct_bit_vector_index_test.ninja
+subninja obj/storage/louds/louds.ninja
+subninja obj/storage/louds/louds_test.ninja
+subninja obj/storage/louds/louds_trie.ninja
+subninja obj/dictionary/system/value_dictionary.ninja
+subninja obj/storage/louds/bit_vector_based_array.ninja
+subninja obj/converter/connector.ninja
+subninja obj/storage/louds/bit_stream.ninja
+subninja obj/storage/louds/bit_stream_test.ninja
+subninja obj/storage/louds/louds_trie_builder.ninja
+subninja obj/storage/louds/louds_trie_test.ninja
+subninja obj/storage/louds/bit_vector_based_array_builder.ninja
+subninja obj/storage/louds/bit_vector_based_array_test.ninja
+subninja obj/storage/louds/storage_louds_all_test.ninja
+subninja obj/session/output_util.ninja
+subninja obj/rewriter/calculator/calculator.ninja
+subninja obj/rewriter/calculator/calculator_test.ninja
+subninja obj/rewriter/calculator/calculator_mock.ninja
+subninja obj/renderer/window_util.ninja
+subninja obj/renderer/window_util_test.ninja
+subninja obj/renderer/table_layout.ninja
+subninja obj/renderer/table_layout_test.ninja
+subninja obj/net/jsonpath.ninja
+subninja obj/net/jsonpath_test.ninja
+subninja obj/net/json_util.ninja
+subninja obj/net/json_util_test.ninja
+subninja obj/net/http_client_mock.ninja
+subninja obj/net/http_client_mock_test.ninja
+subninja obj/net/net_all_test.ninja
+subninja obj/net/http_client.ninja
+subninja obj/net/http_client_main.ninja
+subninja obj/ipc/ipc.ninja
+subninja obj/renderer/renderer_client.ninja
+subninja obj/unix/ibus/gtk_candidate_window_handler.ninja
+subninja obj/unix/ibus/gtk_candidate_window_handler_test.ninja
+subninja obj/renderer/renderer_client_test.ninja
+subninja obj/ipc/ipc_test_util.ninja
+subninja obj/ipc/ipc_test.ninja
+subninja obj/client/client.ninja
+subninja obj/unix/uim/uim-mozc.ninja
+subninja obj/session/session_watch_dog.ninja
+subninja obj/gui/set_default_dialog_lib.ninja
+subninja obj/gui/prelauncher_lib.ninja
+subninja obj/client/client_test.ninja
+subninja obj/handwriting/zinnia_handwriting.ninja
+subninja obj/handwriting/zinnia_handwriting_test.ninja
+subninja obj/handwriting/handwriting_manager.ninja
+subninja obj/handwriting/handwriting_manager_test.ninja
+subninja obj/gui/error_message_dialog_lib.ninja
+subninja obj/gui/confirmation_dialog_lib.ninja
+subninja obj/gui/about_dialog_lib.ninja
+subninja obj/dictionary/user_pos.ninja
+subninja obj/dictionary/text_dictionary_loader.ninja
+subninja obj/dictionary/system/system_dictionary_builder.ninja
+subninja obj/dictionary/suppression_dictionary.ninja
+subninja obj/dictionary/suppression_dictionary_test.ninja
+subninja obj/dictionary/suffix_dictionary.ninja
+subninja obj/dictionary/dictionary_test_util.ninja
+subninja obj/dictionary/dictionary_mock.ninja
+subninja obj/data_manager/serialized_dictionary.ninja
+subninja obj/data_manager/serialized_dictionary_test.ninja
+subninja obj/data_manager/connection_file_reader.ninja
+subninja obj/converter/segmenter.ninja
+subninja obj/converter/pos_id_printer.ninja
+subninja obj/converter/pos_id_printer_test.ninja
+subninja obj/converter/lattice.ninja
+subninja obj/config/config_handler.ninja
+subninja obj/request/conversion_request.ninja
+subninja obj/dictionary/system/system_dictionary.ninja
+subninja obj/converter/immutable_converter_interface.ninja
+subninja obj/renderer/renderer_server.ninja
+subninja obj/renderer/renderer_server_test.ninja
+subninja obj/dictionary/dictionary_impl.ninja
+subninja obj/config/config_handler_test.ninja
+subninja obj/config/stats_config_util.ninja
+subninja obj/renderer/mozc_renderer_lib.ninja
+subninja obj/renderer/gtk_renderer_test.ninja
+subninja obj/renderer/renderer_all_test.ninja
+subninja obj/gui/character_pad_lib.ninja
+subninja obj/gui/administration_dialog_lib.ninja
+subninja obj/config/stats_config_util_test.ninja
+subninja obj/composer/key_parser.ninja
+subninja obj/composer/key_event_util.ninja
+subninja obj/session/keymap.ninja
+subninja obj/session/keymap_factory.ninja
+subninja obj/session/key_info_util.ninja
+subninja obj/session/ime_switch_util.ninja
+subninja obj/unix/ibus/ibus_mozc_lib.ninja
+subninja obj/unix/ibus/ibus_mozc.ninja
+subninja obj/unix/fcitx/fcitx-mozc.ninja
+subninja obj/session/session_key_handling_test.ninja
+subninja obj/gui/config_dialog_lib.ninja
+subninja obj/composer/key_parser_test.ninja
+subninja obj/composer/key_event_util_test.ninja
+subninja obj/client/client_mock.ninja
+subninja obj/unix/ibus/ibus_mozc_test.ninja
+subninja obj/unix/ibus/ibus_all_test.ninja
+subninja obj/session/session_watch_dog_test.ninja
+subninja obj/mac/mac_test.ninja
+subninja obj/base/scheduler_stub.ninja
+subninja obj/base/scheduler_stub_test.ninja
+subninja obj/base/obfuscator_support.ninja
+subninja obj/data_manager/dataset_writer.ninja
+subninja obj/data_manager/dataset_writer_test.ninja
+subninja obj/data_manager/dataset_reader.ninja
+subninja obj/data_manager/dataset_reader_test.ninja
+subninja obj/data_manager/data_manager.ninja
+subninja obj/base/obfuscator_support_test.ninja
+subninja obj/base/encryptor.ninja
+subninja obj/storage/storage.ninja
+subninja obj/usage_stats/usage_stats.ninja
+subninja obj/usage_stats/usage_stats_testing_util.ninja
+subninja obj/usage_stats/usage_stats_test.ninja
+subninja obj/usage_stats/usage_stats_uploader.ninja
+subninja obj/usage_stats/usage_stats_uploader_test.ninja
+subninja obj/usage_stats/usage_stats_all_test.ninja
+subninja obj/session/session_usage_stats_util.ninja
+subninja obj/session/session_usage_observer.ninja
+subninja obj/gui/post_install_dialog_lib.ninja
+subninja obj/dictionary/user_dictionary.ninja
+subninja obj/gui/word_register_dialog_lib.ninja
+subninja obj/gui/gui_base.ninja
+subninja obj/gui/word_register_dialog_main.ninja
+subninja obj/gui/set_default_dialog_main.ninja
+subninja obj/gui/post_install_dialog_main.ninja
+subninja obj/gui/hand_writing_main.ninja
+subninja obj/gui/error_message_dialog_main.ninja
+subninja obj/gui/confirmation_dialog_main.ninja
+subninja obj/gui/config_dialog_main.ninja
+subninja obj/gui/character_palette_main.ninja
+subninja obj/gui/administration_dialog_main.ninja
+subninja obj/gui/about_dialog_main.ninja
+subninja obj/gui/dictionary_tool_lib.ninja
+subninja obj/gui/dictionary_tool_main.ninja
+subninja obj/dictionary/dictionary.ninja
+subninja obj/unix/emacs/mozc_emacs_helper_lib.ninja
+subninja obj/unix/emacs/mozc_emacs_helper_lib_test.ninja
+subninja obj/unix/emacs/mozc_emacs_helper.ninja
+subninja obj/storage/storage_test.ninja
+subninja obj/session/generic_storage_manager.ninja
+subninja obj/session/generic_storage_manager_test.ninja
+subninja obj/prediction/suggestion_filter.ninja
+subninja obj/data_manager/data_manager_test_base.ninja
+subninja obj/converter/segments.ninja
+subninja obj/converter/converter_util.ninja
+subninja obj/converter/converter_mock.ninja
+subninja obj/engine/mock_converter_engine.ninja
+subninja obj/config/character_form_manager.ninja
+subninja obj/config/character_form_manager_test.ninja
+subninja obj/config/config_all_test.ninja
+subninja obj/composer/composer.ninja
+subninja obj/session/session_internal.ninja
+subninja obj/session/session.ninja
+subninja obj/session/session_internal_test.ninja
+subninja obj/session/random_keyevents_generator.ninja
+subninja obj/session/random_keyevents_generator_test.ninja
+subninja obj/base/encryptor_test.ninja
+subninja obj/base/base_all_test.ninja
+subninja obj/base/crash_report_handler.ninja
+subninja obj/renderer/mozc_renderer.ninja
+subninja obj/gui/mozc_tool_lib.ninja
+subninja obj/gui/mozc_tool.ninja
+subninja obj.host/base/base_core.ninja
+subninja obj.host/dictionary/system/system_dictionary_codec.ninja
+subninja obj.host/dictionary/file/codec_util.ninja
+subninja obj.host/dictionary/file/codec.ninja
+subninja obj.host/dictionary/file/dictionary_file_builder.ninja
+subninja obj.host/dictionary/file/dictionary_file.ninja
+subninja obj.host/dictionary/file/codec_factory.ninja
+subninja obj.host/base/url.ninja
+subninja obj.host/base/serialized_string_array.ninja
+subninja obj.host/base/multifile.ninja
+subninja obj.host/base/codegen_bytearray_stream.ninja
+subninja obj.host/base/base.ninja
+subninja obj.host/storage/louds/simple_succinct_bit_vector_index.ninja
+subninja obj.host/storage/louds/louds.ninja
+subninja obj.host/storage/louds/louds_trie.ninja
+subninja obj.host/storage/louds/bit_vector_based_array.ninja
+subninja obj.host/storage/louds/bit_stream.ninja
+subninja obj.host/storage/louds/louds_trie_builder.ninja
+subninja obj.host/storage/louds/bit_vector_based_array_builder.ninja
+subninja obj.host/rewriter/gen_usage_rewriter_dictionary_main.ninja
+subninja obj.host/rewriter/gen_rewriter_files.ninja
+subninja obj/converter/immutable_converter.ninja
+subninja obj/rewriter/rewriter.ninja
+subninja obj/prediction/prediction.ninja
+subninja obj/converter/converter.ninja
+subninja obj/engine/minimal_engine.ninja
+subninja obj/engine/engine.ninja
+subninja obj/engine/engine_builder.ninja
+subninja obj/engine/engine_builder_test.ninja
+subninja obj.host/dictionary/user_pos.ninja
+subninja obj.host/dictionary/text_dictionary_loader.ninja
+subninja obj.host/dictionary/system/system_dictionary_builder.ninja
+subninja obj.host/data_manager/serialized_dictionary.ninja
+subninja obj.host/rewriter/gen_single_kanji_noun_prefix_data_main.ninja
+subninja obj.host/data_manager/testing/gen_separate_single_kanji_rewriter_data_for_mock.ninja
+subninja obj.host/data_manager/oss/gen_separate_single_kanji_rewriter_data_for_oss.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_single_kanji_rewriter_data_for_chromeos.ninja
+subninja obj.host/rewriter/gen_emoticon_rewriter_data_main.ninja
+subninja obj.host/data_manager/testing/gen_separate_emoticon_rewriter_data_for_mock.ninja
+subninja obj.host/data_manager/oss/gen_separate_emoticon_rewriter_data_for_oss.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_emoticon_rewriter_data_for_chromeos.ninja
+subninja obj.host/data_manager/connection_file_reader.ninja
+subninja obj.host/converter/gen_segmenter_bitarray.ninja
+subninja obj.host/data_manager/testing/gen_mock_sbm.ninja
+subninja obj.host/data_manager/testing/gen_separate_segmenter_data_for_mock.ninja
+subninja obj.host/data_manager/oss/gen_oss_sbm.ninja
+subninja obj.host/data_manager/oss/gen_separate_segmenter_data_for_oss.ninja
+subninja obj.host/data_manager/chromeos/gen_chromeos_sbm.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_segmenter_data_for_chromeos.ninja
+subninja obj.host/base/obfuscator_support.ninja
+subninja obj.host/data_manager/dataset_writer.ninja
+subninja obj.host/data_manager/dataset_writer_main.ninja
+subninja obj.host/data_manager/testing/gen_user_pos_manager_data_for_mock.ninja
+subninja obj.host/data_manager/oss/gen_user_pos_manager_data_for_oss.ninja
+subninja obj.host/data_manager/chromeos/gen_user_pos_manager_data_for_chromeos.ninja
+subninja obj.host/data_manager/dataset_reader.ninja
+subninja obj.host/data_manager/data_manager.ninja
+subninja obj.host/rewriter/gen_symbol_rewriter_dictionary_main.ninja
+subninja obj.host/data_manager/testing/gen_separate_symbol_rewriter_data_for_mock.ninja
+subninja obj.host/data_manager/oss/gen_separate_symbol_rewriter_data_for_oss.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_symbol_rewriter_data_for_chromeos.ninja
+subninja obj.host/dictionary/gen_system_dictionary_data_main.ninja
+subninja obj.host/data_manager/testing/gen_separate_dictionary_data_for_mock.ninja
+subninja obj.host/data_manager/oss/gen_separate_dictionary_data_for_oss.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_dictionary_data_for_chromeos.ninja
+subninja obj.host/base/encryptor.ninja
+subninja obj.host/storage/storage.ninja
+subninja obj.host/rewriter/gen_existence_data.ninja
+subninja obj.host/rewriter/gen_collocation_suppression_data_main.ninja
+subninja obj.host/data_manager/testing/gen_separate_collocation_suppression_data_for_mock.ninja
+subninja obj.host/data_manager/oss/gen_separate_collocation_suppression_data_for_oss.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_collocation_suppression_data_for_chromeos.ninja
+subninja obj.host/rewriter/gen_collocation_data_main.ninja
+subninja obj.host/data_manager/testing/gen_separate_collocation_data_for_mock.ninja
+subninja obj.host/data_manager/oss/gen_separate_collocation_data_for_oss.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_collocation_data_for_chromeos.ninja
+subninja obj.host/prediction/gen_suggestion_filter_main.ninja
+subninja obj.host/data_manager/testing/gen_separate_suggestion_filter_data_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_mozc_dataset_for_mock.ninja
+subninja obj.host/data_manager/testing/gen_embedded_mozc_dataset_for_mock.ninja
+subninja obj/data_manager/testing/mock_data_manager.ninja
+subninja obj/session/session_converter_test.ninja
+subninja obj/rewriter/transliteration_rewriter_test.ninja
+subninja obj/rewriter/single_kanji_rewriter_test.ninja
+subninja obj/rewriter/language_aware_rewriter_test.ninja
+subninja obj/prediction/prediction_test.ninja
+subninja obj/engine/mock_data_engine_factory.ninja
+subninja obj/session/session_test.ninja
+subninja obj/session/session_converter_stress_test.ninja
+subninja obj/rewriter/rewriter_test.ninja
+subninja obj/rewriter/rewriter_all_test.ninja
+subninja obj/dictionary/system/value_dictionary_test.ninja
+subninja obj/dictionary/system/system_dictionary_test.ninja
+subninja obj/dictionary/system/system_dictionary_all_test.ninja
+subninja obj/dictionary/text_dictionary_loader_test.ninja
+subninja obj/dictionary/dictionary_test.ninja
+subninja obj/dictionary/dictionary_all_test.ninja
+subninja obj/data_manager/testing/mock_data_manager_test.ninja
+subninja obj/converter/connector_test.ninja
+subninja obj/composer/composer_test.ninja
+subninja obj/composer/composer_all_test.ninja
+subninja obj.host/data_manager/oss/gen_separate_suggestion_filter_data_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_mozc_dataset_for_oss.ninja
+subninja obj.host/data_manager/oss/gen_embedded_mozc_dataset_for_oss.ninja
+subninja obj/data_manager/oss/oss_data_manager.ninja
+subninja obj/engine/oss_engine_factory.ninja
+subninja obj/engine/engine_factory.ninja
+subninja obj/session/session_handler.ninja
+subninja obj/session/session_module_test.ninja
+subninja obj/session/session_handler_test_util.ninja
+subninja obj/session/session_handler_scenario_test.ninja
+subninja obj/session/session_server.ninja
+subninja obj/session/session_server_test.ninja
+subninja obj/session/session_regression_test.ninja
+subninja obj/session/session_handler_test.ninja
+subninja obj/session/session_handler_stress_test.ninja
+subninja obj/session/session_all_test.ninja
+subninja obj/session/session_server_main.ninja
+subninja obj/server/mozc_server_lib.ninja
+subninja obj/server/mozc_server.ninja
+subninja obj/server/mozc_rpc_server_main.ninja
+subninja obj/converter/converter_test.ninja
+subninja obj/converter/converter_regression_test.ninja
+subninja obj/converter/converter_all_test.ninja
+subninja obj/gyp/unittests.ninja
+subninja obj/converter/converter_main.ninja
+subninja obj/data_manager/oss/oss_data_manager_test.ninja
+subninja obj.host/data_manager/chromeos/gen_separate_suggestion_filter_data_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_mozc_dataset_for_chromeos.ninja
+subninja obj.host/data_manager/chromeos/gen_embedded_mozc_dataset_for_chromeos.ninja
+subninja obj/data_manager/chromeos/chromeos_data_manager.ninja
+subninja obj/data_manager/chromeos/chromeos_data_manager_test.ninja
+subninja obj/data_manager/chromeos/mozcdata.ninja
+subninja obj/base/debug.ninja
+
+# Short names for targets.
+build about_dialog_lib: phony obj/gui/libabout_dialog_lib.a
+build administration_dialog_lib: phony obj/gui/libadministration_dialog_lib.a
+build base: phony obj/base/libbase.a
+build base_all_test: phony obj/base/base_all_test.actions_depends.stamp
+build base_core: phony obj/base/libbase_core.a
+build bit_stream: phony obj/storage/louds/libbit_stream.a
+build bit_vector_based_array: phony obj/storage/louds/libbit_vector_based_array.a
+build bit_vector_based_array_builder: phony obj/storage/louds/libbit_vector_based_array_builder.a
+build calculator: phony obj/rewriter/calculator/libcalculator.a
+build calculator_all_test: phony calculator_test
+build calculator_mock: phony obj/rewriter/calculator/libcalculator_mock.a
+build candidates_proto: phony obj/protocol/libcandidates_proto.a
+build character_form_manager: phony obj/config/libcharacter_form_manager.a
+build character_pad_lib: phony obj/gui/libcharacter_pad_lib.a
+build chromeos_data_manager: phony obj/data_manager/chromeos/libchromeos_data_manager.a
+build client: phony obj/client/libclient.a
+build client_all_test: phony client_test
+build client_mock: phony obj/client/libclient_mock.a
+build clock: phony obj/base/libclock.a
+build clock_mock: phony obj/base/libclock_mock.a
+build codec: phony obj/dictionary/file/libcodec.a
+build codec_factory: phony obj/dictionary/file/libcodec_factory.a
+build codec_util: phony obj/dictionary/file/libcodec_util.a
+build commands_proto: phony obj/protocol/libcommands_proto.a
+build composer: phony obj/composer/libcomposer.a
+build composer_all_test: phony obj/composer/composer_all_test.actions_depends.stamp
+build config_all_test: phony obj/config/config_all_test.actions_depends.stamp
+build config_dialog_lib: phony obj/gui/libconfig_dialog_lib.a
+build config_file_stream: phony obj/base/libconfig_file_stream.a
+build config_handler: phony obj/config/libconfig_handler.a
+build config_proto: phony obj/protocol/libconfig_proto.a
+build confirmation_dialog_lib: phony obj/gui/libconfirmation_dialog_lib.a
+build connection_file_reader: phony obj/data_manager/libconnection_file_reader.a
+build connector: phony obj/converter/libconnector.a
+build conversion_request: phony obj/request/libconversion_request.a
+build converter: phony obj/converter/libconverter.a
+build converter_all_test: phony obj/converter/converter_all_test.actions_depends.stamp
+build converter_mock: phony obj/converter/libconverter_mock.a
+build converter_util: phony obj/converter/libconverter_util.a
+build crash_report_handler: phony obj/base/libcrash_report_handler.a
+build data_manager: phony obj/data_manager/libdata_manager.a
+build data_manager_test_base: phony obj/data_manager/libdata_manager_test_base.a
+build dataset_proto: phony obj/data_manager/libdataset_proto.a
+build dataset_reader: phony obj/data_manager/libdataset_reader.a
+build dataset_writer: phony obj/data_manager/libdataset_writer.a
+build debug: phony obj/base/libdebug.a
+build dictionary: phony obj/dictionary/dictionary.actions_depends.stamp
+build dictionary_all_test: phony obj/dictionary/dictionary_all_test.actions_depends.stamp
+build dictionary_file: phony obj/dictionary/file/libdictionary_file.a
+build dictionary_file_all_test: phony obj/dictionary/file/dictionary_file_all_test.actions_depends.stamp
+build dictionary_file_builder: phony obj/dictionary/file/libdictionary_file_builder.a
+build dictionary_impl: phony obj/dictionary/libdictionary_impl.a
+build dictionary_mock: phony obj/dictionary/libdictionary_mock.a
+build dictionary_test_util: phony obj/dictionary/libdictionary_test_util.a
+build dictionary_tool_lib: phony obj/gui/libdictionary_tool_lib.a
+build emacs_all_test: phony mozc_emacs_helper_lib_test
+build encoding_util: phony obj/gui/libencoding_util.a
+build encryptor: phony obj/base/libencryptor.a
+build engine: phony obj/engine/libengine.a
+build engine_all_test: phony engine_builder_test
+build engine_builder: phony obj/engine/libengine_builder.a
+build engine_builder_proto: phony obj/protocol/libengine_builder_proto.a
+build engine_factory: phony obj/engine/oss_engine_factory.actions_depends.stamp
+build error_message_dialog_lib: phony obj/gui/liberror_message_dialog_lib.a
+build fcitx-mozc: phony fcitx-mozc.so
+build flags: phony obj/base/libflags.a
+build gen_about_dialog_files: phony obj/gui/gen_about_dialog_files.actions_rules_copies.stamp
+build gen_administration_dialog_files: phony obj/gui/gen_administration_dialog_files.actions_rules_copies.stamp
+build gen_base_files: phony gen/gui/base/moc_window_title_modifier.cc
+build gen_character_pad_cp932_data: phony gen/gui/character_pad/data/cp932_map.h
+build gen_character_pad_data: phony obj/gui/gen_character_pad_data.actions_rules_copies.stamp
+build gen_character_pad_files: phony obj/gui/gen_character_pad_files.actions_rules_copies.stamp
+build gen_config_dialog_files: phony obj/gui/gen_config_dialog_files.actions_rules_copies.stamp
+build gen_dictionary_tool_files: phony obj/gui/gen_dictionary_tool_files.actions_rules_copies.stamp
+build gen_error_message_dialog_files: phony gen/gui/error_message_dialog/moc_error_message_dialog.cc
+build gen_fcitx_mozc_i18n: phony obj/unix/fcitx/gen_fcitx_mozc_i18n.actions_rules_copies.stamp
+build gen_key_mappings: phony obj/mac/gen_key_mappings.actions_rules_copies.stamp
+build gen_mozc_xml: phony gen/unix/ibus/mozc.xml
+build gen_post_install_dialog_files: phony obj/gui/gen_post_install_dialog_files.actions_rules_copies.stamp
+build gen_set_default_dialog_files: phony obj/gui/gen_set_default_dialog_files.actions_rules_copies.stamp
+build gen_word_register_dialog_files: phony obj/gui/gen_word_register_dialog_files.actions_rules_copies.stamp
+build generic_storage_manager: phony obj/session/libgeneric_storage_manager.a
+build googletest_lib: phony obj/testing/libgoogletest_lib.a
+build gtest_main: phony obj/testing/libgtest_main.a
+build gtk_candidate_window_handler: phony obj/unix/ibus/libgtk_candidate_window_handler.a
+build gui_all_test: phony encoding_util_test
+build gui_base: phony obj/gui/libgui_base.a
+build handwriting_all_test: phony handwriting_manager_test
+build handwriting_manager: phony obj/handwriting/libhandwriting_manager.a
+build hash: phony obj/base/libhash.a
+build http_client: phony obj/net/libhttp_client.a
+build http_client_mock: phony obj/net/libhttp_client_mock.a
+build ibus_all_test: phony obj/unix/ibus/ibus_all_test.actions_depends.stamp
+build ibus_mozc_lib: phony obj/unix/ibus/libibus_mozc_lib.a
+build ibus_mozc_metadata: phony obj/unix/ibus/libibus_mozc_metadata.a
+build ibus_property_handler: phony obj/unix/ibus/libibus_property_handler.a
+build ime_switch_util: phony obj/session/libime_switch_util.a
+build immutable_converter: phony obj/converter/libimmutable_converter.a
+build immutable_converter_interface: phony obj/converter/libimmutable_converter_interface.a
+build install_calculator_test_data: phony gen//data/test/calculator/testset.txt
+build install_embedded_file_h: phony gen//base/embedded_file.h
+build install_engine_builder_test_src: phony gen//engine/engine_builder_test.cc
+build install_oss_data_manager_test_data: phony $
+    obj/data_manager/oss/install_oss_data_manager_test_data.actions_rules_copies.stamp
+build install_session_handler_scenario_test_data: phony $
+    obj/data/test/session/scenario/install_session_handler_scenario_test_data.actions_rules_copies.stamp
+build install_session_handler_usage_stats_scenario_test_data: phony $
+    obj/data/test/session/scenario/usage_stats/install_session_handler_usage_stats_scenario_test_data.actions_rules_copies.stamp
+build install_stats_config_util_test_data: phony $
+    obj/config/install_stats_config_util_test_data.actions_rules_copies.stamp
+build install_test_connection_txt: phony gen//data/test/dictionary/connection_single_column.txt
+build install_util_test_data: phony gen//data/test/character_set/character_set.tsv
+build install_zinnia_handwriting_data: phony gen//handwriting/handwriting-ja.model
+build ipc: phony obj/ipc/libipc.a
+build ipc_all_test: phony ipc_test
+build ipc_protocol: phony obj/ipc/libipc_protocol.a
+build ipc_test_util: phony obj/ipc/libipc_test_util.a
+build json_util: phony obj/net/libjson_util.a
+build json_util_test_protocol: phony obj/net/libjson_util_test_protocol.a
+build jsoncpp: phony obj/net/libjsoncpp.a
+build jsonpath: phony obj/net/libjsonpath.a
+build key_event_util: phony obj/composer/libkey_event_util.a
+build key_info_util: phony obj/session/libkey_info_util.a
+build key_parser: phony obj/composer/libkey_parser.a
+build keymap: phony obj/session/libkeymap.a
+build keymap_factory: phony obj/session/libkeymap_factory.a
+build lattice: phony obj/converter/liblattice.a
+build louds: phony obj/storage/louds/liblouds.a
+build louds_trie: phony obj/storage/louds/liblouds_trie.a
+build louds_trie_builder: phony obj/storage/louds/liblouds_trie_builder.a
+build message_translator: phony obj/unix/ibus/libmessage_translator.a
+build minimal_engine: phony obj/engine/libminimal_engine.a
+build mock_converter_engine: phony obj/engine/libmock_converter_engine.a
+build mock_data_engine_factory: phony obj/engine/libmock_data_engine_factory.a
+build mock_data_manager: phony obj/data_manager/testing/libmock_data_manager.a
+build mozc_emacs_helper_lib: phony obj/unix/emacs/libmozc_emacs_helper_lib.a
+build mozc_renderer_lib: phony obj/renderer/libmozc_renderer_lib.a
+build mozc_server_lib: phony obj/server/libmozc_server_lib.a
+build mozc_tool_lib: phony obj/gui/libmozc_tool_lib.a
+build mozcdata: phony lib/libmozcdata.so
+build mozctest: phony obj/testing/libmozctest.a
+build multifile: phony obj/base/libmultifile.a
+build mutex: phony obj/base/libmutex.a
+build net_all_test: phony obj/net/net_all_test.actions_depends.stamp
+build obfuscator_support: phony obj/base/libobfuscator_support.a
+build oss_data_manager: phony obj/data_manager/oss/liboss_data_manager.a
+build oss_engine_factory: phony obj/engine/oss_engine_factory.actions_depends.stamp
+build output_util: phony obj/session/liboutput_util.a
+build path_util: phony obj/unix/ibus/libpath_util.a
+build pos_id_printer: phony obj/converter/libpos_id_printer.a
+build pos_list_provider: phony obj/data_manager/libpos_list_provider.a
+build pos_matcher: phony gen/dictionary/pos_matcher.h
+build post_install_dialog_lib: phony obj/gui/libpost_install_dialog_lib.a
+build prediction: phony obj/prediction/libprediction.a
+build prediction_all_test: phony prediction_test
+build prediction_protocol: phony obj/prediction/libprediction_protocol.a
+build prelauncher_lib: phony obj/gui/libprelauncher_lib.a
+build qrc_about_dialog: phony gen/gui/about_dialog/qrc_about_dialog.cc
+build qrc_administration_dialog: phony gen/gui/administration_dialog/qrc_administration_dialog.cc
+build qrc_character_pad: phony gen/gui/character_pad/qrc_character_pad.cc
+build qrc_config_dialog: phony gen/gui/config_dialog/qrc_config_dialog.cc
+build qrc_confirmation_dialog: phony gen/gui/confirmation_dialog/qrc_confirmation_dialog.cc
+build qrc_dictionary_tool: phony gen/gui/dictionary_tool/qrc_dictionary_tool.cc
+build qrc_error_message_dialog: phony gen/gui/error_message_dialog/qrc_error_message_dialog.cc
+build qrc_post_install_dialog: phony gen/gui/post_install_dialog/qrc_post_install_dialog.cc
+build qrc_set_default_dialog: phony gen/gui/set_default_dialog/qrc_set_default_dialog.cc
+build qrc_word_register_dialog: phony gen/gui/word_register_dialog/qrc_word_register_dialog.cc
+build random_keyevents_generator: phony obj/session/librandom_keyevents_generator.a
+build renderer_all_test: phony obj/renderer/renderer_all_test.actions_depends.stamp
+build renderer_client: phony obj/renderer/librenderer_client.a
+build renderer_proto: phony obj/protocol/librenderer_proto.a
+build renderer_server: phony obj/renderer/librenderer_server.a
+build renderer_style_handler: phony obj/renderer/librenderer_style_handler.a
+build request_test_util: phony obj/session/librequest_test_util.a
+build rewriter: phony obj/rewriter/librewriter.a
+build rewriter_all_test: phony obj/rewriter/rewriter_all_test.actions_depends.stamp
+build scheduler_stub: phony obj/base/libscheduler_stub.a
+build scoped_handle: phony obj/base/libscoped_handle.a
+build segmenter: phony obj/converter/libsegmenter.a
+build segmenter_data_proto: phony obj/protocol/libsegmenter_data_proto.a
+build segments: phony obj/converter/libsegments.a
+build selection_monitor: phony obj/unix/ibus/libselection_monitor.a
+build serialized_dictionary: phony obj/data_manager/libserialized_dictionary.a
+build serialized_string_array: phony obj/base/libserialized_string_array.a
+build session: phony obj/session/libsession.a
+build session_all_test: phony obj/session/session_all_test.actions_depends.stamp
+build session_handler: phony obj/session/libsession_handler.a
+build session_handler_test_util: phony obj/session/libsession_handler_test_util.a
+build session_internal: phony obj/session/libsession_internal.a
+build session_server: phony obj/session/libsession_server.a
+build session_usage_observer: phony obj/session/libsession_usage_observer.a
+build session_usage_stats_util: phony obj/session/libsession_usage_stats_util.a
+build session_watch_dog: phony obj/session/libsession_watch_dog.a
+build set_default_dialog_lib: phony obj/gui/libset_default_dialog_lib.a
+build simple_succinct_bit_vector_index: phony obj/storage/louds/libsimple_succinct_bit_vector_index.a
+build singleton: phony obj/base/libsingleton.a
+build state_proto: phony obj/protocol/libstate_proto.a
+build stats_config_util: phony obj/config/libstats_config_util.a
+build storage: phony obj/storage/libstorage.a
+build storage_all_test: phony storage_test
+build storage_louds_all_test: phony obj/storage/louds/storage_louds_all_test.actions_depends.stamp
+build string_piece: phony obj/base/libstring_piece.a
+build suffix_dictionary: phony obj/dictionary/libsuffix_dictionary.a
+build suggestion_filter: phony obj/prediction/libsuggestion_filter.a
+build suppression_dictionary: phony obj/dictionary/libsuppression_dictionary.a
+build system_dictionary: phony obj/dictionary/system/libsystem_dictionary.a
+build system_dictionary_all_test: phony obj/dictionary/system/system_dictionary_all_test.actions_depends.stamp
+build system_dictionary_builder: phony obj/dictionary/system/libsystem_dictionary_builder.a
+build system_dictionary_codec: phony obj/dictionary/system/libsystem_dictionary_codec.a
+build table_layout: phony obj/renderer/libtable_layout.a
+build testing: phony obj/testing/libtesting.a
+build testing_util: phony obj/testing/libtesting_util.a
+build text_dictionary_loader: phony obj/dictionary/libtext_dictionary_loader.a
+build transliteration: phony obj/transliteration/libtransliteration.a
+build transliteration_all_test: phony transliteration_test
+build uim-mozc: phony libuim-mozc.so
+build uim_mozc_lib: phony obj/unix/uim/libuim_mozc_lib.a
+build unittests: phony obj/gyp/unittests.actions_depends.stamp
+build update_util: phony obj/base/libupdate_util.a
+build url: phony obj/base/liburl.a
+build usage_stats: phony obj/usage_stats/libusage_stats.a
+build usage_stats_all_test: phony obj/usage_stats/usage_stats_all_test.actions_depends.stamp
+build usage_stats_protocol: phony obj/usage_stats/libusage_stats_protocol.a
+build usage_stats_testing_util: phony obj/usage_stats/libusage_stats_testing_util.a
+build usage_stats_uploader: phony obj/usage_stats/libusage_stats_uploader.a
+build user_dictionary: phony obj/dictionary/libuser_dictionary.a
+build user_dictionary_storage_proto: phony obj/protocol/libuser_dictionary_storage_proto.a
+build user_pos: phony obj/dictionary/libuser_pos.a
+build value_dictionary: phony obj/dictionary/system/libvalue_dictionary.a
+build window_info_protocol: phony obj/ipc/libwindow_info_protocol.a
+build window_util: phony obj/renderer/libwindow_util.a
+build word_register_dialog_lib: phony obj/gui/libword_register_dialog_lib.a
+build zinnia_handwriting: phony obj/handwriting/libzinnia_handwriting.a
+
+# Empty targets (output for completeness).
+build gtk2_build_environment: phony
+build ibus_build_environment: phony
+build key_expansion_table: phony
+build mac_all_test: phony
+build pos_util: phony
+build protobuf: phony
+build protobuf_jar: phony
+build protoc: phony
+build xcb_build_environment: phony
+build zinnia: phony
+
+build all: phony about_dialog_main administration_dialog_main base_core_test base_test bit_stream_test $
+    bit_vector_based_array_test calculator_test character_form_manager_test character_palette_main $
+    chromeos_data_manager_test client_test clock_mock_test clock_test codec_test composer_test config_dialog_main $
+    config_file_stream_test config_handler_test confirmation_dialog_main connector_test converter_main $
+    converter_regression_test converter_test dataset_reader_test dataset_writer_main dataset_writer_test $
+    dictionary_file_test dictionary_test dictionary_tool_main embedded_file_test encoding_util_test encryptor_test $
+    engine_builder_test error_message_dialog_main fcitx-mozc.so file_util_test gen//base/embedded_file.h $
+    gen//data/test/calculator/testset.txt gen//data/test/character_set/character_set.tsv $
+    gen//data/test/dictionary/connection_single_column.txt gen//engine/engine_builder_test.cc $
+    gen//handwriting/handwriting-ja.model gen/base/character_set.inc gen/base/config_file_stream_data.inc $
+    gen/base/embedded_file_test_data.inc gen/base/version_def.h gen/data_manager/chromeos/boundary.data $
+    gen/data_manager/chromeos/collocation_data.data gen/data_manager/chromeos/collocation_suppression_data.data $
+    gen/data_manager/chromeos/connection.data gen/data_manager/chromeos/connection_single_column.txt $
+    gen/data_manager/chromeos/counter_suffix.data gen/data_manager/chromeos/cros_mozc_data.inc $
+    gen/data_manager/chromeos/pos_group.data gen/data_manager/chromeos/pos_list.h $
+    gen/data_manager/chromeos/pos_matcher.data gen/data_manager/chromeos/segmenter_inl.inc $
+    gen/data_manager/chromeos/suggestion_filter_data.data gen/data_manager/chromeos/system.dictionary $
+    gen/data_manager/chromeos/user_pos_manager.data gen/data_manager/chromeos/version.data $
+    gen/data_manager/chromeos/zipped_data_chromeos gen/data_manager/oss/boundary.data $
+    gen/data_manager/oss/collocation_data.data gen/data_manager/oss/collocation_suppression_data.data $
+    gen/data_manager/oss/connection.data gen/data_manager/oss/connection_single_column.txt $
+    gen/data_manager/oss/counter_suffix.data gen/data_manager/oss/mozc.data gen/data_manager/oss/mozc_data.inc $
+    gen/data_manager/oss/pos_group.data gen/data_manager/oss/pos_list.h gen/data_manager/oss/pos_matcher.data $
+    gen/data_manager/oss/segmenter_inl.inc gen/data_manager/oss/suggestion_filter_data.data $
+    gen/data_manager/oss/system.dictionary gen/data_manager/oss/user_pos_manager.data $
+    gen/data_manager/oss/version.data gen/data_manager/testing/boundary.data $
+    gen/data_manager/testing/collocation_data.data gen/data_manager/testing/collocation_suppression_data.data $
+    gen/data_manager/testing/connection.data gen/data_manager/testing/connection_single_column.txt $
+    gen/data_manager/testing/counter_suffix.data gen/data_manager/testing/mock_mozc.data $
+    gen/data_manager/testing/mock_mozc_data.inc gen/data_manager/testing/pos_group.data $
+    gen/data_manager/testing/pos_list.h gen/data_manager/testing/pos_matcher.data $
+    gen/data_manager/testing/segmenter_inl.inc gen/data_manager/testing/suggestion_filter_data.data $
+    gen/data_manager/testing/system.dictionary gen/data_manager/testing/user_pos_manager.data $
+    gen/data_manager/testing/version.data gen/dictionary/pos_map.inc gen/dictionary/pos_matcher.h $
+    gen/gui/about_dialog/qrc_about_dialog.cc gen/gui/administration_dialog/qrc_administration_dialog.cc $
+    gen/gui/base/moc_window_title_modifier.cc gen/gui/character_pad/data/cp932_map.h $
+    gen/gui/character_pad/qrc_character_pad.cc gen/gui/config_dialog/qrc_config_dialog.cc $
+    gen/gui/confirmation_dialog/qrc_confirmation_dialog.cc gen/gui/dictionary_tool/qrc_dictionary_tool.cc $
+    gen/gui/error_message_dialog/moc_error_message_dialog.cc gen/gui/error_message_dialog/qrc_error_message_dialog.cc $
+    gen/gui/post_install_dialog/qrc_post_install_dialog.cc gen/gui/set_default_dialog/qrc_set_default_dialog.cc $
+    gen/gui/word_register_dialog/qrc_word_register_dialog.cc gen/session/session_stress_test_data.h $
+    gen/testing/mozc_data_dir.h gen/unix/ibus/mozc.xml gen/usage_stats/usage_stats_list.h gen_chromeos_sbm $
+    gen_collocation_data_main gen_collocation_suppression_data_main gen_emoticon_rewriter_data_main gen_mock_sbm $
+    gen_oss_sbm gen_single_kanji_noun_prefix_data_main gen_suggestion_filter_main gen_symbol_rewriter_dictionary_main $
+    gen_system_dictionary_data_main gen_usage_rewriter_dictionary_main generic_storage_manager_test $
+    gtk_candidate_window_handler_test gtk_renderer_test hand_writing_main handwriting_manager_test hash_test $
+    http_client_main http_client_mock_test ibus_mozc ibus_mozc_test ipc_test json_util_test jsonpath_test $
+    key_event_util_test key_expansion_table_test key_parser_test language_aware_rewriter_test lib/libmozcdata.so $
+    libuim-mozc.so louds_test louds_trie_test mac_test mock_data_manager_test mozc_emacs_helper $
+    mozc_emacs_helper_lib_test mozc_renderer mozc_rpc_server_main mozc_server mozc_tool multifile_test mutex_test $
+    number_util_test obfuscator_support_test obj.host/base/libbase.a obj.host/base/libbase_core.a $
+    obj.host/base/libclock.a obj.host/base/libencryptor.a obj.host/base/libflags.a obj.host/base/libhash.a $
+    obj.host/base/libmultifile.a obj.host/base/libmutex.a obj.host/base/libobfuscator_support.a $
+    obj.host/base/libscoped_handle.a obj.host/base/libserialized_string_array.a obj.host/base/libsingleton.a $
+    obj.host/base/libstring_piece.a obj.host/base/libupdate_util.a obj.host/base/liburl.a $
+    obj.host/converter/libgen_segmenter_bitarray.a $
+    obj.host/data_manager/chromeos/gen_separate_emoji_rewriter_data_for_chromeos.actions_rules_copies.stamp $
+    obj.host/data_manager/chromeos/gen_separate_emoticon_rewriter_data_for_chromeos.actions_rules_copies.stamp $
+    obj.host/data_manager/chromeos/gen_separate_reading_correction_data_for_chromeos.actions_rules_copies.stamp $
+    obj.host/data_manager/chromeos/gen_separate_segmenter_data_for_chromeos.actions_rules_copies.stamp $
+    obj.host/data_manager/chromeos/gen_separate_single_kanji_rewriter_data_for_chromeos.actions_rules_copies.stamp $
+    obj.host/data_manager/chromeos/gen_separate_suffix_data_for_chromeos.actions_rules_copies.stamp $
+    obj.host/data_manager/chromeos/gen_separate_symbol_rewriter_data_for_chromeos.actions_rules_copies.stamp $
+    obj.host/data_manager/chromeos/gen_separate_user_pos_data_for_chromeos.actions_rules_copies.stamp $
+    obj.host/data_manager/chromeos/gen_separate_zero_query_data_for_chromeos.actions_rules_copies.stamp $
+    obj.host/data_manager/chromeos/gen_typing_model_for_chromeos.actions_rules_copies.stamp $
+    obj.host/data_manager/genproto_dataset_proto.actions_rules_copies.stamp $
+    obj.host/data_manager/libconnection_file_reader.a obj.host/data_manager/libdata_manager.a $
+    obj.host/data_manager/libdataset_proto.a obj.host/data_manager/libdataset_reader.a $
+    obj.host/data_manager/libdataset_writer.a obj.host/data_manager/libserialized_dictionary.a $
+    obj.host/data_manager/oss/gen_separate_emoji_rewriter_data_for_oss.actions_rules_copies.stamp $
+    obj.host/data_manager/oss/gen_separate_emoticon_rewriter_data_for_oss.actions_rules_copies.stamp $
+    obj.host/data_manager/oss/gen_separate_reading_correction_data_for_oss.actions_rules_copies.stamp $
+    obj.host/data_manager/oss/gen_separate_segmenter_data_for_oss.actions_rules_copies.stamp $
+    obj.host/data_manager/oss/gen_separate_single_kanji_rewriter_data_for_oss.actions_rules_copies.stamp $
+    obj.host/data_manager/oss/gen_separate_suffix_data_for_oss.actions_rules_copies.stamp $
+    obj.host/data_manager/oss/gen_separate_symbol_rewriter_data_for_oss.actions_rules_copies.stamp $
+    obj.host/data_manager/oss/gen_separate_user_pos_data_for_oss.actions_rules_copies.stamp $
+    obj.host/data_manager/oss/gen_separate_zero_query_data_for_oss.actions_rules_copies.stamp $
+    obj.host/data_manager/oss/gen_typing_model_for_oss.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_emoji_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_emoticon_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_reading_correction_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_segmenter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_single_kanji_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_suffix_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_symbol_rewriter_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_user_pos_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_separate_zero_query_data_for_mock.actions_rules_copies.stamp $
+    obj.host/data_manager/testing/gen_typing_model_for_mock.actions_rules_copies.stamp $
+    obj.host/dictionary/file/libcodec.a obj.host/dictionary/file/libcodec_factory.a $
+    obj.host/dictionary/file/libcodec_util.a obj.host/dictionary/file/libdictionary_file.a $
+    obj.host/dictionary/file/libdictionary_file_builder.a obj.host/dictionary/libtext_dictionary_loader.a $
+    obj.host/dictionary/libuser_pos.a obj.host/dictionary/system/libsystem_dictionary_builder.a $
+    obj.host/dictionary/system/libsystem_dictionary_codec.a obj.host/ipc/genproto_ipc.actions_rules_copies.stamp $
+    obj.host/ipc/genproto_window_info.actions_rules_copies.stamp $
+    obj.host/net/genproto_json_util_test.actions_rules_copies.stamp $
+    obj.host/prediction/genproto_prediction.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_candidates_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_commands_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_engine_builder_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_renderer_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_segmenter_data_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_state_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_user_dictionary_storage_proto.actions_rules_copies.stamp $
+    obj.host/protocol/libengine_builder_proto.a obj.host/protocol/libsegmenter_data_proto.a $
+    obj.host/rewriter/gen_rewriter_files.actions_rules_copies.stamp obj.host/rewriter/libgen_existence_data.a $
+    obj.host/storage/libstorage.a obj.host/storage/louds/libbit_stream.a $
+    obj.host/storage/louds/libbit_vector_based_array_builder.a obj.host/storage/louds/liblouds_trie_builder.a $
+    obj.host/usage_stats/genproto_usage_stats.actions_rules_copies.stamp obj/base/base_all_test.actions_depends.stamp $
+    obj/base/libbase.a obj/base/libbase_core.a obj/base/libclock.a obj/base/libclock_mock.a $
+    obj/base/libconfig_file_stream.a obj/base/libcrash_report_handler.a obj/base/libdebug.a obj/base/libencryptor.a $
+    obj/base/libflags.a obj/base/libhash.a obj/base/libmultifile.a obj/base/libmutex.a $
+    obj/base/libobfuscator_support.a obj/base/libscheduler_stub.a obj/base/libscoped_handle.a $
+    obj/base/libserialized_string_array.a obj/base/libsingleton.a obj/base/libstring_piece.a $
+    obj/base/libupdate_util.a obj/base/liburl.a obj/client/libclient.a obj/client/libclient_mock.a $
+    obj/composer/composer_all_test.actions_depends.stamp obj/composer/libcomposer.a obj/composer/libkey_event_util.a $
+    obj/composer/libkey_parser.a obj/config/config_all_test.actions_depends.stamp $
+    obj/config/install_stats_config_util_test_data.actions_rules_copies.stamp obj/config/libcharacter_form_manager.a $
+    obj/config/libconfig_handler.a obj/config/libstats_config_util.a $
+    obj/converter/converter_all_test.actions_depends.stamp obj/converter/libconnector.a obj/converter/libconverter.a $
+    obj/converter/libconverter_mock.a obj/converter/libconverter_util.a obj/converter/libimmutable_converter.a $
+    obj/converter/libimmutable_converter_interface.a obj/converter/liblattice.a obj/converter/libpos_id_printer.a $
+    obj/converter/libsegmenter.a obj/converter/libsegments.a $
+    obj/data/test/session/scenario/install_session_handler_scenario_test_data.actions_rules_copies.stamp $
+    obj/data/test/session/scenario/usage_stats/install_session_handler_usage_stats_scenario_test_data.actions_rules_copies.stamp $
+    obj/data_manager/chromeos/libchromeos_data_manager.a obj/data_manager/libconnection_file_reader.a $
+    obj/data_manager/libdata_manager.a obj/data_manager/libdata_manager_test_base.a $
+    obj/data_manager/libdataset_proto.a obj/data_manager/libdataset_reader.a obj/data_manager/libdataset_writer.a $
+    obj/data_manager/libpos_list_provider.a obj/data_manager/libserialized_dictionary.a $
+    obj/data_manager/oss/install_oss_data_manager_test_data.actions_rules_copies.stamp $
+    obj/data_manager/oss/liboss_data_manager.a obj/data_manager/testing/libmock_data_manager.a $
+    obj/dictionary/dictionary.actions_depends.stamp obj/dictionary/dictionary_all_test.actions_depends.stamp $
+    obj/dictionary/file/dictionary_file_all_test.actions_depends.stamp obj/dictionary/file/libcodec.a $
+    obj/dictionary/file/libcodec_factory.a obj/dictionary/file/libcodec_util.a $
+    obj/dictionary/file/libdictionary_file.a obj/dictionary/file/libdictionary_file_builder.a $
+    obj/dictionary/libdictionary_impl.a obj/dictionary/libdictionary_mock.a obj/dictionary/libdictionary_test_util.a $
+    obj/dictionary/libsuffix_dictionary.a obj/dictionary/libsuppression_dictionary.a $
+    obj/dictionary/libtext_dictionary_loader.a obj/dictionary/libuser_dictionary.a obj/dictionary/libuser_pos.a $
+    obj/dictionary/system/libsystem_dictionary.a obj/dictionary/system/libsystem_dictionary_builder.a $
+    obj/dictionary/system/libsystem_dictionary_codec.a obj/dictionary/system/libvalue_dictionary.a $
+    obj/dictionary/system/system_dictionary_all_test.actions_depends.stamp obj/engine/libengine.a $
+    obj/engine/libengine_builder.a obj/engine/libminimal_engine.a obj/engine/libmock_converter_engine.a $
+    obj/engine/libmock_data_engine_factory.a obj/engine/oss_engine_factory.actions_depends.stamp $
+    obj/gui/gen_about_dialog_files.actions_rules_copies.stamp $
+    obj/gui/gen_administration_dialog_files.actions_rules_copies.stamp $
+    obj/gui/gen_character_pad_data.actions_rules_copies.stamp $
+    obj/gui/gen_character_pad_files.actions_rules_copies.stamp $
+    obj/gui/gen_config_dialog_files.actions_rules_copies.stamp $
+    obj/gui/gen_dictionary_tool_files.actions_rules_copies.stamp $
+    obj/gui/gen_post_install_dialog_files.actions_rules_copies.stamp $
+    obj/gui/gen_set_default_dialog_files.actions_rules_copies.stamp $
+    obj/gui/gen_word_register_dialog_files.actions_rules_copies.stamp obj/gui/libabout_dialog_lib.a $
+    obj/gui/libadministration_dialog_lib.a obj/gui/libcharacter_pad_lib.a obj/gui/libconfig_dialog_lib.a $
+    obj/gui/libconfirmation_dialog_lib.a obj/gui/libdictionary_tool_lib.a obj/gui/libencoding_util.a $
+    obj/gui/liberror_message_dialog_lib.a obj/gui/libgui_base.a obj/gui/libmozc_tool_lib.a $
+    obj/gui/libpost_install_dialog_lib.a obj/gui/libprelauncher_lib.a obj/gui/libset_default_dialog_lib.a $
+    obj/gui/libword_register_dialog_lib.a obj/gyp/unittests.actions_depends.stamp $
+    obj/handwriting/libhandwriting_manager.a obj/handwriting/libzinnia_handwriting.a obj/ipc/libipc.a $
+    obj/ipc/libipc_protocol.a obj/ipc/libipc_test_util.a obj/ipc/libwindow_info_protocol.a $
+    obj/mac/gen_key_mappings.actions_rules_copies.stamp obj/net/libhttp_client.a obj/net/libhttp_client_mock.a $
+    obj/net/libjson_util.a obj/net/libjson_util_test_protocol.a obj/net/libjsoncpp.a obj/net/libjsonpath.a $
+    obj/net/net_all_test.actions_depends.stamp obj/prediction/libprediction.a obj/prediction/libprediction_protocol.a $
+    obj/prediction/libsuggestion_filter.a obj/protocol/libcandidates_proto.a obj/protocol/libcommands_proto.a $
+    obj/protocol/libconfig_proto.a obj/protocol/libengine_builder_proto.a obj/protocol/librenderer_proto.a $
+    obj/protocol/libsegmenter_data_proto.a obj/protocol/libstate_proto.a $
+    obj/protocol/libuser_dictionary_storage_proto.a obj/renderer/libmozc_renderer_lib.a $
+    obj/renderer/librenderer_client.a obj/renderer/librenderer_server.a obj/renderer/librenderer_style_handler.a $
+    obj/renderer/libtable_layout.a obj/renderer/libwindow_util.a obj/renderer/renderer_all_test.actions_depends.stamp $
+    obj/request/libconversion_request.a obj/rewriter/calculator/libcalculator.a $
+    obj/rewriter/calculator/libcalculator_mock.a obj/rewriter/librewriter.a $
+    obj/rewriter/rewriter_all_test.actions_depends.stamp obj/server/libmozc_server_lib.a $
+    obj/session/libgeneric_storage_manager.a obj/session/libime_switch_util.a obj/session/libkey_info_util.a $
+    obj/session/libkeymap.a obj/session/libkeymap_factory.a obj/session/liboutput_util.a $
+    obj/session/librandom_keyevents_generator.a obj/session/librequest_test_util.a obj/session/libsession.a $
+    obj/session/libsession_handler.a obj/session/libsession_handler_test_util.a obj/session/libsession_internal.a $
+    obj/session/libsession_server.a obj/session/libsession_usage_observer.a obj/session/libsession_usage_stats_util.a $
+    obj/session/libsession_watch_dog.a obj/session/session_all_test.actions_depends.stamp obj/storage/libstorage.a $
+    obj/storage/louds/libbit_stream.a obj/storage/louds/libbit_vector_based_array.a $
+    obj/storage/louds/libbit_vector_based_array_builder.a obj/storage/louds/liblouds.a $
+    obj/storage/louds/liblouds_trie.a obj/storage/louds/liblouds_trie_builder.a $
+    obj/storage/louds/libsimple_succinct_bit_vector_index.a $
+    obj/storage/louds/storage_louds_all_test.actions_depends.stamp obj/testing/libgoogletest_lib.a $
+    obj/testing/libgtest_main.a obj/testing/libmozctest.a obj/testing/libtesting.a obj/testing/libtesting_util.a $
+    obj/transliteration/libtransliteration.a obj/unix/emacs/libmozc_emacs_helper_lib.a $
+    obj/unix/fcitx/gen_fcitx_mozc_i18n.actions_rules_copies.stamp obj/unix/ibus/ibus_all_test.actions_depends.stamp $
+    obj/unix/ibus/libgtk_candidate_window_handler.a obj/unix/ibus/libibus_mozc_lib.a $
+    obj/unix/ibus/libibus_mozc_metadata.a obj/unix/ibus/libibus_property_handler.a $
+    obj/unix/ibus/libmessage_translator.a obj/unix/ibus/libpath_util.a obj/unix/ibus/libselection_monitor.a $
+    obj/unix/uim/libuim_mozc_lib.a obj/usage_stats/libusage_stats.a obj/usage_stats/libusage_stats_protocol.a $
+    obj/usage_stats/libusage_stats_testing_util.a obj/usage_stats/libusage_stats_uploader.a $
+    obj/usage_stats/usage_stats_all_test.actions_depends.stamp oss_data_manager_test pos_id_printer_test $
+    post_install_dialog_main prediction_test random_keyevents_generator_test renderer_client_test $
+    renderer_server_test renderer_style_handler_test request_test_util_test rewriter_test scheduler_stub_test $
+    scheduler_test serialized_dictionary_test serialized_string_array_test session_converter_stress_test $
+    session_converter_test session_handler_scenario_test session_handler_stress_test session_handler_test $
+    session_internal_test session_key_handling_test session_module_test session_regression_test session_server_main $
+    session_server_test session_test session_watch_dog_test set_default_dialog_main $
+    simple_succinct_bit_vector_index_test single_kanji_rewriter_test stats_config_util_test storage_test $
+    suppression_dictionary_test system_dictionary_codec_test system_dictionary_test system_util_test $
+    table_layout_test text_dictionary_loader_test transliteration_rewriter_test transliteration_test trie_test $
+    update_util_test url_test usage_stats_test usage_stats_uploader_test util_test value_dictionary_test $
+    window_util_test word_register_dialog_main zinnia_handwriting_test
+default all

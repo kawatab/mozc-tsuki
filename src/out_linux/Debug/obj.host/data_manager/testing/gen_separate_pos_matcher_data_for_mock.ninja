@@ -1,0 +1,18 @@
+rule $
+    gen_separate_pos_matcher_data_for_mock_gen_separate_pos_matcher_data_for_mock_5a5c1bb863eb58e986f375b969109c61
+  command = cd ../../data_manager/testing; python $
+      ../../dictionary/gen_pos_matcher_code.py $
+      "--id_file=../../data/test/dictionary/id.def" $
+      "--special_pos_file=../../data/rules/special_pos.def" $
+      "--pos_matcher_rule_file=../../data/rules/pos_matcher_rule.def" $
+      "--output_pos_matcher_data=../../out_linux/Debug/gen/data_manager/testing/pos_matcher.data"
+  description = ACTION(host) [mock] Generating $
+      gen/data_manager/testing/pos_matcher.data
+  restat = 1
+
+build gen/data_manager/testing/pos_matcher.data: $
+    gen_separate_pos_matcher_data_for_mock_gen_separate_pos_matcher_data_for_mock_5a5c1bb863eb58e986f375b969109c61 $
+    ../../dictionary/gen_pos_matcher_code.py $
+    ../../data/test/dictionary/id.def ../../data/rules/special_pos.def $
+    ../../data/rules/pos_matcher_rule.def
+

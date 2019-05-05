@@ -1,1 +1,1 @@
-out_linux/Release/mozc_emacs_helper usr/bin/
+src/out_linux/Release/mozc_emacs_helper usr/bin/

@@ -1,0 +1,83 @@
+Description: Add support new Japanese era
+Bug-Ubuntu: https://bugs.launchpad.net/mozc/+bug/1823444
+Author: Mitsuya Shibata <mty.shibata@gmail.com>
+
+Index: mozc-2.23.2815.102+dfsg/src/data/dictionary_oss/dictionary08.txt
+===================================================================
+--- mozc-2.23.2815.102+dfsg.orig/src/data/dictionary_oss/dictionary08.txt
++++ mozc-2.23.2815.102+dfsg/src/data/dictionary_oss/dictionary08.txt
+@@ -8591,6 +8591,8 @@
+ れいれいと	12	12	7349	れいれいと
+ れいろう	1847	1847	7276	玲瓏
+ れいわ	1847	1847	8251	例話
++れいわ	1895	1895	1690	令和
++れいわ	1898	1898	4000	令和
+ れいんこーと	1847	1847	5568	レインコート
+ れいんじゃー	1847	1847	7459	レインジャー
+ れいんず	1917	1917	3548	レインズ
+Index: mozc-2.23.2815.102+dfsg/src/data/symbol/symbol.tsv
+===================================================================
+--- mozc-2.23.2815.102+dfsg.orig/src/data/symbol/symbol.tsv
++++ mozc-2.23.2815.102+dfsg/src/data/symbol/symbol.tsv
+@@ -528,6 +528,7 @@ POS	CHAR	Reading (space separated)	descr
+ 記号	㊦	した げ	丸下
+ 記号	㊧	ひだり	丸左
+ 記号	㊨	みぎ	丸右
++記号	㋿	れいわ ねんごう	年号	OTHER
+ 記号	㍻	へいせい ねんごう	年号		OTHER
+ 記号	㍼	しょうわ  ねんごう	年号		OTHER
+ 記号	㍽	たいしょう  ねんごう	年号		OTHER
+Index: mozc-2.23.2815.102+dfsg/src/data/unicode/UnicodeData.txt
+===================================================================
+--- mozc-2.23.2815.102+dfsg.orig/src/data/unicode/UnicodeData.txt
++++ mozc-2.23.2815.102+dfsg/src/data/unicode/UnicodeData.txt
+@@ -11314,6 +11314,7 @@
+ 32FC;CIRCLED KATAKANA WI;So;0;L;<circle> 30F0;;;;N;;;;;
+ 32FD;CIRCLED KATAKANA WE;So;0;L;<circle> 30F1;;;;N;;;;;
+ 32FE;CIRCLED KATAKANA WO;So;0;L;<circle> 30F2;;;;N;;;;;
++32FF;SQUARE ERA NAME REIWA;So;0;L;<square> 4EE4 548C;;;;N;SQUARED TWO IDEOGRAPHS ERA NAME REIWA;;;;
+ 3300;SQUARE APAATO;So;0;L;<square> 30A2 30D1 30FC 30C8;;;;N;SQUARED APAATO;;;;
+ 3301;SQUARE ARUHUA;So;0;L;<square> 30A2 30EB 30D5 30A1;;;;N;SQUARED ARUHUA;;;;
+ 3302;SQUARE ANPEA;So;0;L;<square> 30A2 30F3 30DA 30A2;;;;N;SQUARED ANPEA;;;;
+Index: mozc-2.23.2815.102+dfsg/src/rewriter/date_rewriter.cc
+===================================================================
+--- mozc-2.23.2815.102+dfsg.orig/src/rewriter/date_rewriter.cc
++++ mozc-2.23.2815.102+dfsg/src/rewriter/date_rewriter.cc
+@@ -1239,6 +1239,10 @@ const YearData kEraData[] = {
+     1989,
+     "平成",
+     "へいせい",
++  }, {
++    2019,
++    "令和",
++    "れいわ",
+   }
+ };
+ 
+Index: mozc-2.23.2815.102+dfsg/src/rewriter/date_rewriter_test.cc
+===================================================================
+--- mozc-2.23.2815.102+dfsg.orig/src/rewriter/date_rewriter_test.cc
++++ mozc-2.23.2815.102+dfsg/src/rewriter/date_rewriter_test.cc
+@@ -469,6 +469,22 @@ TEST_F(DateRewriterTest, ADToERA) {
+                  "平成10",
+                  "平成十");
+ 
++  // AD.2019 is "平成31(年)" or "平成三十一(年)" or "令和元(年)"
++  results.clear();
++  rewriter.AdToEra(2019, &results);
++  Expect3Results(results,
++                 "平成31",
++                 "平成三十一",
++                 "令和元");
++
++  // AD.2020 is "令和2(年)" or "令和二(年)"
++  results.clear();
++  rewriter.AdToEra(2020, &results);
++  EXPECT_EQ(results.size(), 2);
++  Expect2Results(results,
++            "令和2",
++            "令和二");
++
+   // Negative Test
+   // Too big number or negative number input are expected false return
+   results.clear();

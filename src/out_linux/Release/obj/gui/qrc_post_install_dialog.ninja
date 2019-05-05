@@ -1,0 +1,14 @@
+rule qrc_post_install_dialog_target_qrc_9050a5f9976f512ae3bec6432a96dac3
+  command = cd ../../gui; /usr/lib/x86_64-linux-gnu/qt5/bin/rcc -o $
+      ../out_linux/Release/gen/gui/post_install_dialog/qrc_post_install_dialog.cc $
+      -name qrc_post_install_dialog $
+      post_install_dialog/post_install_dialog.qrc
+  description = ACTION Generating Resource file from post_install_dialog.qrc
+  restat = 1
+
+build gen/gui/post_install_dialog/qrc_post_install_dialog.cc: $
+    qrc_post_install_dialog_target_qrc_9050a5f9976f512ae3bec6432a96dac3 $
+    ../../gui/post_install_dialog/post_install_dialog.qrc $
+    ../../gui/post_install_dialog/post_install_dialog_en.qm $
+    ../../gui/post_install_dialog/post_install_dialog_ja.qm
+

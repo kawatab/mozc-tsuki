@@ -20,7 +20,7 @@ set -e
 case "$1" in
     remove|deconfigure)
 	if which uim-module-manager >/dev/null 2>&1; then
-		uim-module-manager --unregister mozc --path /etc/uim
+		uim-module-manager --unregister mozc --path /var/lib/uim
 	fi
         ;;
     upgrade|failed-upgrade)

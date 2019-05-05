@@ -1,0 +1,16 @@
+rule $
+    gen_separate_collocation_data_for_mock_gen_separate_collocation_data_d785752254c6ee91b37425832e1d6e58
+  command = cd ../../data_manager/testing; $
+      ../../out_linux/Release/gen_collocation_data_main $
+      "--collocation_data=../../data/test/dictionary/collocation.txt" $
+      "--output=../../out_linux/Release/gen/data_manager/testing/collocation_data.data" $
+      --binary_mode
+  description = ACTION(host) [mock] Generating $
+      gen/data_manager/testing/collocation_data.data
+  restat = 1
+
+build gen/data_manager/testing/collocation_data.data: $
+    gen_separate_collocation_data_for_mock_gen_separate_collocation_data_d785752254c6ee91b37425832e1d6e58 $
+    gen_collocation_data_main ../../data/test/dictionary/collocation.txt || $
+    gen_collocation_data_main
+

@@ -1,0 +1,12 @@
+build obj/renderer/renderer_all_test.actions_depends.stamp: stamp $
+    renderer_client_test renderer_server_test renderer_style_handler_test $
+    table_layout_test window_util_test gtk_renderer_test
+
+build obj/renderer/renderer_all_test.compile_depends.stamp: stamp $
+    obj/renderer/renderer_client_test.compile_depends.stamp $
+    obj/renderer/renderer_server_test.compile_depends.stamp $
+    obj/renderer/renderer_style_handler_test.compile_depends.stamp $
+    obj/renderer/table_layout_test.compile_depends.stamp $
+    obj/renderer/window_util_test.compile_depends.stamp $
+    obj/renderer/gtk_renderer_test.compile_depends.stamp
+

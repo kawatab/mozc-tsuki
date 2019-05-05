@@ -1,0 +1,14 @@
+rule qrc_confirmation_dialog_target_qrc_62728599711cc0b004fd18c65ad02ab0
+  command = cd ../../gui; /usr/lib/x86_64-linux-gnu/qt5/bin/rcc -o $
+      ../out_linux/Debug/gen/gui/confirmation_dialog/qrc_confirmation_dialog.cc $
+      -name qrc_confirmation_dialog $
+      confirmation_dialog/confirmation_dialog.qrc
+  description = ACTION Generating Resource file from confirmation_dialog.qrc
+  restat = 1
+
+build gen/gui/confirmation_dialog/qrc_confirmation_dialog.cc: $
+    qrc_confirmation_dialog_target_qrc_62728599711cc0b004fd18c65ad02ab0 $
+    ../../gui/confirmation_dialog/confirmation_dialog.qrc $
+    ../../gui/confirmation_dialog/confirmation_dialog_en.qm $
+    ../../gui/confirmation_dialog/confirmation_dialog_ja.qm
+

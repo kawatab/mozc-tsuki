@@ -1,0 +1,15 @@
+emacs-mozc-bin-dbgsym_2.23.2815.102+dfsg-4_amd64.deb debug optional automatic=yes
+emacs-mozc-bin_2.23.2815.102+dfsg-4_amd64.deb utils optional
+emacs-mozc_2.23.2815.102+dfsg-4_amd64.deb utils optional
+fcitx-mozc-dbgsym_2.23.2815.102+dfsg-4_amd64.deb debug optional automatic=yes
+fcitx-mozc_2.23.2815.102+dfsg-4_amd64.deb utils optional
+ibus-mozc-dbgsym_2.23.2815.102+dfsg-4_amd64.deb debug optional automatic=yes
+ibus-mozc_2.23.2815.102+dfsg-4_amd64.deb utils optional
+mozc-data_2.23.2815.102+dfsg-4_all.deb utils optional
+mozc-server-dbgsym_2.23.2815.102+dfsg-4_amd64.deb debug optional automatic=yes
+mozc-server_2.23.2815.102+dfsg-4_amd64.deb utils optional
+mozc-utils-gui-dbgsym_2.23.2815.102+dfsg-4_amd64.deb debug optional automatic=yes
+mozc-utils-gui_2.23.2815.102+dfsg-4_amd64.deb utils optional
+mozc_2.23.2815.102+dfsg-4_amd64.buildinfo utils optional
+uim-mozc-dbgsym_2.23.2815.102+dfsg-4_amd64.deb debug optional automatic=yes
+uim-mozc_2.23.2815.102+dfsg-4_amd64.deb utils optional

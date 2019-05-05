@@ -1,0 +1,27 @@
+rule $
+    gen_separate_symbol_rewriter_data_for_mock_gen_separate_symbol_rewriter_data_for_mock_59276f6b5bfadb342672bb87ce6dd8f8
+  command = cd ../../data_manager/testing; $
+      ../../out_linux/Release/gen_symbol_rewriter_dictionary_main $
+      "--input=../../data/symbol/symbol.tsv" $
+      "--user_pos_manager_data=../../out_linux/Release/gen/data_manager/testing/user_pos_manager.data" $
+      "--sorting_table=../../data/rules/sorting_map.tsv" $
+      "--ordering_rule=../../data/symbol/ordering_rule.txt" $
+      "--output_token_array=../../out_linux/Release/gen/data_manager/testing/symbol_token.data" $
+      "--output_string_array=../../out_linux/Release/gen/data_manager/testing/symbol_string.data"
+  description = ACTION(host) [mock] Generating $
+      gen/data_manager/testing/symbol*
+  restat = 1
+
+build gen/data_manager/testing/symbol_token.data $
+    gen/data_manager/testing/symbol_string.data: $
+    gen_separate_symbol_rewriter_data_for_mock_gen_separate_symbol_rewriter_data_for_mock_59276f6b5bfadb342672bb87ce6dd8f8 $
+    gen_symbol_rewriter_dictionary_main ../../data/symbol/symbol.tsv $
+    ../../data/rules/sorting_map.tsv ../../data/symbol/ordering_rule.txt $
+    gen/data_manager/testing/user_pos_manager.data || $
+    gen_symbol_rewriter_dictionary_main
+
+build $
+    obj.host/data_manager/testing/gen_separate_symbol_rewriter_data_for_mock.actions_rules_copies.stamp: $
+    stamp gen/data_manager/testing/symbol_token.data $
+    gen/data_manager/testing/symbol_string.data
+

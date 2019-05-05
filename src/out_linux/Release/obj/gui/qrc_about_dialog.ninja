@@ -1,0 +1,14 @@
+rule qrc_about_dialog_target_qrc_be6fc83ca102573061cdf0e4d90ee13a
+  command = cd ../../gui; /usr/lib/x86_64-linux-gnu/qt5/bin/rcc -o $
+      ../out_linux/Release/gen/gui/about_dialog/qrc_about_dialog.cc -name $
+      qrc_about_dialog about_dialog/about_dialog.qrc
+  description = ACTION Generating Resource file from about_dialog.qrc
+  restat = 1
+
+build gen/gui/about_dialog/qrc_about_dialog.cc: $
+    qrc_about_dialog_target_qrc_be6fc83ca102573061cdf0e4d90ee13a $
+    ../../gui/about_dialog/about_dialog.qrc $
+    ../../gui/about_dialog/about_dialog_en.qm $
+    ../../gui/about_dialog/about_dialog_ja.qm $
+    ../../data/images/product_icon_32bpp-128.png
+

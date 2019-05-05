@@ -1,0 +1,12 @@
+Package: mozc-utils-gui-dbgsym
+Source: mozc
+Version: 2.23.2815.102+dfsg-4
+Auto-Built-Package: debug-symbols
+Architecture: amd64
+Maintainer: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Installed-Size: 12331
+Depends: mozc-utils-gui (= 2.23.2815.102+dfsg-4)
+Section: debug
+Priority: optional
+Description: debug symbols for mozc-utils-gui
+Build-Ids: 622cb135544032dcdd1dcdebfaa5cf443230eda3

@@ -1,0 +1,21 @@
+rule $
+    gen_separate_emoticon_rewriter_data_for_mock_gen_separate_emoticon_rewriter_data_for_mock_eb26c9b88d3505cf487440230a6b6527
+  command = cd ../../data_manager/testing; $
+      ../../out_linux/Debug/gen_emoticon_rewriter_data_main $
+      "--input=../../data/emoticon/emoticon.tsv" $
+      "--output_token_array=../../out_linux/Debug/gen/data_manager/testing/emoticon_token.data" $
+      "--output_string_array=../../out_linux/Debug/gen/data_manager/testing/emoticon_string.data"
+  description = ACTION(host) [mock] Generating emoticon data
+  restat = 1
+
+build gen/data_manager/testing/emoticon_token.data $
+    gen/data_manager/testing/emoticon_string.data: $
+    gen_separate_emoticon_rewriter_data_for_mock_gen_separate_emoticon_rewriter_data_for_mock_eb26c9b88d3505cf487440230a6b6527 $
+    gen_emoticon_rewriter_data_main ../../data/emoticon/emoticon.tsv || $
+    gen_emoticon_rewriter_data_main
+
+build $
+    obj.host/data_manager/testing/gen_separate_emoticon_rewriter_data_for_mock.actions_rules_copies.stamp: $
+    stamp gen/data_manager/testing/emoticon_token.data $
+    gen/data_manager/testing/emoticon_string.data
+

@@ -1,0 +1,36 @@
+rule $
+    gen_separate_counter_suffix_data_for_chromeos_gen_separate_counter_suffix_data_for_chromeos_6dc2d0add90e66a2a272edab01f2497a
+  command = cd ../../data_manager/chromeos; python $
+      ../../rewriter/gen_counter_suffix_array.py $
+      "--id_file=../../data/dictionary_chromeos/id.def" $
+      "--output=../../out_linux/Release/gen/data_manager/chromeos/counter_suffix.data" $
+      ../../data/dictionary_chromeos/dictionary00.txt $
+      ../../data/dictionary_chromeos/dictionary01.txt $
+      ../../data/dictionary_chromeos/dictionary02.txt $
+      ../../data/dictionary_chromeos/dictionary03.txt $
+      ../../data/dictionary_chromeos/dictionary04.txt $
+      ../../data/dictionary_chromeos/dictionary05.txt $
+      ../../data/dictionary_chromeos/dictionary06.txt $
+      ../../data/dictionary_chromeos/dictionary07.txt $
+      ../../data/dictionary_chromeos/dictionary08.txt $
+      ../../data/dictionary_chromeos/dictionary09.txt $
+      ../../data/dictionary_chromeos/reading_correction.tsv
+  description = ACTION(host) [chromeos] Generating $
+      gen/data_manager/chromeos/counter_suffix.data
+  restat = 1
+
+build gen/data_manager/chromeos/counter_suffix.data: $
+    gen_separate_counter_suffix_data_for_chromeos_gen_separate_counter_suffix_data_for_chromeos_6dc2d0add90e66a2a272edab01f2497a $
+    ../../data/dictionary_chromeos/id.def $
+    ../../data/dictionary_chromeos/dictionary00.txt $
+    ../../data/dictionary_chromeos/dictionary01.txt $
+    ../../data/dictionary_chromeos/dictionary02.txt $
+    ../../data/dictionary_chromeos/dictionary03.txt $
+    ../../data/dictionary_chromeos/dictionary04.txt $
+    ../../data/dictionary_chromeos/dictionary05.txt $
+    ../../data/dictionary_chromeos/dictionary06.txt $
+    ../../data/dictionary_chromeos/dictionary07.txt $
+    ../../data/dictionary_chromeos/dictionary08.txt $
+    ../../data/dictionary_chromeos/dictionary09.txt $
+    ../../data/dictionary_chromeos/reading_correction.tsv
+

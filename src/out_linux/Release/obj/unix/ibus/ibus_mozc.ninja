@@ -1,0 +1,131 @@
+build obj/unix/ibus/ibus_mozc.actions_depends.stamp: stamp $
+    obj/base/libbase.a gen/unix/ibus/mozc.xml $
+    obj/unix/ibus/libibus_mozc_lib.a obj/unix/ibus/libibus_mozc_metadata.a $
+    obj/base/libbase_core.a obj/base/libclock.a obj/base/libsingleton.a $
+    obj/base/libmutex.a obj/base/libflags.a gen/base/character_set.inc $
+    gen/base/version_def.h obj/base/libhash.a obj/base/libstring_piece.a $
+    obj/client/libclient.a obj/ipc/libipc.a obj/ipc/libipc_protocol.a $
+    obj.host/ipc/genproto_ipc.actions_rules_copies.stamp $
+    obj/protocol/libcommands_proto.a obj/protocol/libcandidates_proto.a $
+    obj.host/protocol/genproto_candidates_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj/protocol/libconfig_proto.a obj/protocol/libengine_builder_proto.a $
+    obj.host/protocol/genproto_engine_builder_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_commands_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_user_dictionary_storage_proto.actions_rules_copies.stamp $
+    obj/protocol/libuser_dictionary_storage_proto.a $
+    obj/session/libime_switch_util.a obj/config/libconfig_handler.a $
+    obj/base/libconfig_file_stream.a gen/base/config_file_stream_data.inc $
+    obj/session/libkey_info_util.a obj/composer/libkey_event_util.a $
+    obj/composer/libkey_parser.a obj/session/libkeymap.a $
+    obj/unix/ibus/libibus_property_handler.a $
+    obj/unix/ibus/libmessage_translator.a obj/unix/ibus/libpath_util.a $
+    obj/unix/ibus/libgtk_candidate_window_handler.a $
+    obj/protocol/librenderer_proto.a $
+    obj.host/protocol/genproto_renderer_proto.actions_rules_copies.stamp $
+    obj/renderer/librenderer_client.a obj/unix/ibus/libselection_monitor.a
+
+build obj/unix/ibus/ibus_mozc.compile_depends.stamp: stamp $
+    gen/unix/ibus/mozc.xml $
+    obj/protocol/commands_proto.compile_depends.stamp $
+    obj/protocol/commands_proto.compile_depends.stamp $
+    obj/base/base_core.compile_depends.stamp gen/base/character_set.inc $
+    gen/base/version_def.h obj/client/client.compile_depends.stamp $
+    obj.host/ipc/genproto_ipc.actions_rules_copies.stamp $
+    obj.host/ipc/genproto_ipc.actions_rules_copies.stamp $
+    obj.host/ipc/genproto_ipc.actions_rules_copies.stamp $
+    obj/protocol/commands_proto.compile_depends.stamp $
+    obj.host/protocol/genproto_candidates_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_candidates_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_engine_builder_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_engine_builder_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_commands_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_user_dictionary_storage_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_user_dictionary_storage_proto.actions_rules_copies.stamp $
+    obj/session/ime_switch_util.compile_depends.stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    gen/base/config_file_stream_data.inc $
+    gen/base/config_file_stream_data.inc $
+    obj/session/key_info_util.compile_depends.stamp $
+    obj/protocol/commands_proto.compile_depends.stamp $
+    obj/composer/key_parser.compile_depends.stamp $
+    obj/session/keymap.compile_depends.stamp $
+    obj/protocol/commands_proto.compile_depends.stamp $
+    obj/protocol/renderer_proto.compile_depends.stamp $
+    obj/protocol/renderer_proto.compile_depends.stamp $
+    obj.host/protocol/genproto_renderer_proto.actions_rules_copies.stamp $
+    obj/renderer/renderer_client.compile_depends.stamp
+
+rule ibus_mozc_target_gen_main_h_d3fee09096cd269d3bcdc246d3f747a6
+  command = cd ../../unix/ibus; python ../../build_tools/redirect.py $
+      ../../out_linux/Release/gen/unix/ibus/main.h ./gen_mozc_xml.py $
+      "--branding=Mozc" --output_cpp $
+      "--ibus_mozc_path=/usr/lib/ibus-mozc/ibus-engine-mozc" $
+      "--ibus_mozc_icon_path=/usr/share/ibus-mozc/product_icon.png"
+  description = ACTION ibus_mozc: gen_main_h_d3fee09096cd269d3bcdc246d3f747a6
+  restat = 1
+
+build gen/unix/ibus/main.h: $
+    ibus_mozc_target_gen_main_h_d3fee09096cd269d3bcdc246d3f747a6 $
+    ../../unix/ibus/gen_mozc_xml.py || $
+    obj/unix/ibus/ibus_mozc.actions_depends.stamp
+
+defines = -DOS_LINUX -DMOZC_BUILD -DCHANNEL_DEV -DENABLE_GTK_RENDERER $
+    -DMOZC_ENABLE_X11_SELECTION_MONITOR=1 -DNDEBUG -DQT_NO_DEBUG $
+    -DNO_LOGGING -DIGNORE_HELP_FLAG -DIGNORE_INVALID_FLAG
+includes = -I/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki/src -Igen $
+    -Igen/proto_out
+cflags = -Wall -Wno-char-subscripts -Wno-sign-compare $
+    -Wno-deprecated-declarations -Wwrite-strings $
+    -Wno-unknown-warning-option -Wno-inconsistent-missing-override -fPIC $
+    -fno-exceptions -fmessage-length=0 -fno-strict-aliasing -funsigned-char $
+    -pipe -pthread -fno-omit-frame-pointer -fstack-protector $
+    --param=ssp-buffer-size=4 -pthread -I/usr/include/ibus-1.0 $
+    -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/uuid $
+    -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -O2
+cflags_c = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2
+cflags_cc = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2 -Wno-deprecated
+arflags = 
+
+build obj/unix/ibus/ibus_mozc.main.o: cxx ../../unix/ibus/main.cc || $
+    gen/unix/ibus/main.h
+
+ldflags = -Wl,-z,relro -Wl,--as-needed -pthread
+libs = -libus-1.0 -lgio-2.0 -lgobject-2.0 -lglib-2.0 -lxcb -lxcb-xfixes $
+    -lprotobuf
+build ibus_mozc: link obj/unix/ibus/ibus_mozc.main.o obj/base/libbase.a $
+    obj/unix/ibus/libibus_mozc_lib.a obj/unix/ibus/libibus_mozc_metadata.a $
+    obj/base/libbase_core.a obj/base/libclock.a obj/base/libsingleton.a $
+    obj/base/libmutex.a obj/base/libflags.a obj/base/libhash.a $
+    obj/base/libstring_piece.a obj/client/libclient.a obj/ipc/libipc.a $
+    obj/ipc/libipc_protocol.a obj/protocol/libcommands_proto.a $
+    obj/protocol/libcandidates_proto.a obj/protocol/libconfig_proto.a $
+    obj/protocol/libengine_builder_proto.a $
+    obj/protocol/libuser_dictionary_storage_proto.a $
+    obj/session/libime_switch_util.a obj/config/libconfig_handler.a $
+    obj/base/libconfig_file_stream.a obj/session/libkey_info_util.a $
+    obj/composer/libkey_event_util.a obj/composer/libkey_parser.a $
+    obj/session/libkeymap.a obj/unix/ibus/libibus_property_handler.a $
+    obj/unix/ibus/libmessage_translator.a obj/unix/ibus/libpath_util.a $
+    obj/unix/ibus/libgtk_candidate_window_handler.a $
+    obj/protocol/librenderer_proto.a obj/renderer/librenderer_client.a $
+    obj/unix/ibus/libselection_monitor.a | gen/base/character_set.inc $
+    gen/base/config_file_stream_data.inc gen/base/version_def.h $
+    gen/unix/ibus/mozc.xml $
+    obj.host/ipc/genproto_ipc.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_candidates_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_commands_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_engine_builder_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_renderer_proto.actions_rules_copies.stamp $
+    obj.host/protocol/genproto_user_dictionary_storage_proto.actions_rules_copies.stamp $
+    || gen/unix/ibus/main.h
+  ld = $ldxx

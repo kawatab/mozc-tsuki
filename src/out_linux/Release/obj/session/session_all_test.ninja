@@ -1,0 +1,26 @@
+build obj/session/session_all_test.actions_depends.stamp: stamp $
+    generic_storage_manager_test random_keyevents_generator_test $
+    request_test_util_test session_converter_stress_test $
+    session_converter_test session_handler_scenario_test $
+    session_handler_stress_test session_handler_test $
+    session_key_handling_test session_internal_test session_module_test $
+    session_regression_test session_server_test session_test $
+    session_watch_dog_test
+
+build obj/session/session_all_test.compile_depends.stamp: stamp $
+    obj/session/generic_storage_manager_test.compile_depends.stamp $
+    obj/session/random_keyevents_generator_test.compile_depends.stamp $
+    obj/session/request_test_util_test.compile_depends.stamp $
+    obj/session/session_converter_stress_test.compile_depends.stamp $
+    obj/session/session_converter_test.compile_depends.stamp $
+    obj/session/session_handler_scenario_test.compile_depends.stamp $
+    obj/session/session_handler_stress_test.compile_depends.stamp $
+    obj/session/session_handler_test.compile_depends.stamp $
+    obj/session/session_key_handling_test.compile_depends.stamp $
+    obj/session/session_internal_test.compile_depends.stamp $
+    obj/session/session_module_test.compile_depends.stamp $
+    obj/session/session_regression_test.compile_depends.stamp $
+    obj/session/session_server_test.compile_depends.stamp $
+    obj/session/session_test.compile_depends.stamp $
+    obj/session/session_watch_dog_test.compile_depends.stamp
+

@@ -1,0 +1,9 @@
+build obj/engine/oss_engine_factory.actions_depends.stamp: stamp $
+    obj/base/libbase.a obj/data_manager/oss/liboss_data_manager.a $
+    obj/prediction/libprediction.a obj/engine/libengine.a
+
+build obj/engine/oss_engine_factory.compile_depends.stamp: stamp $
+    gen/data_manager/oss/mozc_data.inc $
+    obj/prediction/prediction.compile_depends.stamp $
+    obj/engine/engine.compile_depends.stamp
+

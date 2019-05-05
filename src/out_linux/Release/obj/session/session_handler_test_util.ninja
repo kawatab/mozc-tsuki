@@ -1,0 +1,42 @@
+build obj/session/session_handler_test_util.actions_depends.stamp: stamp $
+    obj/config/libconfig_handler.a $
+    obj/engine/oss_engine_factory.actions_depends.stamp $
+    obj/protocol/libcommands_proto.a obj/protocol/libconfig_proto.a $
+    obj/session/libsession_usage_observer.a
+
+build obj/session/session_handler_test_util.compile_depends.stamp: stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj/engine/oss_engine_factory.compile_depends.stamp $
+    obj/protocol/commands_proto.compile_depends.stamp $
+    obj.host/protocol/genproto_config_proto.actions_rules_copies.stamp $
+    obj/session/session_usage_observer.compile_depends.stamp
+
+defines = -DOS_LINUX -DMOZC_BUILD -DCHANNEL_DEV -DENABLE_GTK_RENDERER $
+    -DGTEST_LANG_CXX11=1 -DGTEST_HAS_TR1_TUPLE=0 -DNDEBUG -DQT_NO_DEBUG $
+    -DNO_LOGGING -DIGNORE_HELP_FLAG -DIGNORE_INVALID_FLAG
+includes = -I/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki/src -Igen $
+    -Igen/proto_out -I../../third_party/gtest/googlemock/include $
+    -I../../third_party/gtest/googletest/include
+cflags = -Wall -Wno-char-subscripts -Wno-sign-compare $
+    -Wno-deprecated-declarations -Wwrite-strings $
+    -Wno-unknown-warning-option -Wno-inconsistent-missing-override -fPIC $
+    -fno-exceptions -fmessage-length=0 -fno-strict-aliasing -funsigned-char $
+    -pipe -pthread -fno-omit-frame-pointer -fstack-protector $
+    --param=ssp-buffer-size=4 -O2
+cflags_c = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2
+cflags_cc = -Wdate-time -D_FORTIFY_SOURCE=2 -g -O2 $
+    -fdebug-prefix-map=/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki=. $
+    -fstack-protector-strong -Wformat -Werror=format-security -Wdate-time $
+    -D_FORTIFY_SOURCE=2 -Wno-deprecated
+arflags = 
+
+build obj/session/session_handler_test_util.session_handler_test_util.o: $
+    cxx ../../session/session_handler_test_util.cc || $
+    obj/session/session_handler_test_util.compile_depends.stamp
+
+build obj/session/libsession_handler_test_util.a: alink_thin $
+    obj/session/session_handler_test_util.session_handler_test_util.o || $
+    obj/session/session_handler_test_util.actions_depends.stamp

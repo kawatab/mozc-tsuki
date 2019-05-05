@@ -1,0 +1,16 @@
+rule $
+    gen_chromeos_embedded_pos_list_gen_chromeos_embedded_pos_list_335a31e5ff78a915e646b0ccc16e11a4
+  command = cd ../../data_manager/chromeos; python $
+      ../../build_tools/embed_file.py $
+      "--input=../../out_linux/Debug/gen/data_manager/chromeos/pos_list.data" $
+      "--name=kPosArray" $
+      "--output=../../out_linux/Debug/gen/data_manager/chromeos/pos_list.h"
+  description = ACTION(host) gen_chromeos_embedded_pos_list: $
+      gen_chromeos_embedded_pos_list_335a31e5ff78a915e646b0ccc16e11a4
+  restat = 1
+
+build gen/data_manager/chromeos/pos_list.h: $
+    gen_chromeos_embedded_pos_list_gen_chromeos_embedded_pos_list_335a31e5ff78a915e646b0ccc16e11a4 $
+    gen/data_manager/chromeos/pos_list.data || $
+    obj.host/data_manager/chromeos/gen_separate_user_pos_data_for_chromeos.actions_rules_copies.stamp
+

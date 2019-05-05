@@ -1,0 +1,16 @@
+rule $
+    gen_oss_segmenter_inl_header_gen_oss_segmenter_inl_header_af057e32775edaa584e08116925bce11
+  command = cd ../../data_manager/oss; python ../../build_tools/redirect.py $
+      ../../out_linux/Debug/gen/data_manager/oss/segmenter_inl.inc $
+      ../../converter/gen_segmenter_code.py $
+      ../../data/dictionary_oss/id.def ../../data/rules/special_pos.def $
+      ../../data/rules/segmenter.def
+  description = ACTION(host) [oss] Generating $
+      gen/data_manager/oss/segmenter_inl.inc.
+  restat = 1
+
+build gen/data_manager/oss/segmenter_inl.inc: $
+    gen_oss_segmenter_inl_header_gen_oss_segmenter_inl_header_af057e32775edaa584e08116925bce11 $
+    ../../converter/gen_segmenter_code.py ../../data/dictionary_oss/id.def $
+    ../../data/rules/special_pos.def ../../data/rules/segmenter.def
+

@@ -1,0 +1,26 @@
+rule $
+    gen_separate_symbol_rewriter_data_for_oss_gen_separate_symbol_rewriter_data_for_oss_0e1f0647a0acb99d8b641bcfc50139e1
+  command = cd ../../data_manager/oss; $
+      ../../out_linux/Debug/gen_symbol_rewriter_dictionary_main $
+      "--input=../../data/symbol/symbol.tsv" $
+      "--user_pos_manager_data=../../out_linux/Debug/gen/data_manager/oss/user_pos_manager.data" $
+      "--sorting_table=../../data/rules/sorting_map.tsv" $
+      "--ordering_rule=../../data/symbol/ordering_rule.txt" $
+      "--output_token_array=../../out_linux/Debug/gen/data_manager/oss/symbol_token.data" $
+      "--output_string_array=../../out_linux/Debug/gen/data_manager/oss/symbol_string.data"
+  description = ACTION(host) [oss] Generating gen/data_manager/oss/symbol*
+  restat = 1
+
+build gen/data_manager/oss/symbol_token.data $
+    gen/data_manager/oss/symbol_string.data: $
+    gen_separate_symbol_rewriter_data_for_oss_gen_separate_symbol_rewriter_data_for_oss_0e1f0647a0acb99d8b641bcfc50139e1 $
+    gen_symbol_rewriter_dictionary_main ../../data/symbol/symbol.tsv $
+    ../../data/rules/sorting_map.tsv ../../data/symbol/ordering_rule.txt $
+    gen/data_manager/oss/user_pos_manager.data || $
+    gen_symbol_rewriter_dictionary_main
+
+build $
+    obj.host/data_manager/oss/gen_separate_symbol_rewriter_data_for_oss.actions_rules_copies.stamp: $
+    stamp gen/data_manager/oss/symbol_token.data $
+    gen/data_manager/oss/symbol_string.data
+

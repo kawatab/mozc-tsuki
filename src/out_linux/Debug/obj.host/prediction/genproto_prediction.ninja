@@ -1,0 +1,37 @@
+rule genproto_prediction_genproto_691f620806b800201c3f6ef792c38ca3
+  command = cd ../../prediction; python ../build_tools/protoc_wrapper.py $
+      "--project_root=.." "--protoc_command=protoc" "--proto=${source}" $
+      "--cpp_out=../out_linux/Debug/gen/proto_out"
+  description = RULE(host) Generating C++ code from ${source}
+  restat = 1
+
+build gen/proto_out/prediction/user_history_predictor.pb.h $
+    gen/proto_out/prediction/user_history_predictor.pb.cc: $
+    genproto_prediction_genproto_691f620806b800201c3f6ef792c38ca3 $
+    ../../prediction/user_history_predictor.proto | $
+    ../../build_tools/protoc_wrapper.py
+  source = user_history_predictor.proto
+build obj.host/prediction/genproto_prediction.actions_rules_copies.stamp: $
+    stamp gen/proto_out/prediction/user_history_predictor.pb.h $
+    gen/proto_out/prediction/user_history_predictor.pb.cc
+
+ar = $ar_host
+cc = $cc_host
+cxx = $cxx_host
+ld = $ld_host
+ldxx = $ldxx_host
+nm = $nm_host
+readelf = $readelf_host
+defines = -DOS_LINUX -DMOZC_BUILD -DCHANNEL_DEV -DENABLE_GTK_RENDERER -DDEBUG
+includes = -I/home/yasuhiro/Development/mozc-tsuki/mozc-tsuki/src -Igen
+cflags = -Wall -Wno-char-subscripts -Wno-sign-compare $
+    -Wno-deprecated-declarations -Wwrite-strings $
+    -Wno-unknown-warning-option -Wno-inconsistent-missing-override -fPIC $
+    -fno-exceptions -fmessage-length=0 -fno-strict-aliasing -funsigned-char $
+    -pipe -pthread -fno-omit-frame-pointer -fstack-protector $
+    --param=ssp-buffer-size=4 -O0 -g
+cflags_c = 
+cflags_cc = -Wno-deprecated
+arflags = 
+
+

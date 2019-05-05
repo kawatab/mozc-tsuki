@@ -1,0 +1,8 @@
+build obj/net/net_all_test.actions_depends.stamp: stamp $
+    http_client_mock_test jsonpath_test json_util_test
+
+build obj/net/net_all_test.compile_depends.stamp: stamp $
+    obj/net/http_client_mock_test.compile_depends.stamp $
+    obj/net/jsonpath_test.compile_depends.stamp $
+    obj/net/json_util_test.compile_depends.stamp
+

@@ -1,0 +1,29 @@
+rule $
+    gen_rewriter_files_gen_usage_rewriter_data_0b49b2ac5a565caf3ddbd36cec27dbf4
+  command = cd ../../rewriter; $
+      ../out_linux/Release/gen_usage_rewriter_dictionary_main $
+      "--usage_data_file=../third_party/japanese_usage_dictionary/usage_dict.txt" $
+      "--cforms_file=../data/rules/cforms.def" $
+      "--output_base_conjugation_suffix=../out_linux/Release/gen/rewriter/usage_base_conj_suffix.data" $
+      "--output_conjugation_suffix=../out_linux/Release/gen/rewriter/usage_conj_suffix.data" $
+      "--output_conjugation_index=../out_linux/Release/gen/rewriter/usage_conj_index.data" $
+      "--output_usage_item_array=../out_linux/Release/gen/rewriter/usage_item_array.data" $
+      "--output_string_array=../out_linux/Release/gen/rewriter/usage_string_array.data"
+  description = ACTION(host) gen_rewriter_files: $
+      gen_usage_rewriter_data_0b49b2ac5a565caf3ddbd36cec27dbf4
+  restat = 1
+
+build gen/rewriter/usage_base_conj_suffix.data $
+    gen/rewriter/usage_conj_index.data gen/rewriter/usage_conj_suffix.data $
+    gen/rewriter/usage_item_array.data $
+    gen/rewriter/usage_string_array.data: $
+    gen_rewriter_files_gen_usage_rewriter_data_0b49b2ac5a565caf3ddbd36cec27dbf4 $
+    gen_usage_rewriter_dictionary_main $
+    ../../third_party/japanese_usage_dictionary/usage_dict.txt $
+    ../../data/rules/cforms.def || gen_usage_rewriter_dictionary_main
+
+build obj.host/rewriter/gen_rewriter_files.actions_rules_copies.stamp: $
+    stamp gen/rewriter/usage_base_conj_suffix.data $
+    gen/rewriter/usage_conj_index.data gen/rewriter/usage_conj_suffix.data $
+    gen/rewriter/usage_item_array.data gen/rewriter/usage_string_array.data
+

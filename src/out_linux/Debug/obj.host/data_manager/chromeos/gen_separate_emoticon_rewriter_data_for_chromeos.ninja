@@ -1,0 +1,21 @@
+rule $
+    gen_separate_emoticon_rewriter_data_for_chromeos_gen_separate_emoticon_rewriter_data_for_chromeos_823c1c5c4c8fea30227ec1c9600d931b
+  command = cd ../../data_manager/chromeos; $
+      ../../out_linux/Debug/gen_emoticon_rewriter_data_main $
+      "--input=../../data/emoticon/emoticon.tsv" $
+      "--output_token_array=../../out_linux/Debug/gen/data_manager/chromeos/emoticon_token.data" $
+      "--output_string_array=../../out_linux/Debug/gen/data_manager/chromeos/emoticon_string.data"
+  description = ACTION(host) [chromeos] Generating emoticon data
+  restat = 1
+
+build gen/data_manager/chromeos/emoticon_token.data $
+    gen/data_manager/chromeos/emoticon_string.data: $
+    gen_separate_emoticon_rewriter_data_for_chromeos_gen_separate_emoticon_rewriter_data_for_chromeos_823c1c5c4c8fea30227ec1c9600d931b $
+    gen_emoticon_rewriter_data_main ../../data/emoticon/emoticon.tsv || $
+    gen_emoticon_rewriter_data_main
+
+build $
+    obj.host/data_manager/chromeos/gen_separate_emoticon_rewriter_data_for_chromeos.actions_rules_copies.stamp: $
+    stamp gen/data_manager/chromeos/emoticon_token.data $
+    gen/data_manager/chromeos/emoticon_string.data
+

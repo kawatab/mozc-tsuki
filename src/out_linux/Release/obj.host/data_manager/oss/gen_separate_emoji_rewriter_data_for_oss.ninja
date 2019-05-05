@@ -1,0 +1,20 @@
+rule $
+    gen_separate_emoji_rewriter_data_for_oss_gen_separate_emoji_rewriter_data_for_oss_bab2c7290d1998b631ebadb63d04e580
+  command = cd ../../data_manager/oss; python $
+      ../../rewriter/gen_emoji_rewriter_data.py $
+      "--input=../../data/emoji/emoji_data.tsv" $
+      "--output_token_array=../../out_linux/Release/gen/data_manager/oss/emoji_token.data" $
+      "--output_string_array=../../out_linux/Release/gen/data_manager/oss/emoji_string.data"
+  description = ACTION(host) [oss] Generating emoji data
+  restat = 1
+
+build gen/data_manager/oss/emoji_token.data $
+    gen/data_manager/oss/emoji_string.data: $
+    gen_separate_emoji_rewriter_data_for_oss_gen_separate_emoji_rewriter_data_for_oss_bab2c7290d1998b631ebadb63d04e580 $
+    ../../rewriter/gen_emoji_rewriter_data.py ../../data/emoji/emoji_data.tsv
+
+build $
+    obj.host/data_manager/oss/gen_separate_emoji_rewriter_data_for_oss.actions_rules_copies.stamp: $
+    stamp gen/data_manager/oss/emoji_token.data $
+    gen/data_manager/oss/emoji_string.data
+
