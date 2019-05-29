@@ -1,3 +1,10 @@
+// Modified code
+// Copyright 2019, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added a value to enum PreeditMethod
+
+// Original code
 // Copyright 2010-2018, Google Inc.
 // All rights reserved.
 //
