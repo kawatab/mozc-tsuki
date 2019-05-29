@@ -1,0 +1,296 @@
+Daescription: Update fcitx patch
+Author: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Last-Update: 2018-04-03
+
+diff --git a/src/unix/fcitx/eim.cc b/src/unix/fcitx/eim.cc
+index bc4f199f..12816a39 100644
+--- a/src/unix/fcitx/eim.cc
++++ b/src/unix/fcitx/eim.cc
+@@ -36,6 +36,7 @@
+ #include "fcitx_mozc.h"
+ #include "mozc_connection.h"
+ #include "mozc_response_parser.h"
++#include "base/init_mozc.h"
+ 
+ typedef struct _FcitxMozcState {
+     mozc::fcitx::FcitxMozc* mozc;
+@@ -88,7 +89,12 @@ static void* FcitxMozcCreate(FcitxInstance* instance)
+     FcitxMozcState* mozcState = (FcitxMozcState*) fcitx_utils_malloc0(sizeof(FcitxMozcState));
+     bindtextdomain("fcitx-mozc", LOCALEDIR);
+     bind_textdomain_codeset("fcitx-mozc", "UTF-8");
++    int argc = 1;
++    char argv0[] = "fcitx_mozc";
++    char *_argv[] = {argv0};
++    char **argv = _argv;
+ 
++    mozc::InitMozc(argv[0], &argc, &argv, true);
+     mozcState->mozc = new mozc::fcitx::FcitxMozc(
+         instance,
+         mozc::fcitx::MozcConnection::CreateMozcConnection(),
+@@ -157,7 +163,7 @@ INPUT_RETURN_VALUE FcitxMozcDoInput(void* arg, FcitxKeySym _sym, unsigned int _s
+     }
+ 
+     if (FcitxHotkeyIsHotKey(_sym, _state, MOZC_CTRL_ALT_H)) {
+-        pair< string, string > usage = mozcState->mozc->GetUsage();
++        std::pair< string, string > usage = mozcState->mozc->GetUsage();
+         if (usage.first.size() != 0 || usage.second.size() != 0) {
+             mozcState->inUsageState = true;
+             FcitxCandidateWordList* candList = FcitxInputStateGetCandidateList(mozcState->mozc->GetInputState());
+diff --git a/src/unix/fcitx/fcitx.gyp b/src/unix/fcitx/fcitx.gyp
+index f4acf3ab..e59d43a3 100644
+--- a/src/unix/fcitx/fcitx.gyp
++++ b/src/unix/fcitx/fcitx.gyp
+@@ -30,6 +30,7 @@
+ 
+ {
+   'variables': {
++    'use_fcitx%': 'YES',
+     'relative_dir': 'unix/fcitx',
+     'gen_out_dir': '<(SHARED_INTERMEDIATE_DIR)/<(relative_dir)',
+     'pkg_config_libs': [
+@@ -46,10 +47,8 @@
+         '../../session/session_base.gyp:ime_switch_util',
+         '../../protocol/protocol.gyp:commands_proto',
+     ],
+-    'fcitx_defines': [
+-      'LOCALEDIR="<!@(fcitx4-config --prefix)/share/locale/"',
+-    ]
+   },
++  'conditions': [['use_fcitx=="YES"', {
+   'targets': [
+     {
+       'target_name': 'gen_fcitx_mozc_i18n',
+@@ -97,8 +96,16 @@
+         '<@(fcitx_dep_include_dirs)',
+       ],
+       'defines': [
+-        '<@(fcitx_defines)',
++        'LOCALEDIR="<!@(fcitx4-config --prefix)/share/locale/"',
+       ],
+     },
+   ],
++  }, {
++  'targets': [
++    {
++      'target_name': 'no_fcitx_dummy',
++      'type': 'none',
++    }
++  ]}
++  ]],
+ }
+diff --git a/src/unix/fcitx/fcitx_key_event_handler.cc b/src/unix/fcitx/fcitx_key_event_handler.cc
+index 0685b5c6..4ec8b5d0 100644
+--- a/src/unix/fcitx/fcitx_key_event_handler.cc
++++ b/src/unix/fcitx/fcitx_key_event_handler.cc
+@@ -51,27 +51,27 @@ class AdditionalModifiersData {
+     data_[commands::KeyEvent::LEFT_SHIFT] = commands::KeyEvent::SHIFT;
+     data_[commands::KeyEvent::RIGHT_SHIFT] = commands::KeyEvent::SHIFT;
+   }
+-  const map<uint32, commands::KeyEvent::ModifierKey> &data() {
++  const std::map<uint32, commands::KeyEvent::ModifierKey> &data() {
+     return data_;
+   }
+ 
+  private:
+-  map<uint32, commands::KeyEvent::ModifierKey> data_;
++  std::map<uint32, commands::KeyEvent::ModifierKey> data_;
+ };
+ 
+ // TODO(hsumita): Moves this function into member functions of
+ // KeyEventHandler.
+ void AddAdditionalModifiers(
+-    set<commands::KeyEvent::ModifierKey> *modifier_keys_set) {
++    std::set<commands::KeyEvent::ModifierKey> *modifier_keys_set) {
+   DCHECK(modifier_keys_set);
+ 
+-  const map<uint32, commands::KeyEvent::ModifierKey> &data =
++  const std::map<uint32, commands::KeyEvent::ModifierKey> &data =
+       Singleton<AdditionalModifiersData>::get()->data();
+ 
+   // Adds MODIFIER if there are (LEFT|RIGHT)_MODIFIER like LEFT_SHIFT.
+-  for (set<commands::KeyEvent::ModifierKey>::const_iterator it =
++  for (std::set<commands::KeyEvent::ModifierKey>::const_iterator it =
+            modifier_keys_set->begin(); it != modifier_keys_set->end(); ++it) {
+-    map<uint32, commands::KeyEvent::ModifierKey>::const_iterator item =
++    std::map<uint32, commands::KeyEvent::ModifierKey>::const_iterator item =
+         data.find(*it);
+     if (item != data.end()) {
+       modifier_keys_set->insert(item->second);
+@@ -206,7 +206,7 @@ bool KeyEventHandler::ProcessModifiers(bool is_key_up, uint32 keyval,
+ 
+     // Modifier key event fires
+     key_event->mutable_modifier_keys()->Clear();
+-    for (set<commands::KeyEvent::ModifierKey>::const_iterator it =
++    for (std::set<commands::KeyEvent::ModifierKey>::const_iterator it =
+              modifiers_to_be_sent_.begin();
+          it != modifiers_to_be_sent_.end();
+          ++it) {
+diff --git a/src/unix/fcitx/fcitx_key_event_handler.h b/src/unix/fcitx/fcitx_key_event_handler.h
+index 8ad4f8b6..7b759a18 100644
+--- a/src/unix/fcitx/fcitx_key_event_handler.h
++++ b/src/unix/fcitx/fcitx_key_event_handler.h
+@@ -66,9 +66,9 @@ class KeyEventHandler {
+   // Non modifier key is pressed or not after all keys are released.
+   bool is_non_modifier_key_pressed_;
+   // Currently pressed modifier keys.  It is set of keyval.
+-  set<uint32> currently_pressed_modifiers_;
++  std::set<uint32> currently_pressed_modifiers_;
+   // Pending modifier keys.
+-  set<commands::KeyEvent::ModifierKey> modifiers_to_be_sent_;
++  std::set<commands::KeyEvent::ModifierKey> modifiers_to_be_sent_;
+ 
+   DISALLOW_COPY_AND_ASSIGN(KeyEventHandler);
+ };
+diff --git a/src/unix/fcitx/fcitx_key_translator.cc b/src/unix/fcitx/fcitx_key_translator.cc
+index 0a3425a5..44347abf 100644
+--- a/src/unix/fcitx/fcitx_key_translator.cc
++++ b/src/unix/fcitx/fcitx_key_translator.cc
+@@ -427,25 +427,25 @@ bool KeyTranslator::Translate(FcitxKeySym keyval,
+ 
+ void KeyTranslator::Init() {
+   for (int i = 0; i < arraysize(special_key_map); ++i) {
+-    CHECK(special_key_map_.insert(make_pair(special_key_map[i].from,
++    CHECK(special_key_map_.insert(std::make_pair(special_key_map[i].from,
+                                             special_key_map[i].to)).second);
+   }
+   for (int i = 0; i < arraysize(modifier_key_map); ++i) {
+-    CHECK(modifier_key_map_.insert(make_pair(modifier_key_map[i].from,
++    CHECK(modifier_key_map_.insert(std::make_pair(modifier_key_map[i].from,
+                                              modifier_key_map[i].to)).second);
+   }
+   for (int i = 0; i < arraysize(modifier_mask_map); ++i) {
+-    CHECK(modifier_mask_map_.insert(make_pair(modifier_mask_map[i].from,
++    CHECK(modifier_mask_map_.insert(std::make_pair(modifier_mask_map[i].from,
+                                               modifier_mask_map[i].to)).second);
+   }
+   for (int i = 0; i < arraysize(kana_map_jp); ++i) {
+     CHECK(kana_map_jp_.insert(
+-        make_pair(kana_map_jp[i].code, make_pair(
++        std::make_pair(kana_map_jp[i].code, std::make_pair(
+             kana_map_jp[i].no_shift, kana_map_jp[i].shift))).second);
+   }
+   for (int i = 0; i < arraysize(kana_map_us); ++i) {
+     CHECK(kana_map_us_.insert(
+-        make_pair(kana_map_us[i].code, make_pair(
++        std::make_pair(kana_map_us[i].code, std::make_pair(
+             kana_map_us[i].no_shift, kana_map_us[i].shift))).second);
+   }
+ }
+diff --git a/src/unix/fcitx/fcitx_key_translator.h b/src/unix/fcitx/fcitx_key_translator.h
+index 8d50dba7..b473672f 100644
+--- a/src/unix/fcitx/fcitx_key_translator.h
++++ b/src/unix/fcitx/fcitx_key_translator.h
+@@ -62,9 +62,9 @@ public:
+                  mozc::commands::KeyEvent *out_event) const;
+ 
+ private:
+-  typedef map<uint32, commands::KeyEvent::SpecialKey> SpecialKeyMap;
+-  typedef map<uint32, commands::KeyEvent::ModifierKey> ModifierKeyMap;
+-  typedef map<uint32, pair<string, string> > KanaMap;
++  typedef std::map<uint32, commands::KeyEvent::SpecialKey> SpecialKeyMap;
++  typedef std::map<uint32, commands::KeyEvent::ModifierKey> ModifierKeyMap;
++  typedef std::map<uint32, std::pair<string, string> > KanaMap;
+ 
+   // Returns true iff key is modifier key such as SHIFT, ALT, or CAPSLOCK.
+   bool IsModifierKey(uint32 keyval,
+diff --git a/src/unix/fcitx/fcitx_mozc.cc b/src/unix/fcitx/fcitx_mozc.cc
+index b87ae582..0c8ce651 100644
+--- a/src/unix/fcitx/fcitx_mozc.cc
++++ b/src/unix/fcitx/fcitx_mozc.cc
+@@ -547,7 +547,7 @@ void FcitxMozc::SetUsage(const string& title_, const string& description_)
+     description = description_;
+ }
+ 
+-pair< string, string > FcitxMozc::GetUsage()
++std::pair< string, string > FcitxMozc::GetUsage()
+ {
+     return make_pair(title, description);
+ }
+diff --git a/src/unix/fcitx/mozc_connection.cc b/src/unix/fcitx/mozc_connection.cc
+index 4ad8f017..068dcf46 100755
+--- a/src/unix/fcitx/mozc_connection.cc
++++ b/src/unix/fcitx/mozc_connection.cc
+@@ -129,13 +129,13 @@ bool MozcConnection::TrySendKeyEvent(
+     context.set_following_text(surrounding_text_info.following_text);
+   }
+ 
+-  VLOG(1) << "TrySendKeyEvent: " << endl << event.DebugString();
++  VLOG(1) << "TrySendKeyEvent: " << std::endl << event.DebugString();
+   if (!client_->SendKeyWithContext(event, context, out)) {
+     *out_error = "SendKey failed";
+     VLOG(1) << "ERROR";
+     return false;
+   }
+-  VLOG(1) << "OK: " << endl << out->DebugString();
++  VLOG(1) << "OK: " << std::endl << out->DebugString();
+   return true;
+ }
+ 
+@@ -182,13 +182,13 @@ bool MozcConnection::TrySendRawCommand(
+     const mozc::commands::SessionCommand& command,
+     mozc::commands::Output *out,
+     string *out_error) const {
+-  VLOG(1) << "TrySendRawCommand: " << endl << command.DebugString();
++  VLOG(1) << "TrySendRawCommand: " << std::endl << command.DebugString();
+   if (!client_->SendCommand(command, out)) {
+     *out_error = "SendCommand failed";
+     VLOG(1) << "ERROR";
+     return false;
+   }
+-  VLOG(1) << "OK: " << endl << out->DebugString();
++  VLOG(1) << "OK: " << std::endl << out->DebugString();
+   return true;
+ }
+ 
+diff --git a/src/unix/fcitx/mozc_response_parser.cc b/src/unix/fcitx/mozc_response_parser.cc
+index 4ac308e3..cd9ed811 100755
+--- a/src/unix/fcitx/mozc_response_parser.cc
++++ b/src/unix/fcitx/mozc_response_parser.cc
+@@ -293,7 +293,7 @@ void MozcResponseParser::ParseCandidates(
+         FcitxCandidateWordSetLayoutHint(candList, CLH_Vertical);
+     }
+ 
+-    map<int32, pair<string, string> > usage_map;
++    std::map<int32, std::pair<string, string> > usage_map;
+     if (candidates.has_usages()) {
+         const commands::InformationList& usages = candidates.usages();
+         for (size_t i = 0; i < usages.information().size(); ++i) {
+@@ -358,7 +358,7 @@ void MozcResponseParser::ParseCandidates(
+             type = MSG_FIRSTCAND;
+ 
+             if (candidate.has_information_id()) {
+-                map<int32, pair<string, string> >::iterator it =
++                std::map<int32, std::pair<string, string> >::iterator it =
+                     usage_map.find(candidate.information_id());
+                 if (it != usage_map.end()) {
+                     fcitx_mozc->SetUsage(it->second.first, it->second.second);
+diff --git a/src/unix/fcitx/surrounding_text_util.cc b/src/unix/fcitx/surrounding_text_util.cc
+index 8b4bfc69..d6ccc34a 100644
+--- a/src/unix/fcitx/surrounding_text_util.cc
++++ b/src/unix/fcitx/surrounding_text_util.cc
+@@ -49,11 +49,11 @@ bool SurroundingTextUtil::GetSafeDelta(uint from, uint to, int32 *delta) {
+   static_assert(sizeof(int64) == sizeof(llabs(0)),
+                 "|llabs(0)| must returns a 64-bit integer.");
+   const int64 kInt32AbsMax =
+-      llabs(static_cast<int64>(numeric_limits<int32>::max()));
++      llabs(static_cast<int64>(std::numeric_limits<int32>::max()));
+   const int64 kInt32AbsMin =
+-      llabs(static_cast<int64>(numeric_limits<int32>::min()));
++      llabs(static_cast<int64>(std::numeric_limits<int32>::min()));
+   const int64 kInt32SafeAbsMax =
+-      min(kInt32AbsMax, kInt32AbsMin);
++      std::min(kInt32AbsMax, kInt32AbsMin);
+ 
+   const int64 diff = static_cast<int64>(from) - static_cast<int64>(to);
+   if (llabs(diff) > kInt32SafeAbsMax) {
+@@ -227,8 +227,8 @@ bool GetSurroundingText(FcitxInstance* instance,
+         return false;
+     }
+ 
+-    const size_t selection_start = min(cursor_pos, anchor_pos);
+-    const size_t selection_length = abs(info->relative_selected_length);
++    const size_t selection_start = std::min(cursor_pos, anchor_pos);
++    const size_t selection_length = std::abs(info->relative_selected_length);
+     Util::SubStringPiece(surrounding_text, 0, selection_start)
+        .CopyToString(&info->preceding_text);
+     Util::SubStringPiece(surrounding_text, selection_start, selection_length)

@@ -1,0 +1,37 @@
+From dab0315c3b3237b54629cc232c4a28f0ac89b4dd Mon Sep 17 00:00:00 2001
+From: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Date: Tue, 24 Jul 2018 16:51:26 +0900
+Subject: [PATCH] Fix build with gcc8
+
+Patch from https://fars.ee/2is4.
+
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+---
+ src/prediction/zero_query_dict.h | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/src/prediction/zero_query_dict.h b/src/prediction/zero_query_dict.h
+index c11aa24d..6e24b0bf 100644
+--- a/src/prediction/zero_query_dict.h
++++ b/src/prediction/zero_query_dict.h
+@@ -147,6 +147,17 @@ class ZeroQueryDict {
+       return iter;
+     }
+ 
++    iterator &operator--() {
++      ptr_ -= kTokenByteSize;
++      return *this;
++    }
++
++    iterator operator--(int) {
++      const iterator tmp(ptr_, string_array_);
++      ptr_ -= kTokenByteSize;
++      return tmp;
++    }
++
+     iterator &operator-=(ptrdiff_t n) {
+       ptr_ -= n * kTokenByteSize;
+       return *this;
+-- 
+2.18.0
+

@@ -1,0 +1,115 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+#
+
+CPPFLAGS:=$(shell dpkg-buildflags --get CPPFLAGS)
+CFLAGS:=$(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
+CXXFLAGS:=$(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
+LDFLAGS:=$(shell dpkg-buildflags --get LDFLAGS) -Wl,--as-needed
+
+# clear XDG_CONFIG_DIRS for qtchooser
+unexport XDG_CONFIG_DIRS
+
+TARGETS=unix/ibus/ibus.gyp:ibus_mozc \
+	unix/emacs/emacs.gyp:mozc_emacs_helper \
+	server/server.gyp:mozc_server gui/gui.gyp:mozc_tool \
+	renderer/renderer.gyp:mozc_renderer
+TARGET_UIM=unix/uim/uim.gyp:uim-mozc
+TARGET_FCITX=unix/fcitx/fcitx.gyp:fcitx-mozc
+
+# for architecture dependent variables and changelog vars
+vafilt = $(subst $(2)=,,$(filter $(2)=%,$(1)))
+CHANGELOG_VARS := $(shell dpkg-parsechangelog | \
+	sed -n 's/ /_/g;/^[^_]/s/^\([^:]*\):_\(.*\)/\1=\2/p')
+
+SOURCE_VERSION := $(call vafilt,$(CHANGELOG_VARS),Version)
+
+%:
+	dh $@ --parallel
+
+override_dh_auto_configure:
+	cd src ; \
+	GYP_DEFINES="use_libprotobuf=1 use_libzinnia=1" python build_mozc.py gyp \
+		--gypdir=/usr/bin --target_platform=Linux --verbose
+
+override_dh_auto_build:
+	cd src ; \
+	V=1 python build_mozc.py build $(TARGETS) $(TARGET_UIM) $(TARGET_FCITX) -c Release
+
+override_dh_auto_test:
+	# cd src; python build_mozc.py runtests -c Debug
+
+override_dh_auto_clean:
+	cd src ; \
+	python build_mozc.py clean
+	-rm -rf src/build_tools/__init__.pyc
+	-rm -rf src/build_tools/mozc_version.pyc
+	-rm -rf src/build_tools/test_tools/__init__.pyc
+	-rm -rf src/build_tools/test_tools/task_scheduler.pyc
+	-rm -rf src/build_tools/util.pyc
+	-rm -rf src/build_tools/code_generator_util.pyc
+	-rm -rf src/build_tools/android_util.pyc
+	-rm -rf src/build_tools/serialized_string_array_builder.pyc
+	-rm -rf src/prediction/__init__.pyc
+	-rm -rf src/prediction/gen_zero_query_util.pyc
+	-rm -rf src/rewriter/embedded_dictionary_compiler.pyc
+	-rm -rf src/rewriter/__init__.pyc
+	-rm -rf src/dictionary/pos_util.pyc
+	-rm -rf src/dictionary/__init__.pyc
+	-rm -rf src/build_tools/test_tools/test_launcher.pyc
+	-rm -rf src/chrome/skk/skk_util_all_test.target.mk
+	-rm -rf src/chrome/skk/skk_util_test.target.mk
+
+	dh_auto_clean
+
+override_dh_auto_install:
+	# mozc-server
+	install -D -m 0755 src/out_linux/Release/mozc_renderer \
+		$(CURDIR)/debian/mozc-server/usr/lib/mozc/mozc_renderer
+	install -D -m 0644 debian/mozc-server.apparmor \
+		$(CURDIR)/debian/mozc-server/etc/apparmor.d/abstractions/mozc-server
+
+	# mozc-utils-gui
+	desktop-file-install --dir=$(CURDIR)/debian/mozc-utils-gui/usr/share/applications \
+		$(CURDIR)/debian/setup-mozc.desktop
+
+	# ibus-mozc
+	install -D -m 0755 src/out_linux/Release/ibus_mozc \
+		$(CURDIR)/debian/ibus-mozc/usr/lib/ibus-mozc/ibus-engine-mozc
+	install -d $(CURDIR)/debian/ibus-mozc/usr/share/ibus/component/
+	sed -e 's|/usr/libexec/ibus-engine-mozc|/usr/lib/ibus-mozc/ibus-engine-mozc|' \
+		-e 's|0\.0\.0\.0|$(SOURCE_VERSION)|g' < \
+		src/out_linux/Release/gen/unix/ibus/mozc.xml > \
+		$(CURDIR)/debian/ibus-mozc/usr/share/ibus/component/mozc.xml
+
+ 	# uim-mozc
+	install -D -m 0755 src/out_linux/Release/libuim-mozc.so \
+		$(CURDIR)/debian/uim-mozc/usr/lib/$(DEB_BUILD_MULTIARCH)/uim/plugin/libuim-mozc.so
+
+	# fcitx-mozc
+	install -D -m 0755 src/out_linux/Release/fcitx-mozc.so \
+		 $(CURDIR)/debian/fcitx-mozc/usr/lib/$(DEB_BUILD_MULTIARCH)/fcitx/fcitx-mozc.so
+	# mo
+	install -D -m 0644 src/out_linux/Release/gen/unix/fcitx/po/ja.mo \
+		$(CURDIR)/debian/fcitx-mozc/usr/share/locale/ja/LC_MESSAGES/fcitx-mozc.mo
+	install -D -m 0644 src/out_linux/Release/gen/unix/fcitx/po/zh_TW.mo \
+		$(CURDIR)/debian/fcitx-mozc/usr/share/locale/zh_TW/LC_MESSAGES/fcitx-mozc.mo
+	install -D -m 0644 src/out_linux/Release/gen/unix/fcitx/po/zh_CN.mo \
+		$(CURDIR)/debian/fcitx-mozc/usr/share/locale/zh_CN/LC_MESSAGES/fcitx-mozc.mo
+	# config file
+	install -D -m 0644 src/unix/fcitx/fcitx-mozc.conf \
+		$(CURDIR)/debian/fcitx-mozc/usr/share/fcitx/addon/fcitx-mozc.conf
+	install -D -m 0644 src/unix/fcitx/mozc.conf \
+		$(CURDIR)/debian/fcitx-mozc/usr/share/fcitx/inputmethod/mozc.conf
+
+override_dh_fixperms-arch:
+	chmod -x debian/emacs-mozc/usr/share/emacs/site-lisp/emacs-mozc/mozc.el
+	dh_fixperms
+
+override_dh_fixperms-indep:
+	chmod -x debian/mozc-data/usr/share/icons/mozc/*.png
+	dh_fixperms
+
+.PHONY: override_dh_installemacsen
+override_dh_installemacsen:
+	dh_installemacsen --priority=50

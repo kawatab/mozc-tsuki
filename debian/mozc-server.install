@@ -1,0 +1,2 @@
+src/out_linux/Release/mozc_server usr/lib/mozc/
+#out_linux/Release/mozc_renderer usr/lib/mozc/
