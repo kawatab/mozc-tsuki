@@ -104,7 +104,6 @@ message Config {
   enum PreeditMethod {
     ROMAN = 0;
     KANA = 1;
-    TSUKI = 2;
   };
 
   // Roman/Kana

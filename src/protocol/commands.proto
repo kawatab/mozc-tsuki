@@ -1081,7 +1081,6 @@ message Output {
   enum PreeditMethod {
     ASCII = 0;
     KANA = 1;
-    TSUKI = 2;
   };
   optional PreeditMethod preedit_method = 10 [default = ASCII];
 
