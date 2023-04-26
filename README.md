@@ -1,11 +1,11 @@
 mozc-tsuki
 ===================================
 
-Copyright 2019, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
 
-This is an improved version of Mozc. With this version, you can input japanese by Tsuki 2-263 layout. At the moment, ibus-mozc, fcitx-mozc and emacs-mozc are available, and uim-mozc may be. I prepare package for Debian only.
+This is an improved version of Mozc. With this version, you can input japanese by Tsuki 2-263 layout. At the moment, ibus-mozc, fcitx-mozc , fcitx5-mozc and emacs-mozc are available, and uim-mozc may be. I prepare package for Debian only.
 
-月配列2-263式を使えるようにMozcをソースに手を加えました。今のところ、ibus-mozcとfcitx-mozc、emacs-mozcは使えます。uim-mozcはテストしていませんが、使えるかもしれません。
+月配列2-263式を使えるようにMozcをソースに手を加えました。今のところ、ibus-mozcとfcitx-mozc, fcitx5-mozc、emacs-mozcは使えます。uim-mozcはテストしていませんが、使えるかもしれません。
 
 対応しているのはDebianのみです。
 
@@ -45,9 +45,10 @@ Build and Install
 ------------
 
 ### 1. Install required tools.
-必要なツールをインストールする。
+必要なツールとパッケージをインストールする。2023年4月26日現在、必要なパッケージをインストールするときの依存関係の解決が面倒です。
 ```
 sudo apt-get install build-essential fakeroot devscripts
+sudo apt build-dep fcitx5-mozc
 ```
   
 ### 2. Make a directory for work.
@@ -72,11 +73,17 @@ git clone https://github.com/kawatab/mozc-tsuki.git
 dpkg-buildpackage -r -uc -b
 ```
 
-### 5. Install
-インストールする。
+もしくは、
 
 ```
-sudo dpkg -i fcitx-mozc_*deb mozc-server_*deb mozc-data_*deb emacs-mozc-bin_*deb emacs-mozc_*deb
+debuild -uc -us -b -d
+```
+
+### 5. Install
+インストールする。以下はFcitx5を用いる場合。
+
+```
+sudo dpkg -i fcitx5-mozc_*deb mozc-server_*deb mozc-data_*deb emacs-mozc-bin_*deb emacs-mozc_*deb
 ```
 
 If you have any problem, please see [Debian's building tutorial](https://wiki.debian.org/BuildingTutorial).
@@ -88,7 +95,7 @@ The original README is below.
 [Mozc - a Japanese Input Method Editor designed for multi-platform](https://github.com/google/mozc)
 ===================================
 
-Copyright 2010-2018, Google Inc.
+Copyright 2010-2022, Google Inc.
 
 Mozc is a Japanese Input Method Editor (IME) designed for multi-platform such as
 Android OS, Apple OS X, Chromium OS, GNU/Linux and Microsoft Windows.  This
@@ -98,9 +105,10 @@ OpenSource project originates from
 Build Status
 ------------
 
-|Android + OS X + Linux + NaCl |Windows |
-|:----------------------------:|:------:|
-[![Build Status](https://travis-ci.org/google/mozc.svg?branch=master)](https://travis-ci.org/google/mozc) |[![Build status](https://ci.appveyor.com/api/projects/status/1rvmtp7f80jv7ehf/branch/master?svg=true)](https://ci.appveyor.com/project/google/mozc/branch/master) |
+| Linux | Windows | macOS | Android lib |
+|:-----:|:-------:|:-----:|:-----------:|
+| [![Linux](https://github.com/google/mozc/actions/workflows/linux.yaml/badge.svg)](https://github.com/google/mozc/actions/workflows/linux.yaml) | [![Windows](https://github.com/google/mozc/actions/workflows/windows.yaml/badge.svg)](https://github.com/google/mozc/actions/workflows/windows.yaml) | [![macOS](https://github.com/google/mozc/actions/workflows/macos.yaml/badge.svg)](https://github.com/google/mozc/actions/workflows/macos.yaml) | [![Android lib](https://github.com/google/mozc/actions/workflows/android.yaml/badge.svg)](https://github.com/google/mozc/actions/workflows/android.yaml) |
+
 
 What's Mozc?
 ------------
@@ -118,7 +126,7 @@ Detailed differences between Google Japanese Input and Mozc are described in [Ab
 Build Instructions
 ------------------
 
-* [How to build Mozc in Docker](docs/build_mozc_in_docker.md): Android, NaCl, and Linux desktop builds.
+* [How to build Mozc in Docker](docs/build_mozc_in_docker.md): Android library and Linux desktop builds.
 * [How to build Mozc in OS X](docs/build_mozc_in_osx.md): OS X build.
 * [How to build Mozc in Windows](docs/build_mozc_in_windows.md): Windows build.
 
@@ -143,27 +151,23 @@ License
 
 All Mozc code written by Google is released under
 [The BSD 3-Clause License](http://opensource.org/licenses/BSD-3-Clause).
-For thrid party code under [src/third_party](src/third_party) directory,
+For third party code under [src/third_party](src/third_party) directory,
 see each sub directory to find the copyright notice.  Note also that
 outside [src/third_party](src/third_party) following directories contain
-thrid party code.
+third party code.
 
 ### [src/data/dictionary_oss/](src/data/dictionary_oss)
-
 Mixed.
 See [src/data/dictionary_oss/README.txt](src/data/dictionary_oss/README.txt)
 
 ### [src/data/test/dictionary/](src/data/test/dictionary)
-
 The same to [src/data/dictionary_oss/](src/data/dictionary_oss).
 See [src/data/dictionary_oss/README.txt](src/data/dictionary_oss/README.txt)
 
 ### [src/data/test/stress_test/](src/data/test/stress_test)
-
 Public Domain.  See the comment in
 [src/data/test/stress_test/sentences.txt](src/data/test/stress_test/sentences.txt)
 
 ### [src/data/unicode/](src/data/unicode)
-
 UNICODE, INC. LICENSE AGREEMENT.
 See each file header for details.
