@@ -1,2 +1,0 @@
-fcitx-mozc: postinst-has-useless-call-to-ldconfig
-fcitx-mozc: postrm-has-useless-call-to-ldconfig
