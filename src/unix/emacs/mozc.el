@@ -1,3 +1,13 @@
+;;; Modified code
+;; Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+;; All rights reserved.
+
+;; - Added a value for Tsuki map: mozc-keymap-tsuki
+;; - Added a value for Tsuki map: mozc-keymap-tsuki-101us
+;; - Added a value for Tsuki map: mozc-keymap-tsuki-106jp
+
+
+;;; Original code
 ;;; mozc.el --- minor mode to input Japanese with Mozc
 
 ;; Copyright 2010-2021, Google Inc. All rights reserved.
@@ -110,6 +120,14 @@
 ;;   ;; for 101 US keyboards
 ;;   (setq mozc-keymap-kana mozc-keymap-kana-101us)
 ;;
+;; If you use Tsuki 2-263 layout, You can choose one of them by setting
+;; `mozc-keymap-tsuki' variable.
+;;
+;;   ;; for 106 JP keyboards
+;;   (setq mozc-keymap-tsuki mozc-keymap-tsuki-106jp)
+;;
+;;   ;; for 101 US keyboards
+;;   (setq mozc-keymap-tsuki mozc-keymap-tsuki-101us)
 ;; For advanced users, there are APIs for more detailed customization
 ;; or even creating your own key map.
 ;; See `mozc-keymap-get-entry', `mozc-keymap-put-entry',
@@ -246,6 +264,15 @@ one for 101 US keyboards.  You can choose one of them by setting
 
   ;; for 101 US keyboards
   (setq mozc-keymap-kana mozc-keymap-kana-101us)
+
+If you use Tsuki 2-263 layout, You can choose one of them by setting
+`mozc-keymap-tsuki' variable.
+
+  ;; for 106 JP keyboards
+  (setq mozc-keymap-tsuki mozc-keymap-tsuki-106jp)
+
+  ;; for 101 US keyboards
+  (setq mozc-keymap-tsuki mozc-keymap-tsuki-101us)
 
 For advanced users, there are APIs for more detailed customization
 or even creating your own key map.
@@ -1768,8 +1795,9 @@ Emacs 23."
 
 (defvar mozc-keymap-preedit-method-to-keymap-name-map
   '((roman . nil)
-    (kana . mozc-keymap-kana))
-  "Mapping from preedit methods (roman or kana) to keymaps.
+    (kana . mozc-keymap-kana)
+    (tsuki . mozc-keymap-tsuki))
+  "Mapping from preedit methods (roman, kana or tsuki) to keymaps.
 The preedit method is taken from the server side configuration.")
 
 (defun mozc-keymap-current-active-keymap ()
@@ -1874,7 +1902,7 @@ KEYCODE must be an integer representing a key code to remove."
      ?P "\u300e" ?+ "\u300f" ?_ "\u308d"
      ;; ?F "ゎ" ?T "ヵ" ?* "ヶ"
      ?F "\u308e" ?T "\u30f5" ?* "\u30f6"))
-  "Key mapping from key codes to Kana strings based on 106-JP keyboard.")
+  "Key mapping (JIS) from key codes to Kana strings based on 106-JP keyboard.")
 
 ;;;###autoload
 (defvar mozc-keymap-kana-101us
@@ -1916,11 +1944,67 @@ KEYCODE must be an integer representing a key code to remove."
      ?P "\u300e" ?: "\u300f" ?_ "\u30fc" ?| "\u30fc"
      ;; ?F "ゎ" ?V "ゐ" ?+ "ゑ" ?T "ヵ" ?\" "ヶ"
      ?F "\u308e" ?V "\u3090" ?+ "\u3091" ?T "\u30f5" ?\" "\u30f6"))
-  "Key mapping from key codes to Kana strings based on 101-US keyboard.")
+  "Key mapping (JIS) from key codes to Kana strings based on 101-US keyboard.")
+
+;;;###autoload
+(defvar mozc-keymap-tsuki-106jp
+  (mozc-keymap-make-keymap-from-flat-list
+   '(;; 1st row
+     ;; 2nd row
+     ;; ?q "そ" ?w "こ" ?e "し" ?r "て" ?t "ょ"
+     ?q "\u305d" ?w "\u3053" ?e "\u3057" ?r "\u3066" ?t "\u3087"
+     ;; ?y "つ" ?u "ん" ?i "い" ?o "の" ?p "り"
+     ?y "\u3064" ?u "\u3093" ?i "\u3044" ?o "\u306e" ?p "\u308a"
+     ;; ?@ "ち"
+     ?@ "\u3061"
+     ;; 3rd row
+     ;; ?a "は" ?s "か"  ?d "゗"  ?f "と"  ?g "た"
+     ?a "\u306f" ?s "\u304b" ?d "\u3097" ?f "\u3068" ?g "\u305f"
+     ;; ?h "く" ?j "う"  ?k "゘"  ?l "゛"  ?\; "き"
+     ?h "\u304f" ?j "\u3046" ?k "\u3098" ?l "\u309b" ?\; "\u304d"
+     ;; ?: "れ"
+     ?: "\u308c"
+     ;; 4th row
+     ;; ?z "す" ?x "け" ?c "に"  ?v "な"  ?b "さ"
+     ?z "\u3059" ?x "\u3051" ?c "\u306b" ?v "\u306a" ?b "\u3055"
+     ;; ?n "っ" ?m "る" ?, "、"  ?. "。"  ?/ "゜"
+     ?n "\u3063" ?m "\u308b" ?, "\u3001" ?. "\u3002" ?/ "\u309c"
+     ;; ?\\ "・"
+     ?\\ "\u30fb"))
+  "Key mapping (Tsuki 2-263) from key codes to Kana strings based on 106-JP keyboard.")
+
+;;;###autoload
+(defvar mozc-keymap-tsuki-101us
+   (mozc-keymap-make-keymap-from-flat-list
+   '(;; 1st row
+     ;; 2nd row
+     ;; ?q "そ" ?w "こ"  ?e "し"  ?r "て"  ?t "ょ"
+     ?q "\u305d" ?w "\u3053" ?e "\u3057" ?r "\u3066" ?t "\u3087"
+     ;; ?y "つ" ?u "ん"  ?i "い"  ?o "の"  ?p "り"
+     ?y "\u3064" ?u "\u3093" ?i "\u3044" ?o "\u306e" ?p "\u308a"
+     ;; ?\[ "ち" ?\] "・"
+     ?\[ "\u3061" ?\] "\u30fb"
+     ;; 3rd row
+     ;; ?a "は" ?s "か"  ?d "゗"  ?f "と"  ?g "た"
+     ?a "\u306f" ?s "\u304b" ?d "\u3097" ?f "\u3068" ?g "\u305f"
+     ;; ?h "く" ?j "う"  ?k "゘"  ?l "゛"  ?\; "き"
+     ?h "\u304f" ?j "\u3046" ?k "\u3098" ?l "\u309b" ?\; "\u304d"
+     ;; ?' "れ"
+     ?' "\u308c"
+     ;; 4th row
+     ;; ?z "す" ?x "け" ?c "に"  ?v "な"  ?b "さ"
+     ?z "\u3059" ?x "\u3051" ?c "\u306b" ?v "\u306a" ?b "\u3055"
+     ;; ?n "っ" ?m "る" ?, "、"  ?. "。"  ?/ "゜"
+     ?n "\u3063" ?m "\u308b" ?, "\u3001" ?. "\u3002" ?/ "\u309c"))
+  "Key mapping (Tsuki 2-263) from key codes to Kana strings based on 105-US keyboard.")
 
 ;;;###autoload
 (defvar mozc-keymap-kana mozc-keymap-kana-106jp
-  "The default key mapping for Kana input method.")
+  "The default key mapping for Kana (JIS) input method.")
+
+;;;###autoload
+(defvar mozc-keymap-tsuki mozc-keymap-tsuki-101us
+  "The default key mapping for Kana (Tsuki 2-263) input method.")
 
 
 

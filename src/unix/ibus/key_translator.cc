@@ -1,3 +1,19 @@
+// Modified code
+// Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added a map of Tsuki layout for US keyboard, kTsukiUsMap
+// - Added a map of Tsuki layout for JP keyboard, kTsukiJpMap
+// - Added a function for Tsuki layout
+//     bool IsTsukiAvailable(guint keyval, guint keycode, guint modifiers,
+//                           bool layout_is_jp, std::string *out) const;
+// - Modified the function:
+//     bool Translate(guint keyval, guint keycode, guint modifiers,
+//                    config::Config::PreeditMethod method, bool layout_is_jp,
+//                    commands::KeyEvent *out_event) const;
+//
+
+// Original code
 // Copyright 2010-2021, Google Inc.
 // All rights reserved.
 //
@@ -287,6 +303,141 @@ static const KanaMap *kKanaUsMap = new KanaMap({
       {'?', {"め", "・"}},
     });
 
+static const KanaMap *kTsukiJpMap = new KanaMap({
+        {'1', {"１", "１"}},
+        {'!', {"！", "！"}},
+	{'2', {"２", "２"}},
+	{'\"', {"＂", "＂"}},
+	{'3', {"３", "３"}},
+	{'#', {"＃", "＃"}},
+	{'4', {"４", "４"}},
+	{'$', {"＄", "＄"}},
+	{'5', {"５", "５"}},
+	{'%', {"％", "％"}},
+	{'6', {"６", "６"}},
+	{'&', { "＆", "＆"}},
+	{'7', {"７", "７"}},
+	{'\'', {"＇", "＇"}},
+	{'8', {"８", "８"}},
+	{'(', {"（", "（"}},
+	{'9', {"９", "９"}},
+	{')', {"）", "）"}},
+	{'0', {"０", "０"}},
+	{'-', {"－", "－"}},
+	{'=', {"＝", "＝"}},
+	{'^', {"＾", "＾"}},
+	{'~', {"～", "～"}},
+	{'|', {"｜", "｜"}},
+	{'q', {"そ", "ｑ"}},
+	{'Q', {"そ", "Ｑ"}},
+	{'w', {"こ", "ｗ"}},
+	{'W', {"こ", "Ｗ"}},
+	{'e', {"し", "ｅ"}},
+	{'E', {"し", "Ｅ"}},
+	{'r', {"て", "ｒ"}},
+	{'R', {"て", "Ｒ"}},
+	{'t', {"ょ", "ｔ"}},
+	{'T', {"ょ", "Ｔ"}},
+	{'y', {"つ", "ｙ"}},
+
+	{'Y', {"つ", "Ｙ"}},
+	{'u', {"ん", "ｕ"}},
+	{'U', {"ん", "Ｕ"}},
+	{'i', {"い", "ｉ"}},
+	{'I', {"い", "Ｉ"}},
+	{'o', {"の", "ｏ"}},
+	{'O', {"の", "Ｏ"}},
+	{'p', {"り", "ｐ"}},
+	{'P', {"り", "Ｐ"}},
+	{'@', {"ち", "＠"}},
+	{'`', {"ち", "｀"}},
+	{'[', {"［", "［"}},
+	{'{', {"｛", "｛"}},
+	{'a', {"は", "ａ"}},
+	{'A', {"は", "Ａ"}},
+	{'s', {"か", "ｓ"}},
+	{'S', {"か", "Ｓ"}},
+	{'d', {"゗", "ｄ"}},
+	{'D', {"゗", "Ｄ"}},
+	{'f', {"と", "ｆ"}},
+	{'F', {"と", "Ｆ"}},
+	{'g', {"た", "ｇ"}},
+	{'G', {"た", "Ｇ"}},
+	{'h', {"く", "ｈ"}},
+	{'H', {"く", "Ｈ"}},
+	{'j', {"う", "ｊ"}},
+	{'J', {"う", "Ｊ"}},
+	{'k', {"゘", "ｋ"}},
+	{'K', {"゘", "Ｋ"}},
+	{'l', {"゛", "ｌ"}},
+	{'L', {"゛", "Ｌ"}},
+	{';', {"き", "；"}},
+	{'+', {"き", "＋"}},
+	{':', {"れ", "："}},
+	{'*', {"れ", "＊"}},
+	{']', {"］", "］"}},
+	{'}', {"｝", "｝"}},
+	{'z', {"す", "ｚ"}},
+	{'Z', {"す", "Ｚ"}},
+	{'x', {"け", "ｘ"}},
+	{'X', {"け", "Ｘ"}},
+	{'c', {"に", "ｃ"}},
+	{'C', {"に", "Ｃ"}},
+	{'v', {"な", "ｖ"}},
+	{'V', {"な", "Ｖ"}},
+	{'b', {"さ", "ｂ"}},
+	{'B', {"さ", "Ｂ"}},
+	{'n', {"っ", "ｎ"}},
+	{'N', {"っ", "Ｎ"}},
+	{'m', {"る", "ｍ"}},
+	{'M', {"る", "Ｍ"}},
+	{',', {"、", "，"}},
+	{'<', {"、", "＜"}},
+	{'.', {"。", "．"}},
+	{'>', {"。", "＞"}},
+	{'/', {"゜", "／"}},
+	{'?', {"゜", "？"}},
+	{'_', {"・", "＿"}},
+        // A backslash is handled in a special way because it is input by
+        // two different keys (the one next to Backslash and the one next
+        // to Right Shift).
+        {'\\', {"", ""}},
+    });
+
+static const KanaMap *kTsukiUsMap = new KanaMap({
+      {'`', {"｀", "｀"}},  {'~', {"～", "～"}},  {'1', {"１", "１"}},
+      {'!', {"！", "！"}},  {'2', {"２", "２"}},  {'@', {"＠", "＠"}},
+      {'3', {"３", "３"}},  {'#', {"＃", "＃"}},  {'4', {"４", "４"}},
+      {'$', {"＄", "＄"}},  {'5', {"５", "５"}},  {'%', {"％", "％"}},
+      {'6', {"６", "６"}},  {'^', {"＾", "＾"}},  {'7', {"７", "７"}},
+      {'&', {"＆", "＆"}},  {'8', {"８", "８"}},  {'*', {"＊", "＊"}},
+      {'9', {"９", "９"}},  {'(', {"（", "（"}},  {'0', {"０", "０"}},
+      {')', {"）", "）"}},  {'-', {"－", "－"}},  {'_', {"＿", "＿"}},
+      {'=', {"＝", "＝"}},  {'+', {"＋", "＋"}},  {'q', {"そ", "ｑ"}},
+      {'Q', {"そ", "Ｑ"}},  {'w', {"こ", "ｗ"}},  {'W', {"こ", "Ｗ"}},
+      {'e', {"し", "ｅ"}},  {'E', {"し", "Ｅ"}},  {'r', {"て", "ｒ"}},
+      {'R', {"て", "Ｒ"}},  {'t', {"ょ", "ｔ"}},  {'T', {"ょ", "Ｔ"}},
+      {'y', {"つ", "ｙ"}},  {'Y', {"つ", "Ｙ"}},  {'u', {"ん", "ｕ"}},
+      {'U', {"ん", "Ｕ"}},  {'i', {"い", "ｉ"}},  {'I', {"い", "Ｉ"}},
+      {'o', {"の", "ｏ"}},  {'O', {"の", "Ｏ"}},  {'p', {"り", "ｐ"}},
+      {'P', {"り", "Ｐ"}},  {'[', {"ち", "［"}},  {'{', {"ち", "｛"}},
+      {']', {"・", "］"}},  {'}', {"・", "｝"}},  {'\\',{"＼", "＼"}},
+      {'|', {"｜", "｜"}},  {'a', {"は", "ａ"}},  {'A', {"は", "Ａ"}},
+      {'s', {"か", "ｓ"}},  {'S', {"か", "Ｓ"}},  {'d', {"゗", "ｄ"}},
+      {'D', {"゗", "Ｄ"}},  {'f', {"と", "ｆ"}},  {'F', {"と", "Ｆ"}},
+      {'g', {"た", "ｇ"}},  {'G', {"た", "Ｇ"}},  {'h', {"く", "ｈ"}},
+      {'H', {"く", "Ｈ"}},  {'j', {"う", "ｊ"}},  {'J', {"う", "Ｊ"}},
+      {'k', {"゘", "ｋ"}},  {'K', {"゘", "Ｋ"}},  {'l', {"゛", "ｌ"}},
+      {'L', {"゛", "Ｌ"}},  {';', {"き", "；"}},  {':', {"き", "："}},
+      {'\'', {"れ", "’"}}, {'"', {"れ", "＂"}},  {'z', {"す", "ｚ"}},
+      {'Z', {"す", "Ｚ"}},  {'x', {"け", "ｘ"}},  {'X', {"け", "Ｘ"}},
+      {'c', {"に", "ｃ"}},  {'C', {"に", "Ｃ"}},  {'v', {"な", "ｖ"}},
+      {'V', {"な", "Ｖ"}},  {'b', {"さ", "ｂ"}},  {'B', {"さ", "Ｂ"}},
+      {'n', {"っ", "ｎ"}},  {'N', {"っ", "Ｎ"}},  {'m', {"る", "ｍ"}},
+      {'M', {"る", "Ｍ"}},  {',', {"、", "，"}},  {'<', {"、", "＜"}},
+      {'.', {"。", "．"}},  {'>', {"。", "＞"}},  {'/', {"゜", "／"}},
+      {'?', {"゜", "？"}},
+    });
 }  // namespace
 
 namespace ibus {
@@ -312,6 +463,11 @@ bool KeyTranslator::Translate(guint keyval, guint keycode, guint modifiers,
   if ((method == config::Config::KANA) &&
       IsKanaAvailable(keyval, keycode, modifiers, layout_is_jp,
                       &kana_key_string)) {
+    out_event->set_key_code(keyval);
+    out_event->set_key_string(kana_key_string);
+  } else if ((method == config::Config::TSUKI) &&
+      IsTsukiAvailable(keyval, keycode, modifiers, layout_is_jp,
+                       &kana_key_string)) {
     out_event->set_key_code(keyval);
     out_event->set_key_string(kana_key_string);
   } else if (IsAscii(keyval, keycode, modifiers)) {
@@ -385,6 +541,37 @@ bool KeyTranslator::IsKanaAvailable(guint keyval, guint keycode,
         *out = "ー";
       } else {
         *out = "ろ";
+      }
+    } else {
+      *out = (modifiers & IBUS_SHIFT_MASK) ? iter->second.second
+                                           : iter->second.first;
+    }
+  }
+  return true;
+}
+
+bool KeyTranslator::IsTsukiAvailable(guint keyval, guint keycode,
+                                     guint modifiers, bool layout_is_jp,
+                                     std::string *out) const {
+  if ((modifiers & IBUS_CONTROL_MASK) || (modifiers & IBUS_MOD1_MASK)) {
+    return false;
+  }
+  const KanaMap &kana_map = layout_is_jp ? *kTsukiJpMap : *kTsukiUsMap;
+  KanaMap::const_iterator iter = kana_map.find(keyval);
+  if (iter == kana_map.end()) {
+    return false;
+  }
+
+  if (out) {
+    // When a Japanese keyboard is in use, the yen-sign key and the backslash
+    // key generate the same |keyval|. In this case, we have to check |keycode|
+    // to return an appropriate string. See the following IBus issue for
+    // details: https://github.com/ibus/ibus/issues/73
+    if (keyval == '\\' && layout_is_jp) {
+      if (keycode == IBUS_bar) {
+        *out = "￥";
+      } else {
+        *out = "・";
       }
     } else {
       *out = (modifiers & IBUS_SHIFT_MASK) ? iter->second.second

@@ -1,3 +1,11 @@
+// Modified code
+// Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added the value: TSUKI to the enum PreeditMethod.
+//
+
+// Original code
 // Copyright 2010-2021, Google Inc.
 // All rights reserved.
 //
@@ -106,6 +114,7 @@ message Config {
   enum PreeditMethod {
     ROMAN = 0;
     KANA = 1;
+    TSUKI = 2;
   }
 
   // Roman/Kana

@@ -1,3 +1,14 @@
+// Modified code
+// Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Modified the function:
+//     MozcConnection::MozcConnection(
+//         mozc::client::ServerLauncherInterface *server_launcher,
+//         mozc::IPCClientFactoryInterface *client_factory)
+//
+
+// Original code
 // Copyright 2010-2012, Google Inc.
 // Copyright 2012~2013, Weng Xuetian <wengxt@gmail.com>
 // All rights reserved.
@@ -73,7 +84,8 @@ MozcConnection::MozcConnection(
   }
   VLOG(1)
       << "Current preedit method is "
-      << (preedit_method_ == mozc::config::Config::ROMAN ? "Roman" : "Kana");
+      << (preedit_method_ == mozc::config::Config::ROMAN ? "Roman" :
+	  preedit_method_ == mozc::config::Config::KANA ? "Kana" : "Tsuki");
 }
 
 MozcConnection::~MozcConnection() {

@@ -520,8 +520,13 @@
     </message>
     <message>
         <location filename="config_dialog.cc" line="140"/>
-        <source>Kana</source>
-        <translation>かな入力</translation>
+        <source>Kana (JIS)</source>
+        <translation>かな入力（JIS配列）</translation>
+    </message>
+    <message>
+        <location filename="config_dialog.cc" line="140"/>
+        <source>Kana (Tsuki)</source>
+        <translation>かな入力（月配列2-263式）</translation>
     </message>
     <message>
         <location filename="config_dialog.cc" line="144"/>
@@ -530,8 +535,13 @@
     </message>
     <message>
         <location filename="config_dialog.cc" line="145"/>
-        <source>Kana (switchable)</source>
-        <translation>かな入力 (切替可)</translation>
+        <source>Kana-JIS (switchable)</source>
+        <translation>かな入力 JIS配列 (切替可)</translation>
+    </message>
+    <message>
+        <location filename="config_dialog.cc" line="145"/>
+        <source>Kana-Tsuki (switchable)</source>
+        <translation>かな入力 月配列 (切替可)</translation>
     </message>
     <message>
         <location filename="config_dialog.cc" line="148"/>

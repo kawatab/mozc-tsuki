@@ -1,3 +1,22 @@
+// Modified code
+// Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added a map of Tsuki layout for JP keyboard, tsuki_map_jp
+// - Added a map of Tsuki layout for US keyboard, tsuki_map_us
+// - Added a function for Tsuki layout
+//     bool IsTsukiAvailable(KeySym keyval, uint32 keycode, KeyStates modifiers,
+//                           bool layout_is_jp, std::string *out) const;
+// - Modified the function:
+//     bool KeyTranslator::Translate(FcitxKeySym keyval,
+//                                   uint32 keycode,
+//                                   uint32 modifiers,
+//                                   config::Config::PreeditMethod method,
+//                                   bool layout_is_jp,
+//                                   commands::KeyEvent *out_event) const
+//
+
+// Original code
 // Copyright 2010-2012, Google Inc.
 // Copyright 2012-2017, Weng Xuetian <wengxt@gmail.com>
 // All rights reserved.
@@ -352,6 +371,199 @@ const struct {
       {'>', "\xe3\x82\x8b", "\xe3\x80\x82"},   // "る", "。"
       {'/', "\xe3\x82\x81", "\xe3\x83\xbb"},   // "め", "・"
       {'?', "\xe3\x82\x81", "\xe3\x83\xbb"},   // "め", "・"
+}, tsuki_map_jp[] = {
+      { '1' , "\xef\xbc\x91", "\xef\xbc\x91" },  // "１", "１"
+      { '!' , "\xef\xbc\x81", "\xef\xbc\x81" },  // "！", "！"
+      { '2' , "\xef\xbc\x92", "\xef\xbc\x92" },  // "２", "２"
+      { '"' , "\xef\xbc\x82", "\xef\xbc\x82" },  // "＂", "＂"
+      { '3' , "\xef\xbc\x93", "\xef\xbc\x93" },  // "３", "３"
+      { '#' , "\xef\xbc\x83", "\xef\xbc\x83" },  // "＃", "＃"
+      { '4' , "\xef\xbc\x94", "\xef\xbc\x94" },  // "４", "４"
+      { '$' , "\xef\xbc\x84", "\xef\xbc\x84" },  // "＄", "＄"
+      { '5' , "\xef\xbc\x95", "\xef\xbc\x95" },  // "５", "５"
+      { '%' , "\xef\xbc\x85", "\xef\xbc\x85" },  // "％", "％"
+      { '6' , "\xef\xbc\x96", "\xef\xbc\x96" },  // "６", "６"
+      { '&' , "\xef\xbc\x86", "\xef\xbc\x86" },  // "＆", "＆"
+      { '7' , "\xef\xbc\x97", "\xef\xbc\x97" },  // "７", "７"
+      { '\'', "\xef\xbc\x87", "\xef\xbc\x87" },  // "＇", "＇"
+      { '8' , "\xef\xbc\x98", "\xef\xbc\x98" },  // "８", "８"
+      { '(' , "\xef\xbc\x88", "\xef\xbc\x88" },  // "（", "（"
+      { '9' , "\xef\xbc\x99", "\xef\xbc\x99" },  // "９", "９"
+      { ')' , "\xef\xbc\x89", "\xef\xbc\x89" },  // "）", "）"
+      { '0' , "\xef\xbc\x90", "\xef\xbc\x90" },  // "０", "０"
+      { '-' , "\xef\xbc\x8d", "\xef\xbc\x8d" },  // "－", "－"
+      { '=' , "\xef\xbc\x9d", "\xef\xbc\x9d" },  // "＝", "＝"
+      { '^' , "\xef\xbc\xbe", "\xef\xbc\xbe" },  // "＾", "＾"
+      { '~' , "\xef\xbd\x9e", "\xef\xbd\x9e" },  // "～", "～"
+      { '|' , "\xef\xbd\x9c", "\xef\xbd\x9c" },  // "｜", "｜"
+      { 'q' , "\xe3\x81\x9d", "\xef\xbd\x91" },  // "そ", "ｑ"
+      { 'Q' , "\xe3\x81\x9d", "\xef\xbc\xb1" },  // "そ", "Ｑ"
+      { 'w' , "\xe3\x81\x93", "\xef\xbd\x97" },  // "こ", "ｗ"
+      { 'W' , "\xe3\x81\x93", "\xef\xbc\xb7" },  // "こ", "Ｗ"
+      { 'e' , "\xe3\x81\x97", "\xef\xbd\x85" },  // "し", "ｅ"
+      { 'E' , "\xe3\x81\x97", "\xef\xbc\xa5" },  // "し", "Ｅ"
+      { 'r' , "\xe3\x81\xa6", "\xef\xbd\x92" },  // "て", "ｒ"
+      { 'R' , "\xe3\x81\xa6", "\xef\xbc\xb2" },  // "て", "Ｒ"
+      { 't' , "\xe3\x82\x87", "\xef\xbd\x94" },  // "ょ", "ｔ"
+      { 'T' , "\xe3\x82\x87", "\xef\xbc\xb4" },  // "ょ", "Ｔ"
+      { 'y' , "\xe3\x81\xa4", "\xef\xbd\x99" },  // "つ", "ｙ"
+      { 'Y' , "\xe3\x81\xa4", "\xef\xbc\xb9" },  // "つ", "Ｙ"
+      { 'u' , "\xe3\x82\x93", "\xef\xbd\x95" },  // "ん", "ｕ"
+      { 'U' , "\xe3\x82\x93", "\xef\xbc\xb5" },  // "ん", "Ｕ"
+      { 'i' , "\xe3\x81\x84", "\xef\xbd\x89" },  // "い", "ｉ"
+      { 'I' , "\xe3\x81\x84", "\xef\xbc\xa9" },  // "い", "Ｉ"
+      { 'o' , "\xe3\x81\xae", "\xef\xbd\x8f" },  // "の", "ｏ"
+      { 'O' , "\xe3\x81\xae", "\xef\xbc\xaf" },  // "の", "Ｏ"
+      { 'p' , "\xe3\x82\x8a", "\xef\xbd\x90" },  // "り", "ｐ"
+      { 'P' , "\xe3\x82\x8a", "\xef\xbc\xb0" },  // "り", "Ｐ"
+      { '@' , "\xe3\x81\xa1", "\xef\xbc\xa0" },  // "ち", "＠"
+      { '`' , "\xe3\x81\xa1", "\xef\xbd\x80" },  // "ち", "｀"
+      { '[' , "\xef\xbc\xbb", "\xef\xbc\xbb" },  // "［", "［"
+      { '{' , "\xef\xbd\x9b", "\xef\xbd\x9b" },  // "｛", "｛"
+      { 'a' , "\xe3\x81\xaf", "\xef\xbd\x81" },  // "は", "ａ"
+      { 'A' , "\xe3\x81\xaf", "\xef\xbc\xa1" },  // "は", "Ａ"
+      { 's' , "\xe3\x81\x8b", "\xef\xbd\x93" },  // "か", "ｓ"
+      { 'S' , "\xe3\x81\x8b", "\xef\xbc\xb3" },  // "か", "Ｓ"
+      { 'd' , "\xe3\x82\x97", "\xef\xbd\x84" },  // "゗", "ｄ"
+      { 'D' , "\xe3\x82\x97", "\xef\xbc\xa4" },  // "゗", "Ｄ"
+      { 'f' , "\xe3\x81\xa8", "\xef\xbd\x86" },  // "と", "ｆ"
+      { 'F' , "\xe3\x81\xa8", "\xef\xbc\xa6" },  // "と", "Ｆ"
+      { 'g' , "\xe3\x81\x9f", "\xef\xbd\x87" },  // "た", "ｇ"
+      { 'G' , "\xe3\x81\x9f", "\xef\xbc\xa7" },  // "た", "Ｇ"
+      { 'h' , "\xe3\x81\x8f", "\xef\xbd\x88" },  // "く", "ｈ"
+      { 'H' , "\xe3\x81\x8f", "\xef\xbc\xa8" },  // "く", "Ｈ"
+      { 'j' , "\xe3\x81\x86", "\xef\xbd\x8a" },  // "う", "ｊ"
+      { 'J' , "\xe3\x81\x86", "\xef\xbc\xaa" },  // "う", "Ｊ"
+      { 'k' , "\xe3\x82\x98", "\xef\xbd\x8b" },  // "゘", "ｋ"
+      { 'K' , "\xe3\x82\x98", "\xef\xbc\xab" },  // "゘", "Ｋ"
+      { 'l' , "\xe3\x82\x9b", "\xef\xbd\x8c" },  // "゛", "ｌ"
+      { 'L' , "\xe3\x82\x9b", "\xef\xbc\xac" },  // "゛", "Ｌ"
+      { ';' , "\xe3\x81\x8d", "\xef\xbc\x9b" },  // "き", "；"
+      { '+' , "\xe3\x81\x8d", "\xef\xbc\x8b" },  // "き", "＋"
+      { ':' , "\xe3\x82\x8c", "\xef\xbc\x9a" },  // "れ", "："
+      { '*' , "\xe3\x82\x8c", "\xef\xbc\x8a" },  // "れ", "＊"
+      { ']' , "\xef\xbc\xbd", "\xef\xbc\xbd" },  // "］", "］"
+      { '}' , "\xef\xbd\x9d", "\xef\xbd\x9d" },  // "｝", "｝"
+      { 'z' , "\xe3\x81\x99", "\xef\xbd\x9a" },  // "す", "ｚ"
+      { 'Z' , "\xe3\x81\x99", "\xef\xbc\xba" },  // "す", "Ｚ"
+      { 'x' , "\xe3\x81\x91", "\xef\xbd\x98" },  // "け", "ｘ"
+      { 'X' , "\xe3\x81\x91", "\xef\xbc\xb8" },  // "け", "Ｘ"
+      { 'c' , "\xe3\x81\xab", "\xef\xbd\x83" },  // "に", "ｃ"
+      { 'C' , "\xe3\x81\xab", "\xef\xbc\xa3" },  // "に", "Ｃ"
+      { 'v' , "\xe3\x81\xaa", "\xef\xbd\x96" },  // "な", "ｖ"
+      { 'V' , "\xe3\x81\xaa", "\xef\xbc\xb6" },  // "な", "Ｖ"
+      { 'b' , "\xe3\x81\x95", "\xef\xbd\x82" },  // "さ", "ｂ"
+      { 'B' , "\xe3\x81\x95", "\xef\xbc\xa2" },  // "さ", "Ｂ"
+      { 'n' , "\xe3\x81\xa3", "\xef\xbd\x8e" },  // "っ", "ｎ"
+      { 'N' , "\xe3\x81\xa3", "\xef\xbc\xae" },  // "っ", "Ｎ"
+      { 'm' , "\xe3\x82\x8b", "\xef\xbd\x8d" },  // "る", "ｍ"
+      { 'M' , "\xe3\x82\x8b", "\xef\xbc\xad" },  // "る", "Ｍ"
+      { ',' , "\xe3\x80\x81", "\xef\xbc\x8c" },  // "、", "，"
+      { '<' , "\xe3\x80\x81", "\xef\xbc\x9c" },  // "、", "＜"
+      { '.' , "\xe3\x80\x82", "\xef\xbc\x8e" },  // "。", "．"
+      { '>' , "\xe3\x80\x82", "\xef\xbc\x9e" },  // "。", "＞"
+      { '/' , "\xe3\x82\x9c", "\xef\xbc\x8f" },  // "゜", "／"
+      { '?' , "\xe3\x82\x9c", "\xef\xbc\x9f" },  // "゜", "？"
+      { '_' , "\xe3\x83\xbb", "\xef\xbc\xbf" },  // "・", "＿"
+      // A backslash is handled in a special way because it is input by
+      // two different keys (the one next to Backslash and the one next
+      // to Right Shift).
+      { '\\', "", "" },
+}, tsuki_map_us[] = {
+      { '`' , "\xef\xbd\x80", "\xef\xbd\x80" },  // "｀", "｀"
+      { '~' , "\xef\xbd\x9e", "\xef\xbd\x9e" },  // "～", "～"
+      { '1' , "\xef\xbc\x91", "\xef\xbc\x91" },  // "１", "１"
+      { '!' , "\xef\xbc\x81", "\xef\xbc\x81" },  // "！", "！"
+      { '2' , "\xef\xbc\x92", "\xef\xbc\x92" },  // "２", "２"
+      { '@' , "\xef\xbc\xa0", "\xef\xbc\xa0" },  // "＠", "＠"
+      { '3' , "\xef\xbc\x93", "\xef\xbc\x93" },  // "３", "３"
+      { '#' , "\xef\xbc\x83", "\xef\xbc\x83" },  // "＃", "＃"
+      { '4' , "\xef\xbc\x94", "\xef\xbc\x94" },  // "４", "４"
+      { '$' , "\xef\xbc\x84", "\xef\xbc\x84" },  // "＄", "＄"
+      { '5' , "\xef\xbc\x95", "\xef\xbc\x95" },  // "５", "５"
+      { '%' , "\xef\xbc\x85", "\xef\xbc\x85" },  // "％", "％"
+      { '6' , "\xef\xbc\x96", "\xef\xbc\x96" },  // "６", "６"
+      { '^' , "\xef\xbc\xbe", "\xef\xbc\xbe" },  // "＾", "＾"
+      { '7' , "\xef\xbc\x97", "\xef\xbc\x97" },  // "７", "７"
+      { '&' , "\xef\xbc\x86", "\xef\xbc\x86" },  // "＆", "＆"
+      { '8' , "\xef\xbc\x98", "\xef\xbc\x98" },  // "８", "８"
+      { '*' , "\xef\xbc\x8a", "\xef\xbc\x8a" },  // "＊", "＊"
+      { '9' , "\xef\xbc\x99", "\xef\xbc\x99" },  // "９", "９"
+      { '(' , "\xef\xbc\x88", "\xef\xbc\x88" },  // "（", "（"
+      { '0' , "\xef\xbc\x90", "\xef\xbc\x90" },  // "０", "０"
+      { ')' , "\xef\xbc\x89", "\xef\xbc\x89" },  // "）", "）"
+      { '-' , "\xef\xbc\x8d", "\xef\xbc\x8d" },  // "－", "－"
+      { '_' , "\xef\xbc\xbf", "\xef\xbc\xbf" },  // "＿", "＿"
+      { '=' , "\xef\xbc\x9d", "\xef\xbc\x9d" },  // "＝", "＝"
+      { '+' , "\xef\xbc\x8b", "\xef\xbc\x8b" },  // "＋", "＋"
+      { 'q' , "\xe3\x81\x9d", "\xef\xbd\x91" },  // "そ", "ｑ"
+      { 'Q' , "\xe3\x81\x9d", "\xef\xbc\xb1" },  // "そ", "Ｑ"
+      { 'w' , "\xe3\x81\x93", "\xef\xbd\x97" },  // "こ", "ｗ"
+      { 'W' , "\xe3\x81\x93", "\xef\xbc\xb7" },  // "こ", "Ｗ"
+      { 'e' , "\xe3\x81\x97", "\xef\xbd\x85" },  // "し", "ｅ"
+      { 'E' , "\xe3\x81\x97", "\xef\xbc\xa5" },  // "し", "Ｅ"
+      { 'r' , "\xe3\x81\xa6", "\xef\xbd\x92" },  // "て", "ｒ"
+      { 'R' , "\xe3\x81\xa6", "\xef\xbc\xb2" },  // "て", "Ｒ"
+      { 't' , "\xe3\x82\x87", "\xef\xbd\x94" },  // "ょ", "ｔ"
+      { 'T' , "\xe3\x82\x87", "\xef\xbc\xb4" },  // "ょ", "Ｔ"
+      { 'y' , "\xe3\x81\xa4", "\xef\xbd\x99" },  // "つ", "ｙ"
+      { 'Y' , "\xe3\x81\xa4", "\xef\xbc\xb9" },  // "つ", "Ｙ"
+      { 'u' , "\xe3\x82\x93", "\xef\xbd\x95" },  // "ん", "ｕ"
+      { 'U' , "\xe3\x82\x93", "\xef\xbc\xb5" },  // "ん", "Ｕ"
+      { 'i' , "\xe3\x81\x84", "\xef\xbd\x89" },  // "い", "ｉ"
+      { 'I' , "\xe3\x81\x84", "\xef\xbc\xa9" },  // "い", "Ｉ"
+      { 'o' , "\xe3\x81\xae", "\xef\xbd\x8f" },  // "の", "ｏ"
+      { 'O' , "\xe3\x81\xae", "\xef\xbc\xaf" },  // "の", "Ｏ"
+      { 'p' , "\xe3\x82\x8a", "\xef\xbd\x90" },  // "り", "ｐ"
+      { 'P' , "\xe3\x82\x8a", "\xef\xbc\xb0" },  // "り", "Ｐ"
+      { '[' , "\xe3\x81\xa1", "\xef\xbc\xbb" },  // "ち", "［"
+      { '{' , "\xe3\x81\xa1", "\xef\xbd\x9b" },  // "ち", "｛"
+      { ']' , "\xe3\x83\xbb", "\xef\xbc\xbd" },  // "・", "］"
+      { '}' , "\xe3\x83\xbb", "\xef\xbd\x9d" },  // "・", "｝"
+      { '\\', "\xef\xbc\xbc", "\xef\xbc\xbc" },  // "＼", "＼"
+      { '|' , "\xef\xbd\x9c", "\xef\xbd\x9c" },  // "｜", "｜"
+      { 'a' , "\xe3\x81\xaf", "\xef\xbd\x81" },  // "は", "ａ"
+      { 'A' , "\xe3\x81\xaf", "\xef\xbc\xa1" },  // "は", "Ａ"
+      { 's' , "\xe3\x81\x8b", "\xef\xbd\x93" },  // "か", "ｓ"
+      { 'S' , "\xe3\x81\x8b", "\xef\xbc\xb3" },  // "か", "Ｓ"
+      { 'd' , "\xe3\x82\x97", "\xef\xbd\x84" },  // "゗", "ｄ"
+      { 'D' , "\xe3\x82\x97", "\xef\xbc\xa4" },  // "゗", "Ｄ"
+      { 'f' , "\xe3\x81\xa8", "\xef\xbd\x86" },  // "と", "ｆ"
+      { 'F' , "\xe3\x81\xa8", "\xef\xbc\xa6" },  // "と", "Ｆ"
+      { 'g' , "\xe3\x81\x9f", "\xef\xbd\x87" },  // "た", "ｇ"
+      { 'G' , "\xe3\x81\x9f", "\xef\xbc\xa7" },  // "た", "Ｇ"
+      { 'h' , "\xe3\x81\x8f", "\xef\xbd\x88" },  // "く", "ｈ"
+      { 'H' , "\xe3\x81\x8f", "\xef\xbc\xa8" },  // "く", "Ｈ"
+      { 'j' , "\xe3\x81\x86", "\xef\xbd\x8a" },  // "う", "ｊ"
+      { 'J' , "\xe3\x81\x86", "\xef\xbc\xaa" },  // "う", "Ｊ"
+      { 'k' , "\xe3\x82\x98", "\xef\xbd\x8b" },  // "゘", "ｋ"
+      { 'K' , "\xe3\x82\x98", "\xef\xbc\xab" },  // "゘", "Ｋ"
+      { 'l' , "\xe3\x82\x9b", "\xef\xbd\x8c" },  // "゛", "ｌ"
+      { 'L' , "\xe3\x82\x9b", "\xef\xbc\xac" },  // "゛", "Ｌ"
+      { ';' , "\xe3\x81\x8d", "\xef\xbc\x9b" },  // "き", "；"
+      { ':' , "\xe3\x81\x8d", "\xef\xbc\x9a" },  // "き", "："
+      { '\'', "\xe3\x82\x8c", "\xef\xbc\x87" },  // "れ", "＇"
+      { '"' , "\xe3\x82\x8c", "\xef\xbc\x82" },  // "れ", "＂"
+      { 'z' , "\xe3\x81\x99", "\xef\xbd\x9a" },  // "す", "ｚ"
+      { 'Z' , "\xe3\x81\x99", "\xef\xbc\xba" },  // "す", "Ｚ"
+      { 'x' , "\xe3\x81\x91", "\xef\xbd\x98" },  // "け", "ｘ"
+      { 'X' , "\xe3\x81\x91", "\xef\xbc\xb8" },  // "け", "Ｘ"
+      { 'c' , "\xe3\x81\xab", "\xef\xbd\x83" },  // "に", "ｃ"
+      { 'C' , "\xe3\x81\xab", "\xef\xbc\xa3" },  // "に", "Ｃ"
+      { 'v' , "\xe3\x81\xaa", "\xef\xbd\x96" },  // "な", "ｖ"
+      { 'V' , "\xe3\x81\xaa", "\xef\xbc\xb6" },  // "な", "Ｖ"
+      { 'b' , "\xe3\x81\x95", "\xef\xbd\x82" },  // "さ", "ｂ"
+      { 'B' , "\xe3\x81\x95", "\xef\xbc\xa2" },  // "さ", "Ｂ"
+      { 'n' , "\xe3\x81\xa3", "\xef\xbd\x8e" },  // "っ", "ｎ"
+      { 'N' , "\xe3\x81\xa3", "\xef\xbc\xae" },  // "っ", "Ｎ"
+      { 'm' , "\xe3\x82\x8b", "\xef\xbd\x8d" },  // "る", "ｍ"
+      { 'M' , "\xe3\x82\x8b", "\xef\xbc\xad" },  // "る", "Ｍ"
+      { ',' , "\xe3\x80\x81", "\xef\xbc\x8c" },  // "、", "，"
+      { '<' , "\xe3\x80\x81", "\xef\xbc\x9c" },  // "、", "＜"
+      { '.' , "\xe3\x80\x82", "\xef\xbc\x8e" },  // "。", "．"
+      { '>' , "\xe3\x80\x82", "\xef\xbc\x9e" },  // "。", "＞"
+      { '/' , "\xe3\x82\x9c", "\xef\xbc\x8f" },  // "゜", "／"
+      { '?' , "\xe3\x82\x9c", "\xef\xbc\x9f" },  // "゜", "？"
 };
 
 }  // namespace
@@ -386,6 +598,11 @@ bool KeyTranslator::Translate(KeySym keyval, uint32 keycode,
       IsKanaAvailable(keyval, keycode, modifiers, layout_is_jp,
                       &kana_key_string)) {
     out_event->set_key_code(keyval);
+  } else if ((method == mozc::config::Config::TSUKI) &&
+      IsTsukiAvailable(keyval, keycode, modifiers, layout_is_jp,
+                      &kana_key_string)) {
+    out_event->set_key_code(keyval);
+    out_event->set_key_string(kana_key_string);
     out_event->set_key_string(kana_key_string);
   } else if (IsAscii(keyval, keycode, modifiers)) {
     if (modifiers & KeyState::CapsLock) {
@@ -455,6 +672,20 @@ void KeyTranslator::Init() {
                                                     kana_map_us[i].shift)))
               .second);
   }
+  for (int i = 0; i < arraysize(tsuki_map_jp); ++i) {
+    CHECK(tsuki_map_jp_
+              .insert(std::make_pair(tsuki_map_jp[i].code,
+                                     std::make_pair(tsuki_map_jp[i].no_shift,
+                                                    tsuki_map_jp[i].shift)))
+              .second);
+  }
+  for (int i = 0; i < arraysize(tsuki_map_us); ++i) {
+    CHECK(tsuki_map_us_
+              .insert(std::make_pair(tsuki_map_us[i].code,
+                                     std::make_pair(tsuki_map_us[i].no_shift,
+                                                    tsuki_map_us[i].shift)))
+              .second);
+  }
 }
 
 bool KeyTranslator::IsModifierKey(KeySym keyval, uint32 keycode,
@@ -496,6 +727,37 @@ bool KeyTranslator::IsKanaAvailable(KeySym keyval, uint32 keycode,
         *out = "\xe3\x83\xbc";  // "ー"
       } else {
         *out = "\xe3\x82\x8d";  // "ろ"
+      }
+    } else {
+      *out = (modifiers & KeyState::Shift) ? iter->second.second
+                                           : iter->second.first;
+    }
+  }
+  return true;
+}
+
+bool KeyTranslator::IsTsukiAvailable(KeySym keyval, uint32 keycode,
+                                     KeyStates modifiers, bool layout_is_jp,
+                                     std::string *out) const {
+  if ((modifiers & KeyState::Ctrl) || (modifiers & KeyState::Alt)) {
+    return false;
+  }
+  const auto &kana_map = layout_is_jp ? tsuki_map_jp_ : tsuki_map_us_;
+  KanaMap::const_iterator iter = kana_map.find(keyval);
+  if (iter == kana_map.end()) {
+    return false;
+  }
+
+  if (out) {
+    // When a Japanese keyboard is in use, the yen-sign key and the backslash
+    // key generate the same |keyval|. In this case, we have to check |keycode|
+    // to return an appropriate string. See the following IBus issue for
+    // details: http://code.google.com/p/ibus/issues/detail?id=52
+    if (keyval == '\\' && layout_is_jp) {
+      if (keycode == 132 || keycode == 133) {
+        *out = "\xef\xbf\xa5";  // "￥"
+      } else {
+        *out = "\xe3\x83\xbb";  // "・"
       }
     } else {
       *out = (modifiers & KeyState::Shift) ? iter->second.second

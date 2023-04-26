@@ -1,3 +1,11 @@
+// Modified code
+// Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added the value: config::Config::TSUKI.
+//
+
+// Original code
 // Copyright 2010-2021, Google Inc.
 // All rights reserved.
 //
@@ -1016,7 +1024,7 @@ TEST_F(TableTest, TableManager) {
           commands::Request::NOTOUCH_TO_HALFWIDTHASCII,
       };
   static const config::Config::PreeditMethod preedit_method[] = {
-      config::Config::ROMAN, config::Config::KANA};
+      config::Config::ROMAN, config::Config::KANA, config::Config::TSUKI};
   static const config::Config::PunctuationMethod punctuation_method[] = {
       config::Config::KUTEN_TOUTEN, config::Config::COMMA_PERIOD,
       config::Config::KUTEN_PERIOD, config::Config::COMMA_TOUTEN};

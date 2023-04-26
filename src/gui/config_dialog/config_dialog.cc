@@ -1,3 +1,12 @@
+// Modified code
+// Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added an item for Tsuki map.
+// - Modified the value of kPreeditMethodSize.
+//
+
+// Original code
 // Copyright 2010-2021, Google Inc.
 // All rights reserved.
 //
@@ -145,12 +154,14 @@ ConfigDialog::ConfigDialog()
   keymapname_sessionkeymap_map_[tr("Kotoeri")] = config::Config::KOTOERI;
 
   inputModeComboBox->addItem(tr("Romaji"));
-  inputModeComboBox->addItem(tr("Kana"));
+  inputModeComboBox->addItem(tr("Kana (JIS)"));
+  inputModeComboBox->addItem(tr("Kana (Tsuki)"));
 #ifdef OS_WIN
   // These options changing the preedit method by a hot key are only
   // supported by Windows.
   inputModeComboBox->addItem(tr("Romaji (switchable)"));
-  inputModeComboBox->addItem(tr("Kana (switchable)"));
+  inputModeComboBox->addItem(tr("Kana-JIS (switchable)"));
+  inputModeComboBox->addItem(tr("Kana-Tsuki (switchable)"));
 #endif  // OS_WIN
 
   spaceCharacterFormComboBox->addItem(tr("Follow input mode"));
@@ -458,7 +469,7 @@ void ConfigDialog::GetSendStatsCheckBox() const {
   } while (0)
 
 namespace {
-static constexpr int kPreeditMethodSize = 2;
+static constexpr int kPreeditMethodSize = 3;
 
 void SetComboboxForPreeditMethod(const config::Config &config,
                                  QComboBox *combobox) {

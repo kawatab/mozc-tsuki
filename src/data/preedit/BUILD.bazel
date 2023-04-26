@@ -1,3 +1,11 @@
+# Modified code
+# Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+# All rights reserved.
+#
+# - Added the file name: 'tsuki.tsv' to the list: srcs.
+#
+
+# Original code
 # Copyright 2010-2021, Google Inc.
 # All rights reserved.
 #
@@ -41,6 +49,7 @@ filegroup(
         "godan-hiragana.tsv",
         "hiragana-romanji.tsv",
         "kana.tsv",
+        "tsuki.tsv",
         "notouch-hiragana.tsv",
         "qwerty_mobile-halfwidthascii.tsv",
         "qwerty_mobile-hiragana.tsv",

@@ -1,3 +1,13 @@
+// Modified code
+// Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added a function for Tsuki layout
+//     bool IsTsukiAvailable(guint keyval, guint keycode, guint modifiers,
+//                           bool layout_is_jp, std::string *out) const;
+//
+
+// Original code
 // Copyright 2010-2021, Google Inc.
 // All rights reserved.
 //
@@ -56,6 +66,10 @@ class KeyTranslator {
  private:
   // Returns true iff |keyval| is a key with a kana assigned.
   bool IsKanaAvailable(guint keyval, guint keycode, guint modifiers,
+                       bool layout_is_jp, std::string *out) const;
+
+  // Returns true iff |keyval| is a key with a tsuki assigned.
+  bool IsTsukiAvailable(guint keyval, guint keycode, guint modifiers,
                        bool layout_is_jp, std::string *out) const;
 
   // Returns true iff key is ASCII such as '0', 'A', or '!'.
