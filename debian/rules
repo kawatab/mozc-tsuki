@@ -1,0 +1,109 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+#
+
+CPPFLAGS:=$(shell dpkg-buildflags --get CPPFLAGS)
+CFLAGS:=$(shell dpkg-buildflags --get CFLAGS) $(CPPFLAGS)
+CXXFLAGS:=$(shell dpkg-buildflags --get CXXFLAGS) $(CPPFLAGS)
+LDFLAGS:=$(shell dpkg-buildflags --get LDFLAGS) -Wl,--as-needed
+
+# clear XDG_CONFIG_DIRS for qtchooser
+unexport XDG_CONFIG_DIRS
+
+TARGET_STATIC=gui/gui.gyp:mozc_tool
+TARGETS=unix/ibus/ibus.gyp:ibus_mozc \
+	unix/emacs/emacs.gyp:mozc_emacs_helper \
+	server/server.gyp:mozc_server \
+	renderer/renderer.gyp:mozc_renderer
+TARGET_UIM=unix/uim/uim.gyp:uim-mozc
+TARGET_FCITX=unix/fcitx/fcitx.gyp:fcitx-mozc
+TARGET_FCITX5=unix/fcitx5/fcitx5.gyp:fcitx5-mozc
+
+# for architecture dependent variables and changelog vars
+vafilt = $(subst $(2)=,,$(filter $(2)=%,$(1)))
+CHANGELOG_VARS := $(shell dpkg-parsechangelog | \
+	sed -n 's/ /_/g;/^[^_]/s/^\([^:]*\):_\(.*\)/\1=\2/p')
+
+SOURCE_VERSION := $(call vafilt,$(CHANGELOG_VARS),Version)
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+
+override_dh_auto_build: build_dynamic_link build_static_link
+build_static_link:
+	cd src; \
+	sed -i -e "s@-lprotobuf@/usr/lib/$(DEB_BUILD_MULTIARCH)/libprotobuf.a -latomic@g" protobuf/protobuf.gyp; \
+	GYP_DEFINES="use_libprotobuf=1 use_libabseil=1" python3 build_mozc.py gyp \
+		--gypdir=/usr/bin --target_platform=Linux --verbose ; \
+	python3 build_mozc.py build $(TARGET_STATIC) -c Release ;\
+	mv out_linux out_linux_static
+
+build_dynamic_link:
+	cd src ; \
+	GYP_DEFINES="use_libprotobuf=1 use_libabseil=1" python3 build_mozc.py gyp \
+		--gypdir=/usr/bin --target_platform=Linux --verbose ; \
+	python3 build_mozc.py build $(TARGETS)  -c Release
+	cd src ; \
+	python3 build_mozc.py build $(TARGET_FCITX) -c Release
+	cd src ; \
+	python3 build_mozc.py build $(TARGET_FCITX5) -c Release
+	cd src ; \
+	python3 build_mozc.py build $(TARGET_UIM) -c Release
+	mv src/out_linux src/out_linux_dynamic
+
+	for pofile in src/unix/fcitx5/po/*.po ; do \
+		filename=`basename $$pofile`; \
+		lang=`basename $$filename .po`; \
+		mofile=`echo $$pofile | sed -e "s/\.po/\.mo/g"`; \
+		msgfmt $$pofile -o $$mofile; \
+	done
+
+	msgfmt --xml -d src/unix/fcitx5/po/ \
+		--template src/unix/fcitx5/org.fcitx.Fcitx5.Addon.Mozc.metainfo.xml.in \
+		-o src/unix/fcitx5/org.fcitx.Fcitx5.Addon.Mozc.metainfo.xml
+
+	# ibus-mozc
+	sed -i -e 's|/usr/libexec/ibus-engine-mozc|/usr/lib/ibus-mozc/ibus-engine-mozc|' \
+		-e 's|0\.0\.0\.0|$(SOURCE_VERSION)|g' \
+		src/out_linux_dynamic/Release/gen/unix/ibus/mozc.xml
+
+override_dh_auto_test:
+	# cd src; python build_mozc.py runtests -c Debug
+
+override_dh_auto_clean:
+	cd src ; \
+	python3 build_mozc.py clean
+	-find src -name "*.pyc" | xargs rm -rf
+	-rm -rf src/chrome/skk/skk_util_all_test.target.mk
+	-rm -rf src/chrome/skk/skk_util_test.target.mk
+
+	-rm -f src/unix/fcitx5/org.fcitx.Fcitx5.Addon.Mozc.metainfo.xml
+	dh_auto_clean
+
+override_dh_auto_install:
+	mv src/out_linux_dynamic src/out_linux
+	# mozc-utils-gui
+	desktop-file-install --dir=$(CURDIR)/debian/mozc-utils-gui/usr/share/applications \
+		$(CURDIR)/debian/setup-mozc.desktop
+	desktop-file-install --dir=$(CURDIR)/debian/mozc-utils-gui/usr/share/applications \
+		$(CURDIR)/debian/ibus-setup-mozc-jp.desktop
+
+override_dh_fixperms-arch:
+	chmod -x debian/emacs-mozc/usr/share/emacs/site-lisp/emacs-mozc/mozc.el
+	dh_fixperms
+
+override_dh_fixperms-indep:
+	chmod -x debian/mozc-data/usr/share/icons/mozc/*.png
+	dh_fixperms
+
+.PHONY: override_dh_installemacsen
+override_dh_installemacsen:
+	dh_installemacsen --priority=50
+
+override_dh_builddeb:
+	if dpkg-vendor --is ubuntu; then \
+		sed -i 's/^Recommends/Suggests/' debian/ibus-mozc/DEBIAN/control; \
+	fi
+	dh_builddeb

@@ -1,0 +1,26 @@
+From a46156c14726d6e3b05b14a4a8cb1dc6de482a78 Mon Sep 17 00:00:00 2001
+From: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Date: Fri, 9 Dec 2022 09:45:27 +0900
+Subject: [PATCH] protobuf.gyp: Add -latomic to link_settings
+
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+---
+ src/protobuf/protobuf.gyp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/protobuf/protobuf.gyp b/src/protobuf/protobuf.gyp
+index 6ae07c858..5cb61f28f 100644
+--- a/src/protobuf/protobuf.gyp
++++ b/src/protobuf/protobuf.gyp
+@@ -163,7 +163,7 @@
+         ['use_libprotobuf==1', {
+           'link_settings': {
+             'libraries': [
+-              '-lprotobuf',
++              '-lprotobuf -latomic',
+             ],
+           },
+         },
+-- 
+2.36.1
+

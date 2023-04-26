@@ -1,0 +1,1440 @@
+From 44eeed9d9d8fad21e4bd8827b8b7dfb3854b59ec Mon Sep 17 00:00:00 2001
+From: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Date: Thu, 5 May 2022 07:51:15 +0900
+Subject: [PATCH 6/7] Update gyp using absl
+
+Description: Update gyp using absl
+  Upstream Mozc uses absl library onself. This updates the GYP configuration
+  file to use the absl of the Debian package.
+Forwarded: Not need
+Last-Update: 2022-05-05
+
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+---
+ scripts/build                                 |   2 +-
+ src/base/absl.gyp                             | 246 +-----------------
+ src/base/base.gyp                             |  21 +-
+ src/base/base_test.gyp                        |  16 +-
+ src/client/client_test.gyp                    |   2 +-
+ src/composer/composer.gyp                     |   5 +-
+ src/composer/composer_test.gyp                |   4 +-
+ src/config/config.gyp                         |   4 +-
+ src/config/config_test.gyp                    |   2 +-
+ src/converter/converter.gyp                   |   2 +-
+ src/converter/converter_base.gyp              |   6 +-
+ src/converter/converter_main.gyp              |   2 +-
+ src/converter/converter_test.gyp              |   2 +-
+ src/data_manager/data_manager.gypi            |   2 +-
+ src/data_manager/data_manager_base.gyp        |   9 +-
+ src/data_manager/data_manager_test.gyp        |   2 +-
+ src/dictionary/dictionary.gyp                 |   9 +-
+ src/dictionary/dictionary_base.gyp            |  10 +-
+ src/dictionary/dictionary_test.gyp            |   2 +-
+ src/dictionary/file/dictionary_file.gyp       |   8 +-
+ src/dictionary/system/system_dictionary.gyp   |   4 +-
+ .../system/system_dictionary_test.gyp         |   4 +-
+ src/engine/engine.gyp                         |   7 +-
+ src/gui/gui.gyp                               |  12 +-
+ src/ios/ios.gyp                               |   2 +-
+ src/ipc/ipc.gyp                               |   2 +-
+ src/net/net.gyp                               |   2 +-
+ src/prediction/prediction.gyp                 |   2 +-
+ src/prediction/prediction_test.gyp            |   2 +-
+ src/renderer/renderer.gyp                     |  12 +-
+ src/rewriter/calculator/calculator.gyp        |   2 +-
+ src/rewriter/rewriter.gyp                     |   3 +-
+ src/rewriter/rewriter_base.gyp                |   4 +-
+ src/rewriter/rewriter_test.gyp                |   4 +-
+ src/session/session.gyp                       |  12 +-
+ src/session/session_base.gyp                  |   6 +-
+ src/session/session_test.gyp                  |   5 +-
+ src/storage/louds/louds.gyp                   |   2 +-
+ src/storage/louds/louds_test.gyp              |   2 +-
+ src/storage/storage.gyp                       |   3 +-
+ src/testing/testing.gyp                       |   3 +-
+ src/unix/emacs/emacs.gyp                      |   6 +-
+ src/unix/ibus/ibus.gyp                        |   9 +-
+ src/win32/base/win32_base.gyp                 |   4 +-
+ 44 files changed, 116 insertions(+), 354 deletions(-)
+
+diff --git a/scripts/build b/scripts/build
+index b21022f8..9a340e9c 100755
+--- a/scripts/build
++++ b/scripts/build
+@@ -3,4 +3,4 @@
+ TARGETS="server/server.gyp:mozc_server gui/gui.gyp:mozc_tool unix/fcitx/fcitx.gyp:fcitx-mozc"
+ _bldtype="${_bldtype:-Debug}"
+ 
+-python build_mozc.py build ${TARGETS} -c ${_bldtype}
++GYP_DEFINES="use_libprotobuf=1 use_libzinnia=1 use_libabseil=1" python3 build_mozc.py build ${TARGETS} -c ${_bldtype}
+diff --git a/src/base/absl.gyp b/src/base/absl.gyp
+index 2e858ae8..dccae77c 100644
+--- a/src/base/absl.gyp
++++ b/src/base/absl.gyp
+@@ -37,238 +37,20 @@
+       'target_name': 'absl_base',
+       'type': 'static_library',
+       'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/base/internal/cycleclock.cc',
+-        '<(absl_srcdir)/base/internal/low_level_alloc.cc',
+-        '<(absl_srcdir)/base/internal/raw_logging.cc',
+-        '<(absl_srcdir)/base/internal/spinlock.cc',
+-        '<(absl_srcdir)/base/internal/spinlock_wait.cc',
+-        '<(absl_srcdir)/base/internal/strerror.cc',
+-        '<(absl_srcdir)/base/internal/sysinfo.cc',
+-        '<(absl_srcdir)/base/internal/thread_identity.cc',
+-        '<(absl_srcdir)/base/internal/throw_delegate.cc',
+-        '<(absl_srcdir)/base/internal/unscaledcycleclock.cc',
+-        '<(absl_srcdir)/base/log_severity.cc',
+-        '<(absl_srcdir)/profiling/internal/exponential_biased.cc',
+-      ],
+-      'dependencies': [
+-        'absl_hash_internal',
+-      ],
+-      'msvs_disabled_warnings': [
+-        # 'type' : forcing value to bool 'true' or 'false'
+-        # (performance warning)
+-        # http://msdn.microsoft.com/en-us/library/b6801kcy.aspx
+-        '4800',
+-      ],
+-    },
+-    {
+-      'target_name': 'absl_debugging',
+-      'type': 'static_library',
+-      'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/debugging/stacktrace.cc',
+-        '<(absl_srcdir)/debugging/symbolize.cc',
+-        '<(absl_srcdir)/debugging/internal/address_is_readable.cc',
+-        '<(absl_srcdir)/debugging/internal/demangle.cc',
+-        '<(absl_srcdir)/debugging/internal/elf_mem_image.cc',
+-        '<(absl_srcdir)/debugging/internal/vdso_support.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-      ],
+-    },
+-    {
+-      'target_name': 'absl_flags',
+-      'type': 'static_library',
+-      'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/flags/commandlineflag.cc',
+-        '<(absl_srcdir)/flags/commandlineflag.h',
+-        '<(absl_srcdir)/flags/usage.cc',
+-        '<(absl_srcdir)/flags/usage.h',
+-        '<(absl_srcdir)/flags/flag.cc',
+-        '<(absl_srcdir)/flags/flag.h',
+-        '<(absl_srcdir)/flags/config.h',
+-        '<(absl_srcdir)/flags/declare.h',
+-        '<(absl_srcdir)/flags/marshalling.cc',
+-        '<(absl_srcdir)/flags/marshalling.h',
+-        '<(absl_srcdir)/flags/parse.cc',
+-        '<(absl_srcdir)/flags/parse.h',
+-        '<(absl_srcdir)/flags/reflection.cc',
+-        '<(absl_srcdir)/flags/reflection.h',
+-        '<(absl_srcdir)/flags/usage_config.cc',
+-        '<(absl_srcdir)/flags/usage_config.h',
+-      ],
+-      'dependencies': [
+-        'absl_flags_internal',
+-        'absl_hash_internal',
+-        'absl_synchronization',
+-      ],
+-    },
+-    {
+-      'target_name': 'absl_flags_internal',
+-      'type': 'static_library',
+-      'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/flags/internal/commandlineflag.cc',
+-        '<(absl_srcdir)/flags/internal/commandlineflag.h',
+-        '<(absl_srcdir)/flags/internal/flag.cc',
+-        '<(absl_srcdir)/flags/internal/flag.h',
+-        '<(absl_srcdir)/flags/internal/parse.h',
+-        '<(absl_srcdir)/flags/internal/path_util.h',
+-        '<(absl_srcdir)/flags/internal/private_handle_accessor.cc',
+-        '<(absl_srcdir)/flags/internal/private_handle_accessor.h',
+-        '<(absl_srcdir)/flags/internal/program_name.cc',
+-        '<(absl_srcdir)/flags/internal/program_name.h',
+-        '<(absl_srcdir)/flags/internal/registry.h',
+-        '<(absl_srcdir)/flags/internal/usage.cc',
+-        '<(absl_srcdir)/flags/internal/usage.h',
+-      ],
+-      'dependencies': [
+-        'absl_strings',
+-      ],
+-    },
+-    {
+-      'target_name': 'absl_hash_internal',
+-      'toolsets': ['host', 'target'],
+-      'type': 'static_library',
+-      'sources': [
+-        '<(absl_srcdir)/container/internal/raw_hash_set.cc',
+-        '<(absl_srcdir)/hash/internal/city.cc',
+-        '<(absl_srcdir)/hash/internal/hash.cc',
+-        '<(absl_srcdir)/hash/internal/low_level_hash.cc',
+-      ],
+-    },
+-    {
+-      'target_name': 'absl_numeric',
+-      'type': 'static_library',
+-      'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/numeric/int128.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-      ],
+-    },
+-    {
+-      'target_name': 'absl_strings_internal',
+-      'type': 'static_library',
+-      'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/strings/internal/charconv_bigint.cc',
+-        '<(absl_srcdir)/strings/internal/charconv_parse.cc',
+-        '<(absl_srcdir)/strings/internal/cord_internal.cc',
+-        '<(absl_srcdir)/strings/internal/cord_rep_btree.cc',
+-        '<(absl_srcdir)/strings/internal/cord_rep_btree_navigator.cc',
+-        '<(absl_srcdir)/strings/internal/cord_rep_btree_reader.cc',
+-        '<(absl_srcdir)/strings/internal/cord_rep_consume.cc',
+-        '<(absl_srcdir)/strings/internal/cord_rep_ring.cc',
+-        '<(absl_srcdir)/strings/internal/cordz_functions.cc',
+-        '<(absl_srcdir)/strings/internal/cordz_handle.cc',
+-        '<(absl_srcdir)/strings/internal/cordz_info.cc',
+-        '<(absl_srcdir)/strings/internal/escaping.cc',
+-        '<(absl_srcdir)/strings/internal/memutil.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/arg.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/bind.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/extension.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/float_conversion.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/output.cc',
+-        '<(absl_srcdir)/strings/internal/str_format/parser.cc',
+-        '<(absl_srcdir)/strings/internal/utf8.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-        'absl_numeric',
+-      ],
+-    },
+-    {
+-      'target_name': 'absl_strings',
+-      'type': 'static_library',
+-      'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/strings/ascii.cc',
+-        '<(absl_srcdir)/strings/charconv.cc',
+-        '<(absl_srcdir)/strings/cord.cc',
+-        '<(absl_srcdir)/strings/escaping.cc',
+-        '<(absl_srcdir)/strings/match.cc',
+-        '<(absl_srcdir)/strings/numbers.cc',
+-        '<(absl_srcdir)/strings/str_cat.cc',
+-        '<(absl_srcdir)/strings/str_replace.cc',
+-        '<(absl_srcdir)/strings/str_split.cc',
+-        '<(absl_srcdir)/strings/string_view.cc',
+-        '<(absl_srcdir)/strings/substitute.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-        'absl_numeric',
+-        'absl_strings_internal',
+-      ],
+-    },
+-    {
+-      'target_name': 'absl_synchronization',
+-      'type': 'static_library',
+-      'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/synchronization/barrier.cc',
+-        '<(absl_srcdir)/synchronization/blocking_counter.cc',
+-        '<(absl_srcdir)/synchronization/blocking_counter.cc',
+-        '<(absl_srcdir)/synchronization/internal/create_thread_identity.cc',
+-        '<(absl_srcdir)/synchronization/internal/create_thread_identity.cc',
+-        '<(absl_srcdir)/synchronization/internal/graphcycles.cc',
+-        '<(absl_srcdir)/synchronization/internal/graphcycles.cc',
+-        '<(absl_srcdir)/synchronization/internal/per_thread_sem.cc',
+-        '<(absl_srcdir)/synchronization/internal/waiter.cc',
+-        '<(absl_srcdir)/synchronization/mutex.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-        'absl_debugging',
+-        'absl_time',
+-        'absl_numeric'
+-      ],
+-    },
+-    {
+-      'target_name': 'absl_time',
+-      'type': 'static_library',
+-      'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/time/civil_time.cc',
+-        '<(absl_srcdir)/time/clock.cc',
+-        '<(absl_srcdir)/time/duration.cc',
+-        '<(absl_srcdir)/time/format.cc',
+-        '<(absl_srcdir)/time/time.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/civil_time_detail.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_fixed.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_format.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_if.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_impl.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_info.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_libc.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_lookup.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/time_zone_posix.cc',
+-        '<(absl_srcdir)/time/internal/cctz/src/zone_info_source.cc',
+-      ],
+-      'cflags': [
+-        '-Wno-error',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-        'absl_numeric',
+-        'absl_strings_internal',
+-      ],
+-    },
+-    {
+-      'target_name': 'absl_status',
+-      'type': 'static_library',
+-      'toolsets': ['host', 'target'],
+-      'sources': [
+-        '<(absl_srcdir)/status/status.cc',
+-        '<(absl_srcdir)/status/status_payload_printer.cc',
+-        '<(absl_srcdir)/status/statusor.cc',
+-      ],
+-      'dependencies': [
+-        'absl_base',
+-        'absl_strings',
++
++      'all_dependent_settings': {
++        'include_dirs': [
++          '<(proto_out_dir)',  # make generated files (*.pb.h) visible.
++        ],
++      },
++      'conditions': [
++        ['use_libabseil==1', {
++          'link_settings': {
++            'libraries': [
++              '-latomic -labsl_base -labsl_int128 -labsl_base -labsl_hash -labsl_city -labsl_flags_reflection -labsl_raw_hash_set -labsl_str_format_internal -labsl_throw_delegate -labsl_time_zone -labsl_hashtablez_sampler -labsl_synchronization -labsl_time -labsl_strings_internal -labsl_strings -labsl_spinlock_wait -labsl_status -labsl_statusor -labsl_flags_internal -labsl_flags_usage_internal -labsl_flags_marshalling -labsl_flags_parse',
++            ],
++          },
++        },],
+       ],
+     },
+   ],
+diff --git a/src/base/base.gyp b/src/base/base.gyp
+index 407ec215..35177c23 100644
+--- a/src/base/base.gyp
++++ b/src/base/base.gyp
+@@ -49,8 +49,7 @@
+       ],
+       'dependencies': [
+         'base_core',
+-        'absl.gyp:absl_strings',
+-        'absl.gyp:absl_synchronization',
++        'absl.gyp:absl_base',
+       ],
+       'conditions': [
+         ['OS=="mac"', {
+@@ -115,10 +114,7 @@
+         'gen_character_set#host',
+         'hash',
+         'singleton',
+-        'absl.gyp:absl_status',
+-        'absl.gyp:absl_strings',
+-        'absl.gyp:absl_synchronization',
+-        'absl.gyp:absl_time',
++        'absl.gyp:absl_base',
+       ],
+       'conditions': [
+         ['OS=="win"', {
+@@ -214,7 +210,7 @@
+       'type': 'static_library',
+       'toolsets': ['host', 'target'],
+       'dependencies': [
+-        'absl.gyp:absl_flags',
++        'absl.gyp:absl_base',
+       ],
+     },
+     {
+@@ -226,7 +222,7 @@
+       ],
+       'dependencies': [
+         'singleton',
+-        'absl.gyp:absl_time',
++        'absl.gyp:absl_base',
+       ],
+     },
+     {
+@@ -237,7 +233,7 @@
+         'hash.cc',
+       ],
+       'dependencies': [
+-        'absl.gyp:absl_strings',
++        'absl.gyp:absl_base',
+       ],
+     },
+     {
+@@ -301,8 +297,7 @@
+         'password_manager.cc',
+       ],
+       'dependencies': [
+-        'absl.gyp:absl_strings',
+-        'absl.gyp:absl_synchronization',
++        'absl.gyp:absl_base',
+         'base',
+         'obfuscator_support',
+       ],
+@@ -354,7 +349,7 @@
+       ],
+       'dependencies': [
+         'gen_config_file_stream_data#host',
+-        'absl.gyp:absl_strings',
++        'absl.gyp:absl_base',
+       ],
+     },
+     {
+@@ -411,7 +406,7 @@
+         'multifile.cc',
+       ],
+       'dependencies': [
+-        'absl.gyp:absl_strings',
++        'absl.gyp:absl_base',
+         'base_core',
+       ],
+     },
+diff --git a/src/base/base_test.gyp b/src/base/base_test.gyp
+index 13611c51..bc81b459 100644
+--- a/src/base/base_test.gyp
++++ b/src/base/base_test.gyp
+@@ -76,7 +76,7 @@
+       ],
+       'dependencies': [
+         '../testing/testing.gyp:gtest_main',
+-        'absl.gyp:absl_status',
++        'absl.gyp:absl_base',
+         'base.gyp:base',
+         'base.gyp:codegen_bytearray_stream#host',
+         'clock_mock',
+@@ -93,7 +93,7 @@
+       ],
+       'dependencies': [
+         '../testing/testing.gyp:gtest_main',
+-        'absl.gyp:absl_strings',
++        'absl.gyp:absl_base',
+         'base.gyp:base_core',  # for util
+         'base.gyp:url',
+       ],
+@@ -119,7 +119,7 @@
+       ],
+       'dependencies': [
+         '../testing/testing.gyp:gtest_main',
+-        'absl.gyp:absl_strings',
++        'absl.gyp:absl_base',
+         'base.gyp:base_core',
+         'base.gyp:version',
+       ],
+@@ -135,7 +135,7 @@
+         'clock_mock.cc'
+       ],
+       'dependencies': [
+-        'absl.gyp:absl_time',
++        'absl.gyp:absl_base',
+       ],
+     },
+     {
+@@ -168,7 +168,7 @@
+       ],
+       'dependencies': [
+         '../testing/testing.gyp:gtest_main',
+-        'absl.gyp:absl_strings',
++        'absl.gyp:absl_base',
+         'base.gyp:japanese_util',
+       ],
+       'variables': {
+@@ -184,7 +184,7 @@
+       'dependencies': [
+         '../testing/testing.gyp:gtest_main',
+         '../testing/testing.gyp:mozctest',
+-        'absl.gyp:absl_strings',
++        'absl.gyp:absl_base',
+         'base.gyp:base_core',
+         'base.gyp:number_util',
+       ],
+@@ -244,7 +244,7 @@
+       ],
+       'dependencies': [
+         '../testing/testing.gyp:gtest_main',
+-        'absl.gyp:absl_strings',
++        'absl.gyp:absl_base',
+         'base.gyp:base_core',
+       ],
+       'variables': {
+@@ -360,7 +360,7 @@
+       ],
+       'dependencies': [
+         '../testing/testing.gyp:gtest_main',
+-        'absl.gyp:absl_strings',
++        'absl.gyp:absl_base',
+         'base.gyp:multifile',
+       ],
+     },
+diff --git a/src/client/client_test.gyp b/src/client/client_test.gyp
+index 08cf75de..ba539d20 100644
+--- a/src/client/client_test.gyp
++++ b/src/client/client_test.gyp
+@@ -41,7 +41,7 @@
+       ],
+       'dependencies': [
+         'client.gyp:client',
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:version',
+         '../testing/testing.gyp:gtest_main',
+       ],
+diff --git a/src/composer/composer.gyp b/src/composer/composer.gyp
+index 53334ef2..87f5391c 100644
+--- a/src/composer/composer.gyp
++++ b/src/composer/composer.gyp
+@@ -50,8 +50,7 @@
+         'table.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
+-        '../base/absl.gyp:absl_time',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:clock',
+         '../base/base.gyp:config_file_stream',
+@@ -84,7 +83,7 @@
+         'key_parser.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../protocol/protocol.gyp:config_proto',
+         '../protocol/protocol.gyp:commands_proto',
+diff --git a/src/composer/composer_test.gyp b/src/composer/composer_test.gyp
+index 7edd44f3..8ddf9824 100644
+--- a/src/composer/composer_test.gyp
++++ b/src/composer/composer_test.gyp
+@@ -44,7 +44,7 @@
+         'table_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base_test.gyp:clock_mock',
+         '../config/config.gyp:config_handler',
+         '../data_manager/testing/mock_data_manager.gyp:mock_data_manager',
+@@ -65,7 +65,7 @@
+         'key_event_util_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../config/config.gyp:config_handler',
+         '../testing/testing.gyp:gtest_main',
+diff --git a/src/config/config.gyp b/src/config/config.gyp
+index e74ec387..98095d9c 100644
+--- a/src/config/config.gyp
++++ b/src/config/config.gyp
+@@ -40,7 +40,7 @@
+         'config_handler.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_synchronization',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:config_file_stream',
+         '../base/base.gyp:version',
+@@ -54,7 +54,7 @@
+         'stats_config_util.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_synchronization',
++        '../base/absl.gyp:absl_base',
+         'config_handler',
+       ],
+     },
+diff --git a/src/config/config_test.gyp b/src/config/config_test.gyp
+index 3cb251c0..de6943b4 100644
+--- a/src/config/config_test.gyp
++++ b/src/config/config_test.gyp
+@@ -36,7 +36,7 @@
+         'config_handler_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../testing/testing.gyp:gtest_main',
+         '../testing/testing.gyp:mozctest',
+         'config.gyp:config_handler',
+diff --git a/src/converter/converter.gyp b/src/converter/converter.gyp
+index 1e3c0049..ffc307f6 100644
+--- a/src/converter/converter.gyp
++++ b/src/converter/converter.gyp
+@@ -41,7 +41,7 @@
+         'converter.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:number_util',
+         '../composer/composer.gyp:composer',
+         '../dictionary/dictionary_base.gyp:pos_matcher',
+diff --git a/src/converter/converter_base.gyp b/src/converter/converter_base.gyp
+index a2af2fc0..e209442f 100644
+--- a/src/converter/converter_base.gyp
++++ b/src/converter/converter_base.gyp
+@@ -55,7 +55,7 @@
+         'connector.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_status',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../storage/louds/louds.gyp:simple_succinct_bit_vector_index',
+       ],
+@@ -81,7 +81,7 @@
+         'segments.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../dictionary/dictionary_base.gyp:pos_matcher',
+         '../prediction/prediction_base.gyp:suggestion_filter',
+@@ -167,7 +167,7 @@
+         'pos_id_printer.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:number_util',
+       ],
+diff --git a/src/converter/converter_main.gyp b/src/converter/converter_main.gyp
+index eb53c03f..d1af89d1 100644
+--- a/src/converter/converter_main.gyp
++++ b/src/converter/converter_main.gyp
+@@ -40,7 +40,7 @@
+         'converter_main.cc',
+        ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:number_util',
+         '../composer/composer.gyp:composer',
+         '../engine/engine.gyp:engine',
+diff --git a/src/converter/converter_test.gyp b/src/converter/converter_test.gyp
+index 39889358..7444a493 100644
+--- a/src/converter/converter_test.gyp
++++ b/src/converter/converter_test.gyp
+@@ -47,7 +47,7 @@
+         'segments_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:number_util',
+         '../composer/composer.gyp:composer',
+         '../config/config.gyp:config_handler',
+diff --git a/src/data_manager/data_manager.gypi b/src/data_manager/data_manager.gypi
+index 05235746..32726b40 100644
+--- a/src/data_manager/data_manager.gypi
++++ b/src/data_manager/data_manager.gypi
+@@ -61,7 +61,7 @@
+         '<(dataset_tag)_data_manager.cc',
+       ],
+       'dependencies': [
+-        '<(mozc_dir)/base/absl.gyp:absl_strings',
++        '<(mozc_dir)/base/absl.gyp:absl_base',
+         '<(mozc_dir)/base/base.gyp:base',
+         '<(mozc_dir)/data_manager/data_manager_base.gyp:data_manager',
+         'gen_embedded_mozc_dataset_for_<(dataset_tag)#host',
+diff --git a/src/data_manager/data_manager_base.gyp b/src/data_manager/data_manager_base.gyp
+index 49799f5f..86d12844 100644
+--- a/src/data_manager/data_manager_base.gyp
++++ b/src/data_manager/data_manager_base.gyp
+@@ -41,8 +41,7 @@
+         'data_manager.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_status',
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:serialized_string_array',
+         '../base/base.gyp:version',
+@@ -86,7 +85,7 @@
+         'dataset_writer.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:obfuscator_support',
+         'dataset_proto',
+@@ -100,7 +99,7 @@
+         'dataset_reader.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:obfuscator_support',
+         'dataset_proto',
+@@ -129,7 +128,7 @@
+         'serialized_dictionary.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:number_util',
+         '../base/base.gyp:serialized_string_array',
+diff --git a/src/data_manager/data_manager_test.gyp b/src/data_manager/data_manager_test.gyp
+index eb2c8aab..eea12602 100644
+--- a/src/data_manager/data_manager_test.gyp
++++ b/src/data_manager/data_manager_test.gyp
+@@ -73,7 +73,7 @@
+         'dataset_reader_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../testing/testing.gyp:gtest_main',
+         '../testing/testing.gyp:testing',
+diff --git a/src/dictionary/dictionary.gyp b/src/dictionary/dictionary.gyp
+index a0e14568..17886406 100644
+--- a/src/dictionary/dictionary.gyp
++++ b/src/dictionary/dictionary.gyp
+@@ -53,7 +53,7 @@
+         'suffix_dictionary.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:serialized_string_array',
+       ],
+@@ -65,7 +65,7 @@
+         'dictionary_impl.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../config/config.gyp:config_handler',
+         '../protocol/protocol.gyp:commands_proto',
+@@ -84,7 +84,6 @@
+       ],
+       'dependencies': [
+         '../base/absl.gyp:absl_base',
+-        '../base/absl.gyp:absl_strings',
+         '../base/base.gyp:base',
+         '../data_manager/data_manager_base.gyp:data_manager',
+         'dictionary_base.gyp:pos_matcher',
+@@ -103,7 +102,7 @@
+         'dictionary_mock.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+       ],
+     },
+@@ -114,7 +113,7 @@
+         'dictionary_test_util.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../testing/testing.gyp:testing',
+       ],
+diff --git a/src/dictionary/dictionary_base.gyp b/src/dictionary/dictionary_base.gyp
+index 777265f8..6cd268a9 100644
+--- a/src/dictionary/dictionary_base.gyp
++++ b/src/dictionary/dictionary_base.gyp
+@@ -45,7 +45,7 @@
+         'text_dictionary_loader.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:multifile',
+         '../base/base.gyp:number_util',
+@@ -111,7 +111,7 @@
+         'user_pos.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+       ],
+     },
+@@ -157,7 +157,7 @@
+         'suppression_dictionary.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_synchronization',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+       ],
+     },
+@@ -174,9 +174,7 @@
+         'user_dictionary_util.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_status',
+-        '../base/absl.gyp:absl_strings',
+-        '../base/absl.gyp:absl_synchronization',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:config_file_stream',
+         '../base/base.gyp:number_util',
+diff --git a/src/dictionary/dictionary_test.gyp b/src/dictionary/dictionary_test.gyp
+index 8b51d5ea..88f0be5d 100644
+--- a/src/dictionary/dictionary_test.gyp
++++ b/src/dictionary/dictionary_test.gyp
+@@ -49,7 +49,7 @@
+         'user_pos_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../config/config.gyp:config_handler',
+         '../data_manager/testing/mock_data_manager.gyp:mock_data_manager',
+diff --git a/src/dictionary/file/dictionary_file.gyp b/src/dictionary/file/dictionary_file.gyp
+index 9825968e..89f41cef 100644
+--- a/src/dictionary/file/dictionary_file.gyp
++++ b/src/dictionary/file/dictionary_file.gyp
+@@ -38,7 +38,7 @@
+       ],
+       'dependencies': [
+         'codec_util',
+-        '../../base/absl.gyp:absl_status',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base_core',
+       ],
+     },
+@@ -63,8 +63,7 @@
+         'codec_util.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
+-        '../../base/absl.gyp:absl_status',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base_core',
+       ],
+     },
+@@ -77,8 +76,7 @@
+       ],
+       'dependencies': [
+         'codec',
+-        '../../base/absl.gyp:absl_strings',
+-        '../../base/absl.gyp:absl_status',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base_core',
+       ],
+     },
+diff --git a/src/dictionary/system/system_dictionary.gyp b/src/dictionary/system/system_dictionary.gyp
+index d0ee99d4..7c2e40af 100644
+--- a/src/dictionary/system/system_dictionary.gyp
++++ b/src/dictionary/system/system_dictionary.gyp
+@@ -37,7 +37,7 @@
+         'codec.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_status',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base_core',
+       ],
+     },
+@@ -56,7 +56,7 @@
+         'system_dictionary.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_status',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base_core',
+         '../../base/base.gyp:japanese_util',
+         '../../request/request.gyp:conversion_request',
+diff --git a/src/dictionary/system/system_dictionary_test.gyp b/src/dictionary/system/system_dictionary_test.gyp
+index 43712082..1a35f513 100644
+--- a/src/dictionary/system/system_dictionary_test.gyp
++++ b/src/dictionary/system/system_dictionary_test.gyp
+@@ -36,7 +36,7 @@
+         'codec_test.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../testing/testing.gyp:gtest_main',
+         'system_dictionary.gyp:system_dictionary_codec',
+       ],
+@@ -65,7 +65,7 @@
+         'system_dictionary_test.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base_core',
+         '../../config/config.gyp:config_handler',
+         '../../data_manager/oss/oss_data_manager_test.gyp:install_oss_data_manager_test_data',
+diff --git a/src/engine/engine.gyp b/src/engine/engine.gyp
+index a7ded578..657de553 100644
+--- a/src/engine/engine.gyp
++++ b/src/engine/engine.gyp
+@@ -42,7 +42,7 @@
+       ],
+       'dependencies': [
+         'engine',
+-        '../base/absl.gyp:absl_status',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../data_manager/data_manager_base.gyp:data_manager',
+         '../dictionary/dictionary_base.gyp:pos_matcher',
+@@ -57,8 +57,7 @@
+         'engine.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_status',
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../converter/converter.gyp:converter',
+         '../converter/converter_base.gyp:connector',
+@@ -90,7 +89,7 @@
+         'user_data_manager_mock.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../converter/converter_base.gyp:converter_mock'
+       ],
+diff --git a/src/gui/gui.gyp b/src/gui/gui.gyp
+index 7635754f..ad105b64 100644
+--- a/src/gui/gui.gyp
++++ b/src/gui/gui.gyp
+@@ -55,7 +55,7 @@
+         'base/window_title_modifier.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../dictionary/dictionary_base.gyp:user_dictionary',
+         '../ipc/ipc.gyp:ipc',
+         '../ipc/ipc.gyp:window_info_protocol',
+@@ -299,7 +299,7 @@
+         'config_dialog/roman_table_editor.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:config_file_stream',
+         '../client/client.gyp:client',
+@@ -387,7 +387,7 @@
+         'dictionary_tool/zero_width_splitter.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_status',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../client/client.gyp:client',
+         '../config/config.gyp:config_handler',
+@@ -460,7 +460,7 @@
+         'word_register_dialog/word_register_dialog_libmain.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_status',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../client/client.gyp:client',
+         '../data_manager/data_manager.gyp:pos_list_provider',
+@@ -821,7 +821,7 @@
+         'base/encoding_util.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base_core',
+       ],
+     },
+@@ -832,7 +832,7 @@
+         'base/encoding_util_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../testing/testing.gyp:gtest_main',
+         'encoding_util',
+       ],
+diff --git a/src/ios/ios.gyp b/src/ios/ios.gyp
+index 6fb71b17..c62018df 100644
+--- a/src/ios/ios.gyp
++++ b/src/ios/ios.gyp
+@@ -47,7 +47,7 @@
+         'ios_engine.h',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_synchronization',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base_core',
+         '../composer/composer.gyp:composer',
+         '../config/config.gyp:config_handler',
+diff --git a/src/ipc/ipc.gyp b/src/ipc/ipc.gyp
+index d5b4a569..0f75296c 100644
+--- a/src/ipc/ipc.gyp
++++ b/src/ipc/ipc.gyp
+@@ -46,7 +46,7 @@
+         'win32_ipc.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_synchronization',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:version',
+         'ipc_protocol',
+diff --git a/src/net/net.gyp b/src/net/net.gyp
+index 8d0504a5..2594ba8c 100644
+--- a/src/net/net.gyp
++++ b/src/net/net.gyp
+@@ -39,7 +39,7 @@
+         'jsonpath.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:number_util',
+         'jsoncpp.gyp:jsoncpp',
+diff --git a/src/prediction/prediction.gyp b/src/prediction/prediction.gyp
+index 5b4cb793..a35b256b 100644
+--- a/src/prediction/prediction.gyp
++++ b/src/prediction/prediction.gyp
+@@ -43,7 +43,7 @@
+         'user_history_predictor.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:config_file_stream',
+         '../base/base.gyp:number_util',
+diff --git a/src/prediction/prediction_test.gyp b/src/prediction/prediction_test.gyp
+index 90768931..6bffa061 100644
+--- a/src/prediction/prediction_test.gyp
++++ b/src/prediction/prediction_test.gyp
+@@ -43,7 +43,7 @@
+         'zero_query_dict_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base_test.gyp:clock_mock',
+         '../composer/composer.gyp:composer',
+         '../config/config.gyp:config_handler',
+diff --git a/src/renderer/renderer.gyp b/src/renderer/renderer.gyp
+index aae2f996..78eb6a75 100644
+--- a/src/renderer/renderer.gyp
++++ b/src/renderer/renderer.gyp
+@@ -67,7 +67,7 @@
+         'renderer_client.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_synchronization',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:version',
+         '../ipc/ipc.gyp:ipc',
+@@ -98,7 +98,7 @@
+         'renderer_client_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:version',
+         '../testing/testing.gyp:gtest_main',
+         'renderer_client',
+@@ -405,7 +405,7 @@
+             '<(gen_out_dir)/mozc_renderer_autogen.rc',
+           ],
+           'dependencies': [
+-            '../base/absl.gyp:absl_synchronization',
++            '../base/absl.gyp:absl_base',
+             '../base/base.gyp:base',
+             '../base/base.gyp:crash_report_handler',
+             '../client/client.gyp:client',
+@@ -436,7 +436,7 @@
+             'win32/win32_renderer_client.cc',
+           ],
+           'dependencies': [
+-            '../base/absl.gyp:absl_synchronization',
++            '../base/absl.gyp:absl_base',
+             '../base/base.gyp:base',
+             '../protocol/protocol.gyp:renderer_proto',
+             'renderer_client',
+@@ -469,7 +469,6 @@
+           ],
+           'dependencies': [
+             '../base/absl.gyp:absl_base',
+-            '../base/absl.gyp:absl_synchronization',
+             '../base/base.gyp:base',
+             '../base/base.gyp:crash_report_handler',
+             '../client/client.gyp:client',
+@@ -577,8 +576,7 @@
+             'unix/window_manager.cc',
+           ],
+           'dependencies': [
+-            '../base/absl.gyp:absl_strings',
+-            '../base/absl.gyp:absl_synchronization',
++            '../base/absl.gyp:absl_base',
+             '../base/base.gyp:base',
+             '../client/client.gyp:client',
+             '../config/config.gyp:stats_config_util',
+diff --git a/src/rewriter/calculator/calculator.gyp b/src/rewriter/calculator/calculator.gyp
+index 1408dc00..f10b8ad0 100644
+--- a/src/rewriter/calculator/calculator.gyp
++++ b/src/rewriter/calculator/calculator.gyp
+@@ -60,7 +60,7 @@
+         'calculator_mock.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base',
+         'calculator',
+       ],
+diff --git a/src/rewriter/rewriter.gyp b/src/rewriter/rewriter.gyp
+index 2de17dea..2f51aa17 100644
+--- a/src/rewriter/rewriter.gyp
++++ b/src/rewriter/rewriter.gyp
+@@ -77,8 +77,7 @@
+         'zipcode_rewriter.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
+-        '../base/absl.gyp:absl_time',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:config_file_stream',
+         '../base/base.gyp:serialized_string_array',
+diff --git a/src/rewriter/rewriter_base.gyp b/src/rewriter/rewriter_base.gyp
+index ceaacf97..29fe7b70 100644
+--- a/src/rewriter/rewriter_base.gyp
++++ b/src/rewriter/rewriter_base.gyp
+@@ -101,7 +101,7 @@
+         'gen_collocation_data_main.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         'gen_existence_data',
+       ],
+     },
+@@ -154,7 +154,7 @@
+         'gen_emoticon_rewriter_data.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../data_manager/data_manager_base.gyp:serialized_dictionary',
+       ],
+diff --git a/src/rewriter/rewriter_test.gyp b/src/rewriter/rewriter_test.gyp
+index b6a5e53d..7a941389 100644
+--- a/src/rewriter/rewriter_test.gyp
++++ b/src/rewriter/rewriter_test.gyp
+@@ -69,7 +69,7 @@
+         'zipcode_rewriter_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:number_util',
+         '../base/base.gyp:serialized_string_array',
+@@ -99,7 +99,7 @@
+         'single_kanji_rewriter_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../data_manager/testing/mock_data_manager.gyp:mock_data_manager',
+         '../session/session_base.gyp:request_test_util',
+diff --git a/src/session/session.gyp b/src/session/session.gyp
+index c87e59a4..be29cebc 100644
+--- a/src/session/session.gyp
++++ b/src/session/session.gyp
+@@ -41,7 +41,7 @@
+         'session_converter.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:version',
+         '../composer/composer.gyp:key_parser',
+@@ -69,7 +69,7 @@
+         'internal/key_event_transformer.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../composer/composer.gyp:composer',
+         '../config/config.gyp:config_handler',
+@@ -97,7 +97,7 @@
+         'session_observer_handler.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../composer/composer.gyp:composer',
+         '../config/config.gyp:character_form_manager',
+         '../config/config.gyp:config_handler',
+@@ -128,7 +128,7 @@
+         ':session',
+         ':session_handler',
+         ':session_usage_observer',
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:number_util',
+         '../config/config.gyp:config_handler',
+@@ -145,7 +145,7 @@
+         'session_usage_observer.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_synchronization',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:number_util',
+         '../config/config.gyp:stats_config_util',
+@@ -176,7 +176,7 @@
+         'random_keyevents_generator.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:japanese_util',
+         '../protocol/protocol.gyp:commands_proto',
+         '../protocol/protocol.gyp:config_proto',
+diff --git a/src/session/session_base.gyp b/src/session/session_base.gyp
+index 083478f9..95afc8c2 100644
+--- a/src/session/session_base.gyp
++++ b/src/session/session_base.gyp
+@@ -54,7 +54,7 @@
+         'internal/keymap.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../composer/composer.gyp:key_event_util',
+         '../composer/composer.gyp:key_parser',
+@@ -97,7 +97,7 @@
+         'key_info_util.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:config_file_stream',
+         '../composer/composer.gyp:key_event_util',
+@@ -126,7 +126,7 @@
+         'session_usage_stats_util.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../protobuf/protobuf.gyp:protobuf',
+         '../protocol/protocol.gyp:commands_proto',
+diff --git a/src/session/session_test.gyp b/src/session/session_test.gyp
+index 160f0242..ecd513f7 100644
+--- a/src/session/session_test.gyp
++++ b/src/session/session_test.gyp
+@@ -75,7 +75,7 @@
+         'session_test.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../converter/converter_base.gyp:converter_mock',
+         '../data_manager/testing/mock_data_manager.gyp:mock_data_manager',
+         '../engine/engine.gyp:engine',
+@@ -306,8 +306,7 @@
+         'session_handler_scenario_test.cc'
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_status',
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:number_util',
+         '../data/test/session/scenario/scenario.gyp:install_session_handler_scenario_test_data',
+diff --git a/src/storage/louds/louds.gyp b/src/storage/louds/louds.gyp
+index 73f42062..9f0aeb34 100644
+--- a/src/storage/louds/louds.gyp
++++ b/src/storage/louds/louds.gyp
+@@ -50,7 +50,7 @@
+         'louds_trie.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base',
+         'louds',
+         'simple_succinct_bit_vector_index',
+diff --git a/src/storage/louds/louds_test.gyp b/src/storage/louds/louds_test.gyp
+index b732eeb1..e16a7e35 100644
+--- a/src/storage/louds/louds_test.gyp
++++ b/src/storage/louds/louds_test.gyp
+@@ -36,7 +36,7 @@
+         'louds_test.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../testing/testing.gyp:gtest_main',
+         'louds.gyp:louds',
+       ],
+diff --git a/src/storage/storage.gyp b/src/storage/storage.gyp
+index 84cf5eba..8de84ce8 100644
+--- a/src/storage/storage.gyp
++++ b/src/storage/storage.gyp
+@@ -42,8 +42,7 @@
+         'tiny_storage.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_strings',
+-        '../base/absl.gyp:absl_synchronization',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base',
+         '../base/base.gyp:encryptor',
+         '../base/base_test.gyp:clock_mock',
+diff --git a/src/testing/testing.gyp b/src/testing/testing.gyp
+index a82023b8..143141c0 100644
+--- a/src/testing/testing.gyp
++++ b/src/testing/testing.gyp
+@@ -211,8 +211,7 @@
+         'base/public/mozctest.cc',
+       ],
+       'dependencies': [
+-        '../base/absl.gyp:absl_status',
+-        '../base/absl.gyp:absl_strings',
++        '../base/absl.gyp:absl_base',
+         '../base/base.gyp:base_core',
+         'googletest_lib',
+       ],
+diff --git a/src/unix/emacs/emacs.gyp b/src/unix/emacs/emacs.gyp
+index 17017897..e13d9a3c 100644
+--- a/src/unix/emacs/emacs.gyp
++++ b/src/unix/emacs/emacs.gyp
+@@ -39,7 +39,7 @@
+         'mozc_emacs_helper.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base',
+         '../../base/base.gyp:version',
+         '../../config/config.gyp:config_handler',
+@@ -57,7 +57,7 @@
+         'client_pool.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base',
+         '../../base/base.gyp:number_util',
+         '../../client/client.gyp:client',
+@@ -74,7 +74,7 @@
+         'mozc_emacs_helper_lib_test.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../testing/testing.gyp:gtest_main',
+         'mozc_emacs_helper_lib',
+       ],
+diff --git a/src/unix/ibus/ibus.gyp b/src/unix/ibus/ibus.gyp
+index 403c1ed1..9fe24123 100644
+--- a/src/unix/ibus/ibus.gyp
++++ b/src/unix/ibus/ibus.gyp
+@@ -131,7 +131,7 @@
+         'message_translator.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base',
+       ],
+     },
+@@ -175,8 +175,7 @@
+         'surrounding_text_util.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_status',
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../client/client.gyp:client',
+         '../../protocol/protocol.gyp:commands_proto',
+         '../../session/session_base.gyp:ime_switch_util',
+@@ -256,7 +255,7 @@
+         'surrounding_text_util_test.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_strings',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base',
+         '../../client/client.gyp:client',
+         '../../client/client.gyp:client_mock',
+@@ -325,7 +324,7 @@
+         'selection_monitor.cc',
+       ],
+       'dependencies': [
+-        '../../base/absl.gyp:absl_synchronization',
++        '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base',
+         'xcb_build_environment',
+       ],
+diff --git a/src/win32/base/win32_base.gyp b/src/win32/base/win32_base.gyp
+index 37f97cf8..8e9036d4 100644
+--- a/src/win32/base/win32_base.gyp
++++ b/src/win32/base/win32_base.gyp
+@@ -119,7 +119,7 @@
+             'win32_window_util.cc',
+           ],
+           'dependencies': [
+-            '../../base/absl.gyp:absl_strings',
++            '../../base/absl.gyp:absl_base',
+             '../../base/base.gyp:base',
+             '../../config/config.gyp:config_handler',
+             '../../protocol/protocol.gyp:commands_proto',
+@@ -205,7 +205,7 @@
+             'text_icon.cc',
+           ],
+           'dependencies': [
+-            '../../base/absl.gyp:absl_strings',
++            '../../base/absl.gyp:absl_base',
+             '../../base/base.gyp:base',
+           ],
+         },
+-- 
+2.36.0
+

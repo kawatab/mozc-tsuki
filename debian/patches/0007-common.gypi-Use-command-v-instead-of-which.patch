@@ -1,0 +1,57 @@
+From b8d949a919526c9cc20a35363f59ef771bd95628 Mon Sep 17 00:00:00 2001
+From: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Date: Mon, 23 Aug 2021 09:31:52 +0900
+Subject: [PATCH 7/7] common.gypi: Use 'command -v' instead of which
+
+Description: Use 'command -v' instead of which
+Forwarded: Not need
+Last-Update: 2022-05-05
+
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+---
+ src/gyp/common.gypi | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/src/gyp/common.gypi b/src/gyp/common.gypi
+index 576c3a23..c3e0f42e 100644
+--- a/src/gyp/common.gypi
++++ b/src/gyp/common.gypi
+@@ -409,12 +409,12 @@
+   'conditions': [
+     ['target_platform=="Linux"', {
+       'make_global_settings': [
+-        ['AR', '<!(which ar)'],
++        ['AR', '<!(command -v ar)'],
+         ['CC', '<!(command -v gcc)'],
+         ['CXX', '<!(command -v g++)'],
+-        ['LD', '<!(which ld)'],
+-        ['NM', '<!(which nm)'],
+-        ['READELF', '<!(which readelf)'],
++        ['LD', '<!(command -v ld)'],
++        ['NM', '<!(command -v nm)'],
++        ['READELF', '<!(command -v readelf)'],
+       ],
+     }],
+     ['target_platform=="Android"', {
+@@ -459,12 +459,12 @@
+         ['LD', '<(ndk_bin_dir)/<(toolchain_prefix)-ld'],
+         ['NM', '<(ndk_bin_dir)/<(toolchain_prefix)-nm'],
+         ['READELF', '<(ndk_bin_dir)/<(toolchain_prefix)-readelf'],
+-        ['AR.host', '<!(which ar)'],
+-        ['CC.host', '<!(which clang)'],
+-        ['CXX.host', '<!(which clang++)'],
+-        ['LD.host', '<!(which ld)'],
+-        ['NM.host', '<!(which nm)'],
+-        ['READELF.host', '<!(which readelf)'],
++        ['AR.host', '<!(command -v ar)'],
++        ['CC.host', '<!(command -v clang)'],
++        ['CXX.host', '<!(command -v clang++)'],
++        ['LD.host', '<!(command -v ld)'],
++        ['NM.host', '<!(command -v nm)'],
++        ['READELF.host', '<!(command -v readelf)'],
+       ],
+     }],
+   ],
+-- 
+2.36.0
+

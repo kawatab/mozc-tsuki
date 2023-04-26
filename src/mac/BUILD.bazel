@@ -1,0 +1,395 @@
+# Copyright 2010-2021, Google Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+load(
+    "//:build_defs.bzl",
+    "macos_application_mozc",
+    "macos_bundle_mozc",
+    "objc_library_mozc",
+    "py_binary_mozc",
+    "select_mozc",
+)
+load(
+    "//:config.bzl",
+    "BRANDING",
+    "MACOS_BUNDLE_ID_PREFIX",
+)
+
+package(default_visibility = ["//:__subpackages__"])
+
+macos_application_mozc(
+    name = "mozc_macos",
+    additional_contents = select_mozc(
+        default = {},
+        macos = {
+            "//renderer:mozc_renderer_macos": "Resources",
+            "//server:mozc_server_macos": "Resources",
+        },
+        oss_macos = {
+            "//gui/about_dialog:about_dialog_macos": "Resources",
+            "//gui/config_dialog:config_dialog_macos": "Resources",
+            "//gui/dictionary_tool:dictionary_tool_macos": "Resources",
+            "//gui/error_message_dialog:error_message_dialog_macos": "Resources",
+            "//gui/tool:mozc_prelauncher_macos": "Resources",
+            "//gui/word_register_dialog:word_register_dialog_macos": "Resources",
+            "//renderer:mozc_renderer_macos": "Resources",
+            "//server:mozc_server_macos": "Resources",
+        },
+    ),
+    app_icons = ["//data/images/mac:product_icon.icns"],
+    bundle_id = MACOS_BUNDLE_ID_PREFIX,
+    bundle_name = BRANDING,
+    infoplists = ["Info.plist"],
+    resources = [
+        "//data/images/mac:direct.tiff",
+        "//data/images/mac:full_ascii.tiff",
+        "//data/images/mac:full_katakana.tiff",
+        "//data/images/mac:half_ascii.tiff",
+        "//data/images/mac:half_katakana.tiff",
+        "//data/images/mac:hiragana.tiff",
+        "//data/installer:credits_en.html",
+    ],
+    strings = [
+        "English.lproj/InfoPlist.strings",
+        "Japanese.lproj/InfoPlist.strings",
+    ],
+    deps = ["mozc_macos_main_lib"],
+)
+
+objc_library_mozc(
+    name = "common",
+    hdrs = ["common.h"],
+)
+
+objc_library_mozc(
+    name = "mozc_macos_main_lib",
+    srcs = ["main.mm"],
+    sdk_frameworks = ["InputMethodKit"],
+    tags = ["manual"],
+    deps = [
+        ":imk_controller",
+        ":imk_server",
+        "//base:crash_report_handler",
+        "//base:init_mozc",
+        "//base:logging",
+        "//base:run_level",
+        "//client",
+        "//config:stats_config_util",
+    ],
+)
+
+objc_library_mozc(
+    name = "imk_controller",
+    srcs = [
+        "GoogleJapaneseInputController.mm",
+    ],
+    hdrs = [
+        "GoogleJapaneseInputController.h",
+    ],
+    data = [
+        "English.lproj/Config.xib",
+        "Japanese.lproj/Config.xib",
+    ],
+    proto_deps = [
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//protocol:renderer_cc_proto",
+    ],
+    tags = ["manual"],
+    textual_hdrs = [
+        "GoogleJapaneseInputControllerInterface.h",
+    ],
+    deps = [
+        ":common",
+        ":imk_server",
+        ":keycode_map",
+        "//base:logging",
+        "//base:mac_process",
+        "//base:mac_util",
+        "//base:util",
+        "//client",
+        "//ipc",
+        "//renderer:renderer_client",
+        "//session:ime_switch_util",
+        "@com_google_absl//absl/base",
+    ],
+)
+
+objc_library_mozc(
+    name = "imk_server",
+    srcs = ["GoogleJapaneseInputServer.mm"],
+    hdrs = ["GoogleJapaneseInputServer.h"],
+    proto_deps = ["//protocol:commands_cc_proto"],
+    tags = ["manual"],
+    deps = [
+        ":common",
+        "//base:logging",
+        "@com_google_absl//absl/base",
+    ],
+)
+
+objc_library_mozc(
+    name = "keycode_map",
+    srcs = ["KeyCodeMap.mm"],
+    hdrs = ["KeyCodeMap.h"],
+    proto_deps = ["//protocol:commands_cc_proto"],
+    tags = ["manual"],
+    textual_hdrs = [
+        ":init_kanamap",
+        ":init_specialkeymap",
+        ":init_specialcharmap",
+    ],
+    deps = [
+        "//base:logging",
+        "@com_google_absl//absl/base",
+    ],
+)
+
+py_binary_mozc(
+    name = "generate_mapping",
+    srcs = ["generate_mapping.py"],
+)
+
+genrule(
+    name = "init_kanamap",
+    srcs = ["//data/preedit:mac-kana.tsv"],
+    outs = ["init_kanamap.h"],
+    cmd = ("$(location :generate_mapping) --mapname=KanaMap" +
+           " --result_type='const char *' --filename $< > $@"),
+    exec_tools = [":generate_mapping"],
+)
+
+genrule(
+    name = "init_specialkeymap",
+    srcs = ["//data/preedit:mac-specialkeys.tsv"],
+    outs = ["init_specialkeymap.h"],
+    cmd = ("$(location :generate_mapping) --mapname=SpecialKeyMap" +
+           " --result_type=KeyEvent::SpecialKey --filename $< > $@"),
+    exec_tools = [":generate_mapping"],
+)
+
+genrule(
+    name = "init_specialcharmap",
+    srcs = ["//data/preedit:mac-specialchars.tsv"],
+    outs = ["init_specialcharmap.h"],
+    cmd = ("$(location :generate_mapping) --mapname=SpecialCharMap" +
+           " --key_type=unichar --result_type=KeyEvent::SpecialKey" +
+           " --filename $< > $@"),
+    exec_tools = [":generate_mapping"],
+)
+
+objc_library_mozc(
+    name = "activate_pane_lib",
+    srcs = ["ActivatePane/ActivatePane.mm"],
+    hdrs = ["ActivatePane/ActivatePane.h"],
+    data = ["ActivatePane/ActivatePane.xib"],
+    sdk_frameworks = [
+        "Carbon",
+        "InstallerPlugins",
+    ],
+    tags = ["manual"],
+)
+
+macos_bundle_mozc(
+    name = "activate_pane",
+    bundle_name = "ActivatePane",
+    infoplists = ["ActivatePane/Info.plist"],
+    strings = [
+        "ActivatePane/English.lproj/Localizable.strings",
+        "ActivatePane/Japanese.lproj/Localizable.strings",
+    ],
+    deps = ["activate_pane_lib"],
+)
+
+objc_library_mozc(
+    name = "dev_confirm_pane_lib",
+    srcs = ["DevConfirmPane/DevConfirmPane.mm"],
+    hdrs = ["DevConfirmPane/DevConfirmPane.h"],
+    data = ["DevConfirmPane/DevConfirmPane.xib"],
+    sdk_frameworks = [
+        "Carbon",
+        "InstallerPlugins",
+    ],
+    tags = ["manual"],
+)
+
+macos_bundle_mozc(
+    name = "dev_confirm_pane",
+    bundle_name = "DevConfirmPane",
+    infoplists = ["DevConfirmPane/Info.plist"],
+    strings = [
+        "DevConfirmPane/English.lproj/Localizable.strings",
+        "DevConfirmPane/Japanese.lproj/Localizable.strings",
+    ],
+    deps = ["dev_confirm_pane_lib"],
+)
+
+objc_library_mozc(
+    name = "uninstaller_main_lib",
+    srcs = [
+        "Uninstaller/DialogsController.mm",
+        "Uninstaller/Uninstaller.mm",
+        "Uninstaller/Uninstaller_main.mm",
+    ],
+    hdrs = [
+        "Uninstaller/DialogsController.h",
+        "Uninstaller/Uninstaller.h",
+    ],
+    data = [
+        "Uninstaller/English.lproj/Dialogs.xib",
+        "Uninstaller/Japanese.lproj/Dialogs.xib",
+    ],
+    sdk_frameworks = [
+        "Carbon",
+        "Security",
+    ],
+    tags = ["manual"],
+    deps = [
+        "//base:init_mozc",
+        "//base:url",
+        "//base:version",
+    ],
+)
+
+macos_application_mozc(
+    name = "uninstaller_macos",
+    bundle_name = "Uninstall" + select_mozc(
+        default = "GoogleJapaneseInput",
+        oss = "Mozc",
+    ),
+    infoplists = ["Uninstaller/Info.plist"],
+    strings = [
+        "Uninstaller/English.lproj/InfoPlist.strings",
+        "Uninstaller/Japanese.lproj/InfoPlist.strings",
+    ],
+    deps = ["uninstaller_main_lib"],
+)
+
+genrule(
+    name = "tweak_preflight",
+    srcs = [
+        "installer/preflight_template.sh",
+    ],
+    outs = ["preflight.sh"],
+    cmd = ("$(location //build_tools:tweak_macinstaller_script)" +
+           " --output $@" +
+           " --input $<" +
+           " --version_file $(location //base:mozc_version_txt)" +
+           " --build_type dev"),  # or stable.
+    exec_tools = [
+        "//build_tools:tweak_macinstaller_script",
+        "//base:mozc_version_txt",
+    ],
+)
+
+genrule(
+    name = "tweak_postflight",
+    srcs = [
+        "installer/postflight_template.sh",
+    ],
+    outs = ["postflight.sh"],
+    cmd = ("$(location //build_tools:tweak_macinstaller_script)" +
+           " --output $@" +
+           " --input $<" +
+           " --version_file $(location //base:mozc_version_txt)" +
+           " --build_type dev"),  # or stable.
+    exec_tools = [
+        "//build_tools:tweak_macinstaller_script",
+        "//base:mozc_version_txt",
+    ],
+)
+
+py_binary_mozc(
+    name = "zip_files",
+    srcs = ["zip_files.py"],
+    deps = ["//build_tools:util"],
+)
+
+genrule(
+    name = "zip_installer_files",
+    srcs = [
+        ":tweak_preflight",
+        ":tweak_postflight",
+    ] + select_mozc(
+        # For both macos and oss_macos
+        macos = [
+            ":activate_pane",
+            ":dev_confirm_pane",
+            ":mozc_macos",
+            ":uninstaller_macos",
+        ],
+    ) + select_mozc(
+        # For oss_macos only
+        oss_macos = [
+            "//gui/config_dialog:config_dialog_macos",
+            "//gui/dictionary_tool:dictionary_tool_macos",
+            "installer/LaunchAgents/org.mozc.inputmethod.Japanese.Converter.plist",
+            "installer/LaunchAgents/org.mozc.inputmethod.Japanese.Renderer.plist",
+        ],
+    ),
+    outs = ["installer.zip"],
+    cmd = "$(location :zip_files) --inputs $(SRCS) --output $@",
+    exec_tools = [
+        ":zip_files",
+    ],
+)
+
+py_binary_mozc(
+    name = "build_installer",
+    srcs = ["build_installer.py"],
+    deps = ["//build_tools:util"],
+)
+
+# AUTO_UPDATER_DIR should be replaced with a valid directory.
+AUTO_UPDATER_DIR = "Releases/Keystone"  # Placeholder
+
+genrule(
+    name = "installer_oss_macos",
+    srcs = [":zip_installer_files"] + select_mozc(
+        oss_macos = [
+            "installer/Mozc_template.pkgproj",
+            "installer/LaunchAgents/org.mozc.inputmethod.Japanese.Converter.plist",
+            "installer/LaunchAgents/org.mozc.inputmethod.Japanese.Renderer.plist",
+        ],
+    ),
+    outs = ["Mozc.pkg"],
+    cmd = ("$(location :build_installer) --input $(location :zip_installer_files) --output $@" +
+           " --pkgproj_command $(location //build_tools:tweak_pkgproj)" +
+           " --pkgproj_input $(location installer/Mozc_template.pkgproj)" +
+           " --pkgproj_output installer.pkgproj" +
+           " --version_file $(location //base:mozc_version_txt)" +
+           " --auto_updater_dir " + AUTO_UPDATER_DIR +
+           " --build_type dev"),  # or stable
+    exec_tools = [
+        ":build_installer",
+        "//base:mozc_version_txt",
+        "//build_tools:tweak_pkgproj",
+    ],
+    tags = ["manual"],
+)

@@ -1,0 +1,9 @@
+0001-Update-uim-mozc-to-c979f127acaeb7b35d3344e8b1e40848e.patch
+0002-Support-fcitx.patch
+0003-Change-compiler-from-clang-to-gcc.patch
+0004-Add-usage_dict.txt.patch
+0005-Enable-verbose-build.patch
+0006-Update-gyp-using-absl.patch
+0007-common.gypi-Use-command-v-instead-of-which.patch
+#0008-renderer-Convert-Gtk2-to-Gtk3.patch
+0009-protobuf.gyp-Add-latomic-to-link_settings.patch

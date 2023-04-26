@@ -1,0 +1,23 @@
+EXPORTS
+    EnsureAllApplicationPackagesPermisssions
+    CallIERefreshElevationPolicy
+    InstallIME
+    InstallIMERollback
+    UninstallIME
+    UninstallIMERollback
+    RegisterTIP
+    RegisterTIPRollback
+    UnregisterTIP
+    UnregisterTIPRollback
+    OpenUninstallSurveyPage
+    ShutdownServer
+    RestoreUserIMEEnvironment
+    EnsureIMEIsDisabledForServiceAccount
+    HideCancelButton
+    SaveCustomActionData
+    RestoreServiceState
+    StopCacheService
+    InitialInstallation
+    InitialInstallationCommit
+    WriteApValue
+    WriteApValueRollback

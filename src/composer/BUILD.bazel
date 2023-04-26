@@ -1,0 +1,227 @@
+# Copyright 2010-2021, Google Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+load(
+    "//:build_defs.bzl",
+    "cc_binary_mozc",
+    "cc_library_mozc",
+    "cc_test_mozc",
+)
+
+package(default_visibility = [
+    "//:__subpackages__",
+])
+
+cc_library_mozc(
+    name = "composer",
+    srcs = ["composer.cc"],
+    hdrs = ["composer.h"],
+    deps = [
+        ":key_event_util",
+        ":table",
+        ":type_corrected_query",
+        "//base",
+        "//base:clock",
+        "//base:japanese_util",
+        "//base:logging",
+        "//base:port",
+        "//base:util",
+        "//base/protobuf",
+        "//base/protobuf:repeated_field",
+        "//composer/internal:composition",
+        "//composer/internal:composition_input",
+        "//composer/internal:mode_switching_handler",
+        "//composer/internal:transliterators",
+        "//composer/internal:typing_corrector",
+        "//config:character_form_manager",
+        "//config:config_handler",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//testing:gunit_prod",
+        "//transliteration",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+cc_test_mozc(
+    name = "composer_test",
+    size = "small",
+    srcs = ["composer_test.cc"],
+    requires_full_emulation = False,
+    deps = [
+        ":composer",
+        ":key_parser",
+        ":table",
+        "//base",
+        "//base:clock_mock",
+        "//base:logging",
+        "//base:system_util",
+        "//base:util",
+        "//composer/internal:typing_model",
+        "//config:character_form_manager",
+        "//config:config_handler",
+        "//data_manager/testing:mock_data_manager",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//session:request_test_util",
+        "//testing:gunit_main",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library_mozc(
+    name = "table",
+    srcs = ["table.cc"],
+    hdrs = ["table.h"],
+    deps = [
+        "//base",
+        "//base:config_file_stream",
+        "//base:file_stream",
+        "//base:hash",
+        "//base:logging",
+        "//base:port",
+        "//base:trie",
+        "//base:util",
+        "//composer/internal:composition_input",
+        "//composer/internal:typing_model",
+        "//config:config_handler",
+        "//data_manager:data_manager_interface",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//testing:gunit_prod",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_library_mozc(
+    name = "type_corrected_query",
+    hdrs = ["type_corrected_query.h"],
+    visibility = [
+        # For //composer/internal:typing_corrector_test.
+        "//composer/internal:__pkg__",
+    ],
+)
+
+cc_binary_mozc(
+    name = "composer_main",
+    srcs = ["composer_main.cc"],
+    deps = [
+        ":composer",
+        ":table",
+        "//base",
+        "//base:init_mozc",
+        "//base/protobuf",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//transliteration",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_test_mozc(
+    name = "table_test",
+    size = "small",
+    srcs = ["table_test.cc"],
+    requires_full_emulation = False,
+    deps = [
+        ":table",
+        "//base",
+        "//base:file_util",
+        "//base:port",
+        "//base:system_util",
+        "//composer/internal:composition_input",
+        "//config:config_handler",
+        "//data_manager/testing:mock_data_manager",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//testing:gunit_main",
+        "@com_google_absl//absl/container:flat_hash_set",
+    ],
+)
+
+cc_library_mozc(
+    name = "key_event_util",
+    srcs = ["key_event_util.cc"],
+    hdrs = ["key_event_util.h"],
+    deps = [
+        "//base",
+        "//base:logging",
+        "//base:port",
+        "//protocol:commands_cc_proto",
+    ],
+)
+
+cc_test_mozc(
+    name = "key_event_util_test",
+    size = "small",
+    srcs = ["key_event_util_test.cc"],
+    requires_full_emulation = False,
+    deps = [
+        ":key_event_util",
+        ":key_parser",
+        "//base",
+        "//base:util",
+        "//protocol:commands_cc_proto",
+        "//testing:gunit_main",
+        "@com_google_absl//absl/strings:str_format",
+    ],
+)
+
+cc_library_mozc(
+    name = "key_parser",
+    srcs = ["key_parser.cc"],
+    hdrs = ["key_parser.h"],
+    deps = [
+        "//base",
+        "//base:logging",
+        "//base:port",
+        "//base:singleton",
+        "//base:util",
+        "//protocol:commands_cc_proto",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+cc_test_mozc(
+    name = "key_parser_test",
+    size = "small",
+    srcs = ["key_parser_test.cc"],
+    requires_full_emulation = False,
+    deps = [
+        ":key_event_util",
+        ":key_parser",
+        "//base",
+        "//base:port",
+        "//protocol:commands_cc_proto",
+        "//testing:gunit_main",
+    ],
+)

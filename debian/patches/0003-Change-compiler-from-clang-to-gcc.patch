@@ -1,0 +1,57 @@
+From b16874ec6d31e4b2c9bcc37ee361f9da39e9b78f Mon Sep 17 00:00:00 2001
+From: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Date: Sun, 27 Dec 2020 22:21:43 +0900
+Subject: [PATCH 3/7] Change compiler from clang to gcc
+
+Description: Change compiler from clang to gcc
+  Debian default c++ compiler is g++. This changes to it.
+Forwarded: Not need
+Last-Update: 2022-05-05
+
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+---
+ src/gyp/common.gypi | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/src/gyp/common.gypi b/src/gyp/common.gypi
+index 20fc040a..576c3a23 100644
+--- a/src/gyp/common.gypi
++++ b/src/gyp/common.gypi
+@@ -105,7 +105,7 @@
+     ],
+     # Libraries for GNU/Linux environment.
+     'linux_ldflags': [
+-      '-lc++',
++      '-lstdc++',
+       '-pthread',
+     ],
+ 
+@@ -123,10 +123,10 @@
+         'compiler_host_version_int': 304,  # Clang 3.4 or higher
+       }],
+       ['target_platform=="Linux"', {
+-        'compiler_target': 'clang',
+-        'compiler_target_version_int': 304,  # Clang 3.4 or higher
+-        'compiler_host': 'clang',
+-        'compiler_host_version_int': 304,  # Clang 3.4 or higher
++        'compiler_target': 'g++',
++        'compiler_target_version_int': 409,  # gcc 4.9 or higher
++        'compiler_host': 'g++',
++        'compiler_host_version_int': 304,  # gcc 4.9 or higher
+       }],
+     ],
+   },
+@@ -410,8 +410,8 @@
+     ['target_platform=="Linux"', {
+       'make_global_settings': [
+         ['AR', '<!(which ar)'],
+-        ['CC', '<!(which clang)'],
+-        ['CXX', '<!(which clang++)'],
++        ['CC', '<!(command -v gcc)'],
++        ['CXX', '<!(command -v g++)'],
+         ['LD', '<!(which ld)'],
+         ['NM', '<!(which nm)'],
+         ['READELF', '<!(which readelf)'],
+-- 
+2.36.0
+
