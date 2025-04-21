@@ -1,4 +1,5 @@
 // Modified code
+<<<<<<< HEAD:2.28.4715.102+dfsg-2.2/src/protocol/commands.proto
 // Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
 // All rights reserved.
 //
@@ -7,6 +8,15 @@
 
 // Original code
 // Copyright 2010-2021, Google Inc.
+=======
+// Copyright 2019, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
+// All rights reserved.
+//
+// - Added a value to enum PreeditMethod
+
+// Original code
+// Copyright 2010-2018, Google Inc.
+>>>>>>> 792a090 (Modified README.md and fixed some errors):src/protocol/commands.proto
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
