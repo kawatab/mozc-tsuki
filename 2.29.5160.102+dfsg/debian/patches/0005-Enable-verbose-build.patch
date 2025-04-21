@@ -1,0 +1,28 @@
+From: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Date: Sun, 27 Dec 2020 22:34:54 +0900
+Subject: Enable verbose build
+
+Description: Enable verboase build
+Forwarded: not-needed
+Last-Update: 2022-05-05
+
+
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Signed-off-by: Kentaro Hayashi <kenhys@gmail.com>
+---
+ src/build_mozc.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/build_mozc.py b/src/build_mozc.py
+index 8e31bd9..37f4a5b 100755
+--- a/src/build_mozc.py
++++ b/src/build_mozc.py
+@@ -672,7 +672,7 @@ def BuildWithNinja(options, targets):
+ 
+   for target in targets:
+     (_, target_name) = target.split(':')
+-    RunOrDie([ninja, '-C', build_arg, target_name])
++    RunOrDie([ninja, '-v', '-C', build_arg, target_name])
+ 
+ 
+ def BuildOnWindows(targets):

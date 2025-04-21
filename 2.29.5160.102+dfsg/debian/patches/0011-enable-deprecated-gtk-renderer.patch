@@ -1,0 +1,25 @@
+From: Kentaro Hayashi <kenhys@gmail.com>
+Date: Wed, 20 Nov 2024 19:35:21 +0900
+Subject: Enable deprecated GTK renderer
+
+Description: Enable deprecated GTK renderer
+Forwarded: not-needed
+Author: Kentaro Hayashi <kenhys@xdump.org>
+Last-Update: 2024-11-21
+---
+ src/build_mozc.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/build_mozc.py b/src/build_mozc.py
+index 37f4a5b..416aba0 100755
+--- a/src/build_mozc.py
++++ b/src/build_mozc.py
+@@ -77,7 +77,7 @@ EXT_THIRD_PARTY_DIR = os.path.join(MOZC_ROOT, 'third_party')
+ #   https://github.com/google/mozc/issues/567
+ # Qt5 candidate window built by Bazel is the alternative.
+ #   https://github.com/google/mozc/blob/master/docs/build_mozc_in_docker.md
+-USE_DEPRECATED_GTK_RENDERER = False
++USE_DEPRECATED_GTK_RENDERER = True
+ 
+ # Ibus build is no longer supported by GYP build.
+ # The build rules and code will be removed in future.

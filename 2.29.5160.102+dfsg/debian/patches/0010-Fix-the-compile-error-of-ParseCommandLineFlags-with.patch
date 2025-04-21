@@ -1,0 +1,36 @@
+From: Kentaro Hayashi <kenhys@gmail.com>
+Date: Fri, 17 May 2024 18:21:29 +0900
+Subject: Fix the compile error of ParseCommandLineFlags with Abseil LTS
+ 20230802.
+
+Origin: https://github.com/google/mozc/commit/cad4064c8884eb711e0e19b4b79d2ff5610823dc
+Description: Fix the compile error of ParseCommandLineFlags with Abseil LTS 20230802.
+  * Added the check of the Abseil version to the arguments of ParseCommandLineImpl.
+  * https://github.com/google/mozc/issues/790
+  #codehealth
+  PiperOrigin-RevId: 561867167
+Author: Hiroyuki Komatsu <komatsu@google.com>
+Forwarded: not-needed
+
+Released in 2.29.5374.102
+
+
+Signed-off-by: Kentaro Hayashi <kenhys@gmail.com>
+---
+ src/base/init_mozc.cc | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/src/base/init_mozc.cc b/src/base/init_mozc.cc
+index 41b0107..0d08cc4 100644
+--- a/src/base/init_mozc.cc
++++ b/src/base/init_mozc.cc
+@@ -87,7 +87,9 @@ std::string GetLogFilePathFromProgramName(const std::string &program_name) {
+ void ParseCommandLineFlags(int argc, char **argv) {
+   absl::flags_internal::ParseCommandLineImpl(
+       argc, argv,
++#if defined(ABSL_LTS_RELEASE_VERSION) && ABSL_LTS_RELEASE_VERSION < 20230802
+       absl::flags_internal::ArgvListAction::kRemoveParsedArgs,
++#endif  // ABSL_LTS_RELEASE_VERSION < 20230802
+       // Suppress help messages invoked by --help and others.
+       // Use UsageFlagsAction::kHandleUsage to enable it.
+       absl::flags_internal::UsageFlagsAction::kIgnoreUsage,

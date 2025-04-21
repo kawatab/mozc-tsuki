@@ -1,0 +1,3 @@
+# ignore the following auto generated files:
+#   src/unix/fcitx5/po/*.mo
+extend-diff-ignore = ".+\.mo$"

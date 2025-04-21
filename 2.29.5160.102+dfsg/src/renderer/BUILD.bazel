@@ -1,0 +1,475 @@
+# Copyright 2010-2021, Google Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+load(
+    "//:build_defs.bzl",
+    "mozc_cc_binary",
+    "mozc_cc_library",
+    "mozc_cc_test",
+    "mozc_macos_application",
+    "mozc_objc_library",
+    "mozc_select",
+)
+load(
+    "//:config.bzl",
+    "BRANDING",
+    "MACOS_BUNDLE_ID_PREFIX",
+)
+load("//bazel/win32:build_defs.bzl", "copts_wtl", "features_gdi")
+
+package(default_visibility = [
+    "//:__subpackages__",
+])
+
+mozc_cc_library(
+    name = "renderer_client",
+    srcs = ["renderer_client.cc"],
+    hdrs = ["renderer_client.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":renderer_interface",
+        "//base:clock",
+        "//base:logging",
+        "//base:process",
+        "//base:system_util",
+        "//base:thread2",
+        "//base:version",
+        "//ipc",
+        "//ipc:named_event",
+        "//protocol:renderer_cc_proto",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/synchronization",
+        "@com_google_absl//absl/time",
+    ] + mozc_select(
+        ios = ["//base/mac:mac_util"],
+        macos = ["//base/mac:mac_util"],
+        windows = [
+            "//base/win32:win_sandbox",
+            "//base:run_level",
+        ],
+    ),
+)
+
+mozc_cc_test(
+    name = "renderer_client_test",
+    size = "medium",
+    srcs = ["renderer_client_test.cc"],
+    requires_full_emulation = False,
+    tags = ["noandroid"],
+    deps = [
+        ":renderer_client",
+        ":renderer_interface",
+        "//base:logging",
+        "//base:number_util",
+        "//base:version",
+        "//ipc",
+        "//protocol:commands_cc_proto",
+        "//protocol:renderer_cc_proto",
+        "//testing:gunit_main",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_library(
+    name = "renderer_server",
+    srcs = ["renderer_server.cc"],
+    hdrs = ["renderer_server.h"],
+    # TODO(b/180075250): IPC tests don't pass in forge
+    tags = ["nowin"],
+    deps = [
+        ":renderer_interface",
+        "//base:const",
+        "//base:logging",
+        "//base:port",
+        "//base:system_util",
+        "//client:client_interface",
+        "//config:config_handler",
+        "//ipc",
+        "//ipc:named_event",
+        "//ipc:process_watch_dog",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//protocol:renderer_cc_proto",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_test(
+    name = "renderer_server_test",
+    size = "medium",
+    srcs = ["renderer_server_test.cc"],
+    requires_full_emulation = False,
+    tags = ["noandroid"],
+    deps = [
+        ":renderer_client",
+        ":renderer_interface",
+        ":renderer_server",
+        "//base:logging",
+        "//ipc:ipc_test_util",
+        "//protocol:renderer_cc_proto",
+        "//testing:gunit_main",
+        "//testing:mozctest",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_library(
+    name = "table_layout",
+    srcs = [
+        "table_layout.cc",
+        "table_layout_interface.h",
+    ],
+    hdrs = ["table_layout.h"],
+    deps = [
+        "//base:coordinates",
+        "//base:logging",
+        "//base:port",
+    ],
+)
+
+mozc_cc_test(
+    name = "table_layout_test",
+    size = "small",
+    srcs = [
+        "table_layout_interface.h",
+        "table_layout_test.cc",
+    ],
+    requires_full_emulation = False,
+    tags = ["noandroid"],
+    deps = [
+        ":table_layout",
+        "//testing:gunit_main",
+    ],
+)
+
+mozc_cc_library(
+    name = "window_util",
+    srcs = ["window_util.cc"],
+    hdrs = ["window_util.h"],
+    deps = ["//base:coordinates"],
+)
+
+mozc_cc_library(
+    name = "renderer_interface",
+    hdrs = ["renderer_interface.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        "//client:client_interface",
+        "//protocol:renderer_cc_proto",
+    ],
+)
+
+mozc_cc_library(
+    name = "unix_const",
+    hdrs = ["unix/const.h"],
+    deps = ["//base:port"],
+)
+
+mozc_cc_library(
+    name = "renderer_mock",
+    testonly = True,
+    hdrs = ["renderer_mock.h"],
+    visibility = ["//visibility:public"],
+    deps = [
+        ":renderer_interface",
+        "//testing:gunit",
+    ],
+)
+
+mozc_cc_test(
+    name = "window_util_test",
+    size = "small",
+    srcs = ["window_util_test.cc"],
+    requires_full_emulation = False,
+    tags = ["noandroid"],
+    deps = [
+        ":window_util",
+        "//base:coordinates",
+        "//testing:gunit_main",
+    ],
+)
+
+mozc_cc_library(
+    name = "renderer_style_handler",
+    srcs = ["renderer_style_handler.cc"],
+    hdrs = ["renderer_style_handler.h"],
+    copts = copts_wtl(),  # for Windows
+    features = features_gdi(),  # for Windows
+    deps = [
+        "//base:singleton",
+        "//protocol:renderer_cc_proto",
+    ] + mozc_select(
+        windows = ["//third_party/wtl"],
+    ),
+)
+
+mozc_cc_test(
+    name = "renderer_style_handler_test",
+    size = "small",
+    srcs = ["renderer_style_handler_test.cc"],
+    requires_full_emulation = False,
+    deps = [
+        ":renderer_style_handler",
+        "//protocol:renderer_cc_proto",
+        "//testing:gunit_main",
+    ],
+)
+
+# This rule is only for Linux application build.
+mozc_cc_library(
+    name = "gtk_mozc_renderer_lib",
+    srcs = mozc_select(
+        linux = [
+            "unix/cairo_factory.cc",
+            "unix/cairo_wrapper.cc",
+            "unix/candidate_window.cc",
+            "unix/draw_tool.cc",
+            "unix/font_spec.cc",
+            "unix/gtk_window_base.cc",
+            "unix/gtk_wrapper.cc",
+            "unix/infolist_window.cc",
+            "unix/pango_wrapper.cc",
+            "unix/text_renderer.cc",
+            "unix/unix_renderer.cc",
+            "unix/unix_server.cc",
+            "unix/window_manager.cc",
+        ],
+    ),
+    hdrs = mozc_select(
+        linux = [
+            "unix/cairo_factory.h",
+            "unix/cairo_factory_interface.h",
+            "unix/cairo_wrapper.h",
+            "unix/cairo_wrapper_interface.h",
+            "unix/candidate_window.h",
+            "unix/const.h",
+            "unix/draw_tool.h",
+            "unix/draw_tool_interface.h",
+            "unix/font_spec.h",
+            "unix/font_spec_interface.h",
+            "unix/gtk_window_base.h",
+            "unix/gtk_window_interface.h",
+            "unix/gtk_wrapper.h",
+            "unix/gtk_wrapper_interface.h",
+            "unix/infolist_window.h",
+            "unix/pango_wrapper.h",
+            "unix/pango_wrapper_interface.h",
+            "unix/text_renderer.h",
+            "unix/text_renderer_interface.h",
+            "unix/unix_renderer.h",
+            "unix/unix_server.h",
+            "unix/window_manager.h",
+            "unix/window_manager_interface.h",
+        ],
+    ),
+    deps = [
+        ":renderer_interface",
+        ":renderer_server",
+        ":renderer_style_handler",
+        ":table_layout",
+        ":window_util",
+        "//base:coordinates",
+        "//base:logging",
+        "//base:port",
+        "//base:util",
+        "//client",
+        "//client:client_interface",
+        "//config:stats_config_util",
+        "//ipc",
+        "//protocol:config_cc_proto",
+        "//protocol:renderer_cc_proto",
+        "//testing:gunit_prod",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+        "@com_google_absl//absl/synchronization",
+    ] + mozc_select(
+        oss_linux = ["@gtk2//:gtk2"],
+    ),
+)
+
+mozc_cc_binary(
+    name = "gtk_mozc_renderer",
+    srcs = ["unix/gtk_renderer_main.cc"],
+    defines = mozc_select(linux = ["ENABLE_GTK_RENDERER"]),
+    deps = [
+        ":gtk_mozc_renderer_lib",
+        ":renderer_client",
+        ":table_layout",
+        "//renderer:init_mozc_renderer",
+    ],
+)
+
+# This rule is only for Linux application build.
+mozc_cc_test(
+    name = "gtk_renderer_test",
+    srcs = mozc_select(
+        linux = [
+            "renderer_mock.h",
+            "table_layout_mock.h",
+            "unix/cairo_factory_interface.h",
+            "unix/cairo_factory_mock.h",
+            "unix/cairo_wrapper_interface.h",
+            "unix/cairo_wrapper_mock.h",
+            "unix/candidate_window_test.cc",
+            "unix/draw_tool_interface.h",
+            "unix/draw_tool_mock.h",
+            "unix/draw_tool_test.cc",
+            "unix/font_spec_interface.h",
+            "unix/font_spec_test.cc",
+            "unix/gtk_window_base_test.cc",
+            "unix/gtk_window_interface.h",
+            "unix/gtk_window_mock.h",
+            "unix/gtk_wrapper_interface.h",
+            "unix/gtk_wrapper_mock.h",
+            "unix/infolist_window_test.cc",
+            "unix/pango_wrapper_interface.h",
+            "unix/text_renderer_interface.h",
+            "unix/text_renderer_mock.h",
+            "unix/text_renderer_test.cc",
+            "unix/unix_renderer_test.cc",
+            "unix/unix_server_test.cc",
+            "unix/window_manager_interface.h",
+            "unix/window_manager_mock.h",
+            "unix/window_manager_test.cc",
+        ],
+    ),
+    deps = [
+        ":gtk_mozc_renderer_lib",
+        ":renderer_interface",
+        ":renderer_style_handler",
+        "//base:coordinates",
+        "//base:logging",
+        "//base:port",
+        "//base:system_util",
+        "//base:util",
+        "//client:client_interface",
+        "//protocol:renderer_cc_proto",
+        "//testing:gunit_main",
+        "//testing:mozctest",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/random",
+    ] + mozc_select(
+        oss_linux = ["@gtk2//:gtk2"],
+    ),
+)
+
+# macOS
+mozc_macos_application(
+    name = "mozc_renderer_macos",
+    app_icons = ["//data/images/mac:product_icon.icns"],
+    bundle_id = MACOS_BUNDLE_ID_PREFIX + ".Renderer",
+    bundle_name = BRANDING + "Renderer",
+    infoplists = ["mac/Info.plist"],
+    resources = ["//data/images/mac:candidate_window_logo.tiff"],
+    deps = [":mozc_renderer_main_macos"],
+    # When we support Breakpad, uncomment the following block.
+    # additional_contents = {
+    #     "[Breakpad]" : "Frameworks",
+    # },
+)
+
+mozc_cc_library(
+    name = "mozc_renderer_main_macos",
+    srcs = mozc_select(macos = ["mac/mac_renderer_main.cc"]),
+    deps = [
+        "//renderer:init_mozc_renderer",
+    ] + mozc_select(
+        macos = [":mozc_renderer_lib_macos"],
+    ),
+)
+
+mozc_objc_library(
+    name = "mozc_renderer_lib_macos",
+    srcs = [
+        "mac/CandidateController.mm",
+        "mac/CandidateView.mm",
+        "mac/CandidateWindow.mm",
+        "mac/InfolistView.mm",
+        "mac/InfolistWindow.mm",
+        "mac/RendererBaseWindow.mm",
+        "mac/mac_server.mm",
+        "mac/mac_server_send_command.mm",
+        "mac/mac_view_util.mm",
+    ],
+    hdrs = [
+        "mac/CandidateController.h",
+        "mac/CandidateView.h",
+        "mac/CandidateWindow.h",
+        "mac/InfolistView.h",
+        "mac/InfolistWindow.h",
+        "mac/RendererBaseWindow.h",
+        "mac/mac_server.h",
+        "mac/mac_server_send_command.h",
+        "mac/mac_view_util.h",
+    ],
+    sdk_frameworks = [
+        "Carbon",
+        "Foundation",
+    ],
+    deps = [
+        ":renderer_interface",
+        ":renderer_server",
+        ":renderer_style_handler",
+        ":table_layout",
+        ":window_util",
+        "//base:const",
+        "//base:coordinates",
+        "//base:logging",
+        "//base:port",
+        "//base:util",
+        "//base/mac:mac_util",
+        "//client:client_interface",
+        "//mac:common",
+        "//protocol:candidates_cc_proto",
+        "//protocol:commands_cc_proto",
+        "//protocol:renderer_cc_proto",
+        "@com_google_absl//absl/base",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/synchronization",
+    ],
+)
+
+mozc_cc_library(
+    name = "init_mozc_renderer",
+    srcs = ["init_mozc_renderer.cc"],
+    hdrs = ["init_mozc_renderer.h"],
+    visibility = ["//renderer:__subpackages__"],
+    deps = [
+        "//base:crash_report_handler",
+        "//base:init_mozc",
+        "//base:run_level",
+        "//base:system_util",
+        "//config:stats_config_util",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)

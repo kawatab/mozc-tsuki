@@ -1,0 +1,2 @@
+src/out_linux_static/Release/mozc_tool usr/lib/mozc
+src/data/installer/credits_en.html usr/lib/mozc/documents

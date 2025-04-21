@@ -1,0 +1,70 @@
+name: CI for Linux
+# https://github.com/google/mozc/blob/master/docs/build_mozc_in_docker.md
+
+# Run on push.
+on: push
+
+# Prevent previous workflows from running.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2204-Readme.md
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: Setup
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libibus-1.0-dev qtbase5-dev libgtk2.0-dev libxcb-xfixes0-dev
+          echo "CC=clang-12" >> $GITHUB_ENV
+          echo "CXX=clang++-12" >> $GITHUB_ENV
+          #
+          # Unset the Android NDK setting to skip the unnecessary configuration.
+          echo "ANDROID_NDK_HOME=" >> $GITHUB_ENV
+
+      - name: bazel build
+        working-directory: ./src
+        run: |
+          bazel build --config oss_linux package
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: mozc.zip
+          path: src/bazel-bin/unix/mozc.zip
+          if-no-files-found: warn
+
+  test:
+    # https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2204-Readme.md
+    runs-on: ubuntu-22.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          submodules: 'recursive'
+
+      - name: Setup
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libibus-1.0-dev qtbase5-dev libgtk2.0-dev libxcb-xfixes0-dev
+          echo "CC=clang-14" >> $GITHUB_ENV
+          echo "CXX=clang++-14" >> $GITHUB_ENV
+          #
+          # Unset the Android NDK setting to skip the unnecessary configuration.
+          echo "ANDROID_NDK_HOME=" >> $GITHUB_ENV
+
+      - name: bazel test
+        working-directory: ./src
+        run: |
+          bazel test ... --config oss_linux --build_tests_only

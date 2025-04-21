@@ -1,0 +1,324 @@
+# Copyright 2010-2021, Google Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# Visibility:  please choose a more appropriate default for the package,
+# and update any rules that should be different.
+
+load(
+    "//:build_defs.bzl",
+    "mozc_cc_binary",
+    "mozc_cc_library",
+    "mozc_cc_test",
+    "mozc_select",
+)
+
+package(default_visibility = [
+    "//:__subpackages__",
+])
+
+mozc_cc_library(
+    name = "ipc",
+    srcs = [
+        "ipc.cc",
+        "mach_ipc.cc",
+        "unix_ipc.cc",
+        "win32_ipc.cc",
+    ],
+    hdrs = ["ipc.h"],
+    deps = [
+        ":ipc_path_manager",
+        "//base:const",
+        "//base:cpu_stats",
+        "//base:file_util",
+        "//base:logging",
+        "//base:port",
+        "//base:singleton",
+        "//base:system_util",
+        "//base:thread",
+        "//base:util",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+        "@com_google_absl//absl/time",
+    ] + mozc_select(
+        ios = ["//base/mac:mac_util"],
+        macos = ["//base/mac:mac_util"],
+        windows = [
+            "//base/win32:win_sandbox",
+            "//base/win32:wide_char",
+            "//third_party/wil",
+        ],
+    ),
+)
+
+proto_library(
+    name = "ipc_proto",
+    srcs = ["ipc.proto"],
+    visibility = ["//visibility:private"],
+)
+
+cc_proto_library(
+    name = "ipc_cc_proto",
+    deps = [":ipc_proto"],
+)
+
+mozc_cc_library(
+    name = "ipc_path_manager",
+    srcs = ["ipc_path_manager.cc"],
+    hdrs = ["ipc_path_manager.h"],
+    deps = [
+        ":ipc_cc_proto",
+        ":ipc_hdr",
+        "//base:const",
+        "//base:file_stream",
+        "//base:file_util",
+        "//base:logging",
+        "//base:obfuscator_support",
+        "//base:port",
+        "//base:process_mutex",
+        "//base:random",
+        "//base:singleton",
+        "//base:system_util",
+        "//base:util",
+        "//base:version",
+        "//testing:gunit_prod",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+        "@com_google_absl//absl/synchronization",
+    ] + mozc_select(
+        ios = ["//base/mac:mac_util"],
+        macos = ["//base/mac:mac_util"],
+        windows = [
+            "//base/win32:wide_char",
+            "//third_party/wil",
+        ],
+    ),
+)
+
+mozc_cc_binary(
+    name = "ipc_path_manager_main",
+    srcs = ["ipc_path_manager_main.cc"],
+    deps = [
+        ":ipc_path_manager",
+        "//base:init_mozc_buildtool",
+        "//base:logging",
+        "//base:port",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_test(
+    name = "ipc_path_manager_test",
+    size = "small",
+    srcs = ["ipc_path_manager_test.cc"],
+    requires_full_emulation = False,
+    deps = [
+        ":ipc",
+        ":ipc_cc_proto",
+        ":ipc_path_manager",
+        "//base:file_util",
+        "//base:port",
+        "//base:process_mutex",
+        "//base:system_util",
+        "//base:thread2",
+        "//base:version",
+        "//testing:gunit_main",
+        "//testing:mozctest",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_library(
+    name = "ipc_mock",
+    testonly = True,
+    srcs = ["ipc_mock.cc"],
+    hdrs = ["ipc_mock.h"],
+    deps = [
+        ":ipc",
+        "//base:version",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_library(
+    name = "ipc_test_util",
+    srcs = ["ipc_test_util.cc"],
+    hdrs = ["ipc_test_util.h"],
+    deps = [
+        ":ipc",
+        "//base:logging",
+    ],
+)
+
+mozc_cc_test(
+    name = "ipc_test",
+    size = "small",
+    srcs = ["ipc_test.cc"],
+    copts = ["$(STACK_FRAME_UNLIMITED)"],  # ipc_test.cc
+    requires_full_emulation = False,
+    deps = [
+        ":ipc",
+        ":ipc_test_util",
+        "//base:thread2",
+        "//testing:gunit_main",
+        "//testing:mozctest",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_binary(
+    name = "ipc_main",
+    srcs = ["ipc_main.cc"],
+    copts = ["$(STACK_FRAME_UNLIMITED)"],  # ipc_main.cc
+    deps = [
+        ":ipc",
+        "//base:init_mozc_buildtool",
+        "//base:logging",
+        "//base:thread2",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_library(
+    name = "named_event",
+    srcs = ["named_event.cc"],
+    hdrs = ["named_event.h"],
+    deps = [
+        "//base:const",
+        "//base:hash",
+        "//base:logging",
+        "//base:system_util",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+        "@com_google_absl//absl/time",
+    ] + mozc_select(
+        windows = [
+            "//base/win32:win_sandbox",
+            "//base/win32:wide_char",
+        ],
+    ),
+)
+
+mozc_cc_binary(
+    name = "named_event_main",
+    srcs = ["named_event_main.cc"],
+    deps = [
+        ":named_event",
+        "//base:init_mozc_buildtool",
+        "//base:logging",
+        "//base:port",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_test(
+    name = "named_event_test",
+    size = "small",
+    srcs = ["named_event_test.cc"],
+    requires_full_emulation = False,
+    deps = [
+        ":named_event",
+        "//base:clock",
+        "//base:thread2",
+        "//testing:gunit_main",
+        "//testing:mozctest",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_library(
+    name = "process_watch_dog",
+    srcs = ["process_watch_dog.cc"],
+    hdrs = ["process_watch_dog.h"],
+    deps = [
+        "//base:logging",
+        "//base:port",
+        "//base:thread",
+        "@com_google_absl//absl/synchronization",
+        "@com_google_absl//absl/time",
+    ] + mozc_select(
+        windows = [
+            "//base/win32:hresult",
+            "//third_party/wil",
+        ],
+    ),
+)
+
+# This header-only library was inserted because the target
+#   //ipc:ipc_path_manager, which includes ipc/ipc.h
+# cannot depend on the library
+#   //ipc:ipc: Found an inverse include path.
+# See http://go/cxx-layering-faq
+mozc_cc_library(
+    name = "ipc_hdr",
+    textual_hdrs = ["ipc.h"],
+    visibility = ["//visibility:private"],
+    deps = [
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/time",
+    ] + mozc_select(
+        windows = [
+            "//base/win32:wide_char",
+            "//third_party/wil",
+        ],
+    ),
+)
+
+mozc_cc_test(
+    name = "process_watch_dog_test",
+    size = "small",
+    srcs = ["process_watch_dog_test.cc"],
+    requires_full_emulation = False,
+    deps = [
+        ":process_watch_dog",
+        "//base:clock",
+        "//base:logging",
+        "//base:port",
+        "//testing:gunit_main",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+proto_library(
+    name = "window_info_proto",
+    srcs = ["window_info.proto"],
+    visibility = ["//visibility:private"],
+)
+
+cc_proto_library(
+    name = "window_info_cc_proto",
+    visibility = ["//:__subpackages__"],
+    deps = [":window_info_proto"],
+)

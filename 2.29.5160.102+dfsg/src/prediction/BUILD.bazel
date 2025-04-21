@@ -1,0 +1,555 @@
+# Copyright 2010-2021, Google Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# Visibility:  please choose a more appropriate default for the package,
+# and update any rules that should be different.
+
+load(
+    "//:build_defs.bzl",
+    "mozc_cc_binary",
+    "mozc_cc_library",
+    "mozc_cc_test",
+    "mozc_py_binary",
+    "mozc_py_library",
+)
+
+package(default_visibility = ["//:__subpackages__"])
+
+proto_library(
+    name = "user_history_predictor_proto",
+    srcs = ["user_history_predictor.proto"],
+    visibility = ["//visibility:private"],
+)
+
+cc_proto_library(
+    name = "user_history_predictor_cc_proto",
+    deps = [":user_history_predictor_proto"],
+)
+
+mozc_cc_library(
+    name = "predictor_interface",
+    hdrs = ["predictor_interface.h"],
+    deps = [
+        "//converter:segments",
+        "//request:conversion_request",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_library(
+    name = "user_history_predictor",
+    srcs = ["user_history_predictor.cc"],
+    hdrs = ["user_history_predictor.h"],
+    deps = [
+        ":predictor_interface",
+        ":user_history_predictor_cc_proto",
+        "//base:bits",
+        "//base:clock",
+        "//base:config_file_stream",
+        "//base:hash",
+        "//base:japanese_util",
+        "//base:logging",
+        "//base:thread2",
+        "//base:util",
+        "//base/container:freelist",
+        "//base/container:trie",
+        "//composer",
+        "//converter:segments",
+        "//dictionary:dictionary_interface",
+        "//dictionary:pos_matcher",
+        "//dictionary:suppression_dictionary",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//request:conversion_request",
+        "//rewriter:variants_rewriter",
+        "//storage:encrypted_string_storage",
+        "//storage:lru_cache",
+        "//testing:gunit_prod",
+        "//usage_stats",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/hash",
+        "@com_google_absl//absl/strings",
+    ],
+    alwayslink = 1,
+)
+
+mozc_cc_test(
+    name = "user_history_predictor_test",
+    size = "small",
+    timeout = "moderate",
+    srcs = ["user_history_predictor_test.cc"],
+    requires_full_emulation = False,
+    tags = ["nowin"],  # TODO(yuryu): depends on //base:encryptor
+    deps = [
+        ":user_history_predictor",
+        ":user_history_predictor_cc_proto",
+        "//base:clock_mock",
+        "//base:file_util",
+        "//base:logging",
+        "//base:random",
+        "//base:system_util",
+        "//base:util",
+        "//base/container:trie",
+        "//base/file:temp_dir",
+        "//composer",
+        "//composer:table",
+        "//config:config_handler",
+        "//converter:segments",
+        "//data_manager/testing:mock_data_manager",
+        "//dictionary:dictionary_mock",
+        "//dictionary:pos_matcher",
+        "//dictionary:suppression_dictionary",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//request:conversion_request",
+        "//session:request_test_util",
+        "//storage:encrypted_string_storage",
+        "//storage:lru_cache",
+        "//testing:gunit_main",
+        "//testing:mozctest",
+        "//usage_stats",
+        "//usage_stats:usage_stats_testing_util",
+        "@com_google_absl//absl/random",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+        "@com_google_absl//absl/time",
+    ],
+)
+
+mozc_cc_library(
+    name = "dictionary_predictor",
+    srcs = [
+        "dictionary_predictor.cc",
+    ],
+    hdrs = ["dictionary_predictor.h"],
+    deps = [
+        ":dictionary_prediction_aggregator",
+        ":prediction_aggregator_interface",
+        ":predictor_interface",
+        ":rescorer_interface",
+        ":result",
+        ":suggestion_filter",
+        "//base:logging",
+        "//base:util",
+        "//base/strings:assign",
+        "//base/strings:japanese",
+        "//composer",
+        "//converter:connector",
+        "//converter:converter_interface",
+        "//converter:immutable_converter_interface",
+        "//converter:segmenter",
+        "//converter:segments",
+        "//data_manager:data_manager_interface",
+        "//dictionary:dictionary_interface",
+        "//dictionary:pos_matcher",
+        "//dictionary:single_kanji_dictionary",
+        "//protocol:commands_cc_proto",
+        "//request:conversion_request",
+        "//transliteration",
+        "//usage_stats",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/container:flat_hash_map",
+        "@com_google_absl//absl/container:flat_hash_set",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:span",
+    ],
+    alwayslink = 1,
+)
+
+mozc_cc_library(
+    name = "result",
+    srcs = ["result.cc"],
+    hdrs = ["result.h"],
+    visibility = [
+        "//prediction:__subpackages__",
+    ],
+    deps = [
+        ":zero_query_dict",
+        "//base/strings:unicode",
+        "//converter:segments",
+        "//dictionary:dictionary_token",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+    ],
+)
+
+mozc_cc_library(
+    name = "prediction_aggregator_interface",
+    hdrs = ["prediction_aggregator_interface.h"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":result",
+        "//converter:segments",
+        "//request:conversion_request",
+    ],
+)
+
+mozc_cc_library(
+    name = "dictionary_prediction_aggregator",
+    srcs = [
+        "dictionary_prediction_aggregator.cc",
+    ],
+    hdrs = ["dictionary_prediction_aggregator.h"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":number_decoder",
+        ":prediction_aggregator_interface",
+        ":result",
+        ":single_kanji_prediction_aggregator",
+        ":zero_query_dict",
+        "//base:japanese_util",
+        "//base:logging",
+        "//base:number_util",
+        "//base:util",
+        "//composer",
+        "//composer:type_corrected_query",
+        "//converter:converter_interface",
+        "//converter:immutable_converter_interface",
+        "//converter:node_list_builder",
+        "//converter:segments",
+        "//data_manager:data_manager_interface",
+        "//dictionary:dictionary_interface",
+        "//dictionary:dictionary_token",
+        "//dictionary:pos_matcher",
+        "//protocol:commands_cc_proto",
+        "//request:conversion_request",
+        "//transliteration",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+mozc_cc_test(
+    name = "dictionary_prediction_aggregator_test",
+    size = "small",
+    timeout = "moderate",
+    srcs = [
+        "dictionary_prediction_aggregator_test.cc",
+    ],
+    requires_full_emulation = False,
+    deps = [
+        ":dictionary_prediction_aggregator",
+        ":prediction_aggregator_interface",
+        ":result",
+        ":zero_query_dict",
+        "//base:logging",
+        "//base:util",
+        "//base/container:serialized_string_array",
+        "//composer",
+        "//composer:table",
+        "//composer/internal:typing_model",
+        "//config:config_handler",
+        "//converter:converter_interface",
+        "//converter:converter_mock",
+        "//converter:immutable_converter_interface",
+        "//converter:segments",
+        "//data_manager:data_manager_interface",
+        "//data_manager/testing:mock_data_manager",
+        "//dictionary:dictionary_interface",
+        "//dictionary:dictionary_mock",
+        "//dictionary:dictionary_token",
+        "//dictionary:pos_matcher",
+        "//dictionary:suffix_dictionary",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//request:conversion_request",
+        "//session:request_test_util",
+        "//testing:gunit_main",
+        "//testing:mozctest",
+        "//transliteration",
+        "@com_google_absl//absl/memory",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+    ],
+)
+
+mozc_cc_test(
+    name = "dictionary_predictor_test",
+    size = "small",
+    timeout = "moderate",
+    srcs = [
+        "dictionary_predictor_test.cc",
+    ],
+    requires_full_emulation = False,
+    deps = [
+        ":dictionary_predictor",
+        ":rescorer_mock",
+        ":suggestion_filter",
+        "//base:logging",
+        "//base:util",
+        "//base/strings:assign",
+        "//composer",
+        "//composer:table",
+        "//config:config_handler",
+        "//converter:connector",
+        "//converter:converter_interface",
+        "//converter:converter_mock",
+        "//converter:immutable_converter_interface",
+        "//converter:segmenter",
+        "//converter:segments",
+        "//converter:segments_matchers",
+        "//data_manager:data_manager_interface",
+        "//data_manager/testing:mock_data_manager",
+        "//dictionary:dictionary_token",
+        "//dictionary:pos_matcher",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//request:conversion_request",
+        "//session:request_test_util",
+        "//testing:gunit_main",
+        "//testing:mozctest",
+        "//usage_stats",
+        "//usage_stats:usage_stats_testing_util",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+mozc_cc_library(
+    name = "single_kanji_prediction_aggregator",
+    srcs = [
+        "single_kanji_prediction_aggregator.cc",
+    ],
+    hdrs = ["single_kanji_prediction_aggregator.h"],
+    visibility = ["//visibility:private"],
+    deps = [
+        ":prediction_aggregator_interface",
+        ":result",
+        "//base:util",
+        "//base/strings:assign",
+        "//composer",
+        "//converter:segments",
+        "//data_manager:data_manager_interface",
+        "//dictionary:pos_matcher",
+        "//dictionary:single_kanji_dictionary",
+        "//protocol:commands_cc_proto",
+        "//request:conversion_request",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+mozc_cc_test(
+    name = "single_kanji_prediction_aggregator_test",
+    srcs = [
+        "single_kanji_prediction_aggregator_test.cc",
+    ],
+    requires_full_emulation = False,
+    deps = [
+        ":result",
+        ":single_kanji_prediction_aggregator",
+        "//composer",
+        "//composer:table",
+        "//config:config_handler",
+        "//converter:segments",
+        "//data_manager/testing:mock_data_manager",
+        "//dictionary:pos_matcher",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//request:conversion_request",
+        "//session:request_test_util",
+        "//testing:gunit_main",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_library(
+    name = "predictor",
+    srcs = ["predictor.cc"],
+    hdrs = ["predictor.h"],
+    deps = [
+        ":predictor_interface",
+        "//base:logging",
+        "//base:util",
+        "//converter:converter_interface",
+        "//converter:segments",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//request:conversion_request",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/strings",
+    ],
+    alwayslink = 1,
+)
+
+mozc_cc_test(
+    name = "predictor_test",
+    srcs = ["predictor_test.cc"],
+    requires_full_emulation = False,
+    deps = [
+        ":dictionary_predictor",
+        ":predictor",
+        ":predictor_interface",
+        ":user_history_predictor",
+        "//base:logging",
+        "//composer",
+        "//config:config_handler",
+        "//converter:converter_mock",
+        "//converter:segments",
+        "//data_manager/testing:mock_data_manager",
+        "//dictionary:dictionary_mock",
+        "//dictionary:pos_matcher",
+        "//dictionary:suppression_dictionary",
+        "//protocol:commands_cc_proto",
+        "//protocol:config_cc_proto",
+        "//request:conversion_request",
+        "//session:request_test_util",
+        "//testing:gunit_main",
+    ],
+)
+
+mozc_cc_library(
+    name = "suggestion_filter",
+    srcs = ["suggestion_filter.cc"],
+    hdrs = ["suggestion_filter.h"],
+    deps = [
+        "//base:hash",
+        "//base:logging",
+        "//base:status",
+        "//base:util",
+        "//storage:existence_filter",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+mozc_cc_library(
+    name = "zero_query_dict",
+    hdrs = ["zero_query_dict.h"],
+    visibility = ["//visibility:private"],
+    deps = [
+        "//base:port",
+        "//base/container:serialized_string_array",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_test(
+    name = "zero_query_dict_test",
+    srcs = ["zero_query_dict_test.cc"],
+    requires_full_emulation = False,
+    visibility = ["//visibility:private"],
+    deps = [
+        ":zero_query_dict",
+        "//base:port",
+        "//base/container:serialized_string_array",
+        "//testing:gunit_main",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_binary(
+    name = "gen_suggestion_filter_main",
+    srcs = ["gen_suggestion_filter_main.cc"],
+    deps = [
+        "//base:codegen_bytearray_stream",
+        "//base:file_stream",
+        "//base:hash",
+        "//base:init_mozc_buildtool",
+        "//base:logging",
+        "//base:multifile",
+        "//base:util",
+        "//storage:existence_filter",
+        "@com_google_absl//absl/base:core_headers",
+        "@com_google_absl//absl/flags:flag",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_py_library(
+    name = "gen_zero_query_util",
+    srcs = ["gen_zero_query_util.py"],
+    deps = [
+        "//build_tools:code_generator_util",
+        "//build_tools:serialized_string_array_builder",
+    ],
+)
+
+mozc_py_binary(
+    name = "gen_zero_query_number_data",
+    srcs = ["gen_zero_query_number_data.py"],
+    deps = [":gen_zero_query_util"],
+)
+
+mozc_py_binary(
+    name = "gen_zero_query_data",
+    srcs = ["gen_zero_query_data.py"],
+    deps = [
+        ":gen_zero_query_util",
+        "//build_tools:code_generator_util",
+    ],
+)
+
+mozc_cc_library(
+    name = "number_decoder",
+    srcs = ["number_decoder.cc"],
+    hdrs = [
+        "number_decoder.h",
+    ],
+    deps = [
+        "//base/container:trie",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/strings:str_format",
+    ],
+)
+
+mozc_cc_test(
+    name = "number_decoder_test",
+    srcs = ["number_decoder_test.cc"],
+    deps = [
+        ":number_decoder",
+        "//testing:gunit_main",
+        "//testing:mozctest",
+        "@com_google_absl//absl/random",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_library(
+    name = "rescorer_interface",
+    hdrs = ["rescorer_interface.h"],
+    deps = [
+        ":result",
+        "//request:conversion_request",
+        "@com_google_absl//absl/strings",
+        "@com_google_absl//absl/types:span",
+    ],
+)
+
+mozc_cc_library(
+    name = "rescorer_mock",
+    testonly = 1,
+    hdrs = ["rescorer_mock.h"],
+    deps = [
+        ":rescorer_interface",
+        "//testing",
+    ],
+)

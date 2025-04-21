@@ -1,0 +1,163 @@
+From: Weng Xuetian <wengxt@gmail.com>
+Date: Mon, 29 Apr 2024 15:02:58 -0700
+Subject: [PATCH] rename mozc icon
+
+Bug-Debian: https://bugs.debian.org/1091829
+Applied-Upstream: https://github.com/fcitx/mozc/commit/e13338a41329f58e724801771f0cecf7338e24fb
+Forwarded: not-needed
+Last-Updated: 2024-12-31
+
+Signed-off-by: Boyuan Yang <byang@debian.org>
+---
+ scripts/install_fcitx5_icons   | 44 +++++++++++++++++++++---------------------
+ src/unix/fcitx5/mozc.conf      |  2 +-
+ src/unix/fcitx5/mozc_engine.cc | 18 ++++++++---------
+ 3 files changed, 32 insertions(+), 32 deletions(-)
+
+diff --git a/scripts/install_fcitx5_icons b/scripts/install_fcitx5_icons
+index a3d45a0..e8f101b 100755
+--- a/scripts/install_fcitx5_icons
++++ b/scripts/install_fcitx5_icons
+@@ -2,26 +2,26 @@
+ 
+ PREFIX="${PREFIX:-/usr}"
+ 
+-install -D -m 644 data/images/product_icon_32bpp-128.png "${PREFIX}/share/icons/hicolor/128x128/apps/org.fcitx.Fcitx5.fcitx-mozc.png"
+-install -D -m 644 data/images/unix/ime_product_icon_opensource-32.png "${PREFIX}/share/icons/hicolor/32x32/apps/org.fcitx.Fcitx5.fcitx-mozc.png"
+-install -D -m 644 ../scripts/icons/ui-alpha_full.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx-mozc-alpha-full.png"
+-install -D -m 644 ../scripts/icons/ui-alpha_half.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx-mozc-alpha-half.png"
+-install -D -m 644 ../scripts/icons/ui-direct.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx-mozc-direct.png"
+-install -D -m 644 ../scripts/icons/ui-hiragana.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx-mozc-hiragana.png"
+-install -D -m 644 ../scripts/icons/ui-katakana_full.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx-mozc-katakana-full.png"
+-install -D -m 644 ../scripts/icons/ui-katakana_half.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx-mozc-katakana-half.png"
+-install -D -m 644 ../scripts/icons/ui-dictionary.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx-mozc-dictionary.png"
+-install -D -m 644 ../scripts/icons/ui-properties.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx-mozc-properties.png"
+-install -D -m 644 ../scripts/icons/ui-tool.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx-mozc-tool.png"
++install -D -m 644 data/images/product_icon_32bpp-128.png "${PREFIX}/share/icons/hicolor/128x128/apps/org.fcitx.Fcitx5.fcitx_mozc.png"
++install -D -m 644 data/images/unix/ime_product_icon_opensource-32.png "${PREFIX}/share/icons/hicolor/32x32/apps/org.fcitx.Fcitx5.fcitx_mozc.png"
++install -D -m 644 ../scripts/icons/ui-alpha_full.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx_mozc_alpha_full.png"
++install -D -m 644 ../scripts/icons/ui-alpha_half.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx_mozc_alpha_half.png"
++install -D -m 644 ../scripts/icons/ui-direct.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx_mozc_direct.png"
++install -D -m 644 ../scripts/icons/ui-hiragana.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx_mozc_hiragana.png"
++install -D -m 644 ../scripts/icons/ui-katakana_full.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx_mozc_katakana_full.png"
++install -D -m 644 ../scripts/icons/ui-katakana_half.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx_mozc_katakana_half.png"
++install -D -m 644 ../scripts/icons/ui-dictionary.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx_mozc_dictionary.png"
++install -D -m 644 ../scripts/icons/ui-properties.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx_mozc_properties.png"
++install -D -m 644 ../scripts/icons/ui-tool.png "${PREFIX}/share/icons/hicolor/48x48/apps/org.fcitx.Fcitx5.fcitx_mozc_tool.png"
+ 
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc.png "${PREFIX}/share/icons/hicolor/128x128/apps/fcitx-mozc.png"
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc.png "${PREFIX}/share/icons/hicolor/32x32/apps/fcitx-mozc.png"
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc-alpha-full.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx-mozc-alpha-full.png"
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc-alpha-half.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx-mozc-alpha-half.png"
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc-direct.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx-mozc-direct.png"
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc-hiragana.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx-mozc-hiragana.png"
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc-katakana-full.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx-mozc-katakana-full.png"
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc-katakana-half.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx-mozc-katakana-half.png"
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc-dictionary.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx-mozc-dictionary.png"
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc-properties.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx-mozc-properties.png"
+-ln -sf org.fcitx.Fcitx5.fcitx-mozc-tool.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx-mozc-tool.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc.png "${PREFIX}/share/icons/hicolor/128x128/apps/fcitx_mozc.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc.png "${PREFIX}/share/icons/hicolor/32x32/apps/fcitx_mozc.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc_alpha_full.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx_mozc_alpha_full.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc_alpha_half.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx_mozc_alpha_half.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc_direct.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx_mozc_direct.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc_hiragana.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx_mozc_hiragana.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc_katakana_full.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx_mozc_katakana_full.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc_katakana_half.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx_mozc_katakana_half.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc_dictionary.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx_mozc_dictionary.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc_properties.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx_mozc_properties.png"
++ln -sf org.fcitx.Fcitx5.fcitx_mozc_tool.png "${PREFIX}/share/icons/hicolor/48x48/apps/fcitx_mozc_tool.png"
+diff --git a/src/unix/fcitx5/mozc.conf b/src/unix/fcitx5/mozc.conf
+index e87064e..40725d7 100644
+--- a/src/unix/fcitx5/mozc.conf
++++ b/src/unix/fcitx5/mozc.conf
+@@ -1,6 +1,6 @@
+ [InputMethod]
+ Name=Mozc
+-Icon=fcitx-mozc
++Icon=fcitx_mozc
+ Label=あ
+ LangCode=ja
+ Addon=mozc
+diff --git a/src/unix/fcitx5/mozc_engine.cc b/src/unix/fcitx5/mozc_engine.cc
+index e04b061..dd69871 100644
+--- a/src/unix/fcitx5/mozc_engine.cc
++++ b/src/unix/fcitx5/mozc_engine.cc
+@@ -47,21 +47,21 @@ const struct CompositionModeInfo {
+ } kPropCompositionModes[] = {
+     {
+         "mozc-mode-direct",
+-        "fcitx-mozc-direct",
++        "fcitx_mozc_direct",
+         "A",
+         N_("Direct"),
+         mozc::commands::DIRECT,
+     },
+     {
+         "mozc-mode-hiragana",
+-        "fcitx-mozc-hiragana",
++        "fcitx_mozc_hiragana",
+         "\xe3\x81\x82",  // Hiragana letter A in UTF-8.
+         N_("Hiragana"),
+         mozc::commands::HIRAGANA,
+     },
+     {
+         "mozc-mode-katakana_full",
+-        "fcitx-mozc-katakana-full",
++        "fcitx_mozc_katakana_full",
+         "\xe3\x82\xa2",  // Katakana letter A.
+         N_("Full Katakana"),
+         mozc::commands::FULL_KATAKANA,
+@@ -69,7 +69,7 @@ const struct CompositionModeInfo {
+     {
+ 
+         "mozc-mode-alpha_half",
+-        "fcitx-mozc-alpha-half",
++        "fcitx_mozc_alpha_half",
+         "A",
+         N_("Half ASCII"),
+         mozc::commands::HALF_ASCII,
+@@ -77,14 +77,14 @@ const struct CompositionModeInfo {
+     {
+ 
+         "mozc-mode-alpha_full",
+-        "fcitx-mozc-alpha-full",
++        "fcitx_mozc_alpha_full",
+         "\xef\xbc\xa1",  // Full width ASCII letter A.
+         N_("Full ASCII"),
+         mozc::commands::FULL_ASCII,
+     },
+     {
+         "mozc-mode-katakana_half",
+-        "fcitx-mozc-katakana-half",
++        "fcitx_mozc_katakana_half",
+         "\xef\xbd\xb1",  // Half width Katakana letter A.
+         N_("Half Katakana"),
+         mozc::commands::HALF_KATAKANA,
+@@ -142,7 +142,7 @@ MozcEngine::MozcEngine(Instance *instance)
+   instance_->userInterfaceManager().registerAction("mozc-tool", &toolAction_);
+   toolAction_.setShortText(_("Mozc Settings"));
+   toolAction_.setLongText(_("Mozc Settings"));
+-  toolAction_.setIcon("fcitx-mozc-tool");
++  toolAction_.setIcon("fcitx_mozc_tool");
+ 
+   int i = 0;
+   for (auto &modeAction : modeActions_) {
+@@ -169,7 +169,7 @@ MozcEngine::MozcEngine(Instance *instance)
+   instance_->userInterfaceManager().registerAction("mozc-tool-config",
+                                                    &configToolAction_);
+   configToolAction_.setShortText(_("Configuration Tool"));
+-  configToolAction_.setIcon("fcitx-mozc-tool");
++  configToolAction_.setIcon("fcitx_mozc_tool");
+   configToolAction_.connect<SimpleAction::Activated>([](InputContext *) {
+     mozc::Process::SpawnMozcProcess("mozc_tool", "--mode=config_dialog");
+   });
+@@ -177,7 +177,7 @@ MozcEngine::MozcEngine(Instance *instance)
+   instance_->userInterfaceManager().registerAction("mozc-tool-dict",
+                                                    &dictionaryToolAction_);
+   dictionaryToolAction_.setShortText(_("Dictionary Tool"));
+-  dictionaryToolAction_.setIcon("fcitx-mozc-dictionary");
++  dictionaryToolAction_.setIcon("fcitx_mozc_dictionary");
+   dictionaryToolAction_.connect<SimpleAction::Activated>([](InputContext *) {
+     mozc::Process::SpawnMozcProcess("mozc_tool", "--mode=dictionary_tool");
+   });

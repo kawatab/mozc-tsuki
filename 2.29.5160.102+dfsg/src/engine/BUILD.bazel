@@ -1,0 +1,330 @@
+# Copyright 2010-2021, Google Inc.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Google Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+load(
+    "//:build_defs.bzl",
+    "mozc_cc_library",
+    "mozc_cc_test",
+    "mozc_select",
+)
+
+package(
+    default_visibility = [
+        "//:__subpackages__",
+    ],
+)
+
+mozc_cc_library(
+    name = "engine_builder_interface",
+    hdrs = ["engine_builder_interface.h"],
+    deps = [
+        ":engine_interface",
+        "//protocol:engine_builder_cc_proto",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_library(
+    name = "engine_builder",
+    srcs = ["engine_builder.cc"],
+    hdrs = ["engine_builder.h"],
+    deps = [
+        ":engine",
+        ":engine_builder_interface",
+        ":engine_interface",
+        "//base:file_util",
+        "//base:hash",
+        "//base:logging",
+        "//base:thread2",
+        "//data_manager",
+        "//protocol:engine_builder_cc_proto",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+    ],
+)
+
+mozc_cc_test(
+    name = "engine_builder_test",
+    srcs = ["engine_builder_test.cc"],
+    data = [
+        "engine_builder_test.cc",
+        "//data_manager/testing:mock_mozc.data",
+    ],
+    requires_full_emulation = False,
+    deps = [
+        ":engine_builder",
+        ":engine_interface",
+        "//base:file_util",
+        "//prediction:predictor_interface",
+        "//protocol:engine_builder_cc_proto",
+        "//testing:gunit_main",
+        "//testing:mozctest",
+        "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+mozc_cc_library(
+    name = "engine_interface",
+    hdrs = ["engine_interface.h"],
+    deps = [
+        ":user_data_manager_interface",
+        "//converter:converter_interface",
+        "//data_manager:data_manager_interface",
+        "//dictionary:suppression_dictionary",
+        "//prediction:predictor_interface",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_library(
+    name = "engine",
+    srcs = [
+        "engine.cc",
+    ],
+    hdrs = ["engine.h"],
+    visibility = [
+        "//:__subpackages__",
+    ],
+    deps = [
+        ":engine_interface",
+        ":user_data_manager_interface",
+        "//base:logging",
+        "//converter",
+        "//converter:connector",
+        "//converter:immutable_converter_interface",
+        "//converter:immutable_converter_no_factory",
+        "//converter:segmenter",
+        "//data_manager:data_manager_interface",
+        "//dictionary:dictionary_impl",
+        "//dictionary:dictionary_interface",
+        "//dictionary:pos_group",
+        "//dictionary:pos_matcher",
+        "//dictionary:suffix_dictionary",
+        "//dictionary:suppression_dictionary",
+        "//dictionary:user_dictionary",
+        "//dictionary:user_pos",
+        "//dictionary/system:system_dictionary",
+        "//dictionary/system:value_dictionary",
+        "//prediction:dictionary_predictor",
+        "//prediction:predictor",
+        "//prediction:predictor_interface",
+        "//prediction:rescorer_interface",
+        "//prediction:suggestion_filter",
+        "//prediction:user_history_predictor",
+        "//rewriter",
+        "//rewriter:rewriter_interface",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_library(
+    name = "engine_mock",
+    testonly = 1,
+    hdrs = ["engine_mock.h"],
+    deps = [
+        ":engine_interface",
+        "//testing:gunit",
+    ],
+)
+
+mozc_cc_library(
+    name = "engine_stub",
+    testonly = True,
+    hdrs = ["engine_stub.h"],
+    visibility = ["//session:__subpackages__"],
+    deps = [
+        ":engine_interface",
+        ":user_data_manager_interface",
+        "//converter:converter_interface",
+        "//data_manager:data_manager_interface",
+        "//dictionary:suppression_dictionary",
+        "//prediction:predictor_interface",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_library(
+    name = "engine_factory",
+    hdrs = ["engine_factory.h"],
+    deps = mozc_select(
+        android = [":android_engine_factory"],
+        default = [":google_engine_factory"],
+        oss = [":oss_engine_factory"],
+    ),
+)
+
+mozc_cc_test(
+    name = "engine_factory_test",
+    srcs = ["engine_factory_test.cc"],
+    requires_full_emulation = False,
+    deps = [
+        ":engine_factory",
+        ":engine_interface",
+        "//prediction:predictor_interface",
+        "//testing:gunit_main",
+    ],
+)
+
+mozc_cc_library(
+    name = "eval_engine_factory",
+    srcs = ["eval_engine_factory.cc"],
+    hdrs = ["eval_engine_factory.h"],
+    deps = [
+        ":engine",
+        "//data_manager",
+        "@com_google_absl//absl/status",
+        "@com_google_absl//absl/status:statusor",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+filegroup(
+    name = "eval_engine_data",
+    srcs = mozc_select(
+        default = [
+            "//data_manager/android:mozc.data",
+            "//data_manager/google:mozc.data",
+            "//data_manager/oss:mozc.data",
+        ],
+        oss = [
+            "//data_manager/oss:mozc.data",
+        ],
+    ),
+)
+
+mozc_cc_library(
+    name = "google_engine_factory",
+    hdrs = ["google_engine_factory.h"],
+    tags = ["manual"],
+    visibility = [
+        "//converter:__pkg__",
+        "//evaluation:__subpackages__",
+    ],
+    deps = [
+        ":engine",
+        "//data_manager/google:google_data_manager",
+        "//prediction:predictor",
+        "@com_google_absl//absl/status:statusor",
+    ],
+)
+
+mozc_cc_library(
+    name = "android_engine_factory",
+    hdrs = ["android_engine_factory.h"],
+    tags = ["manual"],
+    visibility = [
+        "//converter:__pkg__",
+        "//evaluation:__subpackages__",
+    ],
+    deps = [
+        ":engine",
+        "//data_manager/android:android_data_manager",
+        "@com_google_absl//absl/status:statusor",
+    ],
+)
+
+mozc_cc_library(
+    name = "oss_engine_factory",
+    hdrs = ["oss_engine_factory.h"],
+    visibility = ["//evaluation:__subpackages__"],
+    deps = [
+        ":engine",
+        "//data_manager/oss:oss_data_manager",
+        "@com_google_absl//absl/status:statusor",
+    ],
+)
+
+mozc_cc_library(
+    name = "mock_data_engine_factory",
+    testonly = True,
+    srcs = ["mock_data_engine_factory.cc"],
+    hdrs = ["mock_data_engine_factory.h"],
+    visibility = [
+        "//converter:__pkg__",
+        "//evaluation:__pkg__",
+        "//rewriter:__pkg__",
+        "//session:__pkg__",
+    ],
+    deps = [
+        ":engine",
+        "//data_manager/testing:mock_data_manager",
+        "@com_google_absl//absl/status:statusor",
+    ],
+)
+
+mozc_cc_library(
+    name = "user_data_manager_mock",
+    testonly = 1,
+    hdrs = ["user_data_manager_mock.h"],
+    visibility = [
+        "//:__subpackages__",
+    ],
+    deps = [
+        ":user_data_manager_interface",
+        "//testing:gunit",
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_library(
+    name = "user_data_manager_interface",
+    hdrs = ["user_data_manager_interface.h"],
+    visibility = [
+        # For //session:session_handler_scenario_test.
+        "//session:__pkg__",
+    ],
+    deps = [
+        "@com_google_absl//absl/strings",
+    ],
+)
+
+mozc_cc_library(
+    name = "minimal_engine",
+    srcs = ["minimal_engine.cc"],
+    hdrs = ["minimal_engine.h"],
+    visibility = [
+        "//:__subpackages__",
+    ],
+    deps = [
+        ":engine_interface",
+        ":user_data_manager_interface",
+        "//base/strings:assign",
+        "//composer",
+        "//converter:converter_interface",
+        "//converter:segments",
+        "//data_manager",
+        "//data_manager:data_manager_interface",
+        "//dictionary:suppression_dictionary",
+        "//prediction:predictor_interface",
+        "//request:conversion_request",
+        "@com_google_absl//absl/strings",
+    ],
+)

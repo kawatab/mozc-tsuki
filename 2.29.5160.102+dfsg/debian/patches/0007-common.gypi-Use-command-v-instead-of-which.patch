@@ -1,0 +1,36 @@
+From: Kentaro Hayashi <kenhys@gmail.com>
+Date: Wed, 16 Oct 2024 21:30:25 +0900
+Subject: common.gypi: Use 'command -v' instead of which
+
+Description: Use 'command -v' instead of which
+Forwarded: not-needed
+Last-Update: 2024-10-16
+
+
+Signed-off-by: Nobuhiro Iwamatsu <iwamatsu@debian.org>
+Signed-off-by: Kentaro Hayashi <kenhys@gmail.com>
+---
+ src/gyp/common.gypi | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/src/gyp/common.gypi b/src/gyp/common.gypi
+index e9756d2..8093a9c 100644
+--- a/src/gyp/common.gypi
++++ b/src/gyp/common.gypi
+@@ -338,12 +338,12 @@
+   'conditions': [
+     ['target_platform=="Linux"', {
+       'make_global_settings': [
+-        ['AR', '<!(which ar)'],
++        ['AR', '<!(command -v ar)'],
+         ['CC', '<!(command -v gcc)'],
+         ['CXX', '<!(command -v g++)'],
+-        ['LD', '<!(which ld)'],
+-        ['NM', '<!(which nm)'],
+-        ['READELF', '<!(which readelf)'],
++        ['LD', '<!(command -v ld)'],
++        ['NM', '<!(command -v nm)'],
++        ['READELF', '<!(command -v readelf)'],
+       ],
+     }],
+   ],

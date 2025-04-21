@@ -1,0 +1,122 @@
+From: Kentaro Hayashi <kenhys@gmail.com>
+Date: Sat, 9 Nov 2024 19:58:07 +0900
+Subject: Revert cleanup for protobuf 3.21.12-10
+
+Description: Revert cleanup for older protobuf 3.21.12-10
+Origin: https://github.com/google/mozc/commit/f86d8b6d3e1ed34b2e5f359f236c978cf5e50840
+Forwarded: not-needed
+Last-Update: 2024-11-17
+
+Signed-off-by: Kentaro Hayashi <kenhys@gmail.com>
+---
+ src/session/internal/session_output.cc | 17 +++++++++--------
+ src/session/internal/session_output.h  |  2 +-
+ src/session/session_converter.cc       | 12 ++++++------
+ 3 files changed, 16 insertions(+), 15 deletions(-)
+
+diff --git a/src/session/internal/session_output.cc b/src/session/internal/session_output.cc
+index 5d4fdcd..bbdcdb8 100644
+--- a/src/session/internal/session_output.cc
++++ b/src/session/internal/session_output.cc
+@@ -319,13 +319,14 @@ void SessionOutput::FillUsages(const Segment &segment,
+ }
+ 
+ // static
+-void SessionOutput::FillShortcuts(absl::string_view shortcuts,
++void SessionOutput::FillShortcuts(const std::string &shortcuts,
+                                   commands::Candidates *candidates_proto) {
+   const size_t num_loop =
+       std::min<size_t>(candidates_proto->candidate_size(), shortcuts.size());
+   for (size_t i = 0; i < num_loop; ++i) {
++    const std::string shortcut = shortcuts.substr(i, 1);
+     candidates_proto->mutable_candidate(i)->mutable_annotation()->set_shortcut(
+-        shortcuts.substr(i, 1));
++        shortcut);
+   }
+ }
+ 
+@@ -360,7 +361,7 @@ bool SessionOutput::FillFooter(const commands::Category category,
+   commands::Footer *footer = candidates->mutable_footer();
+   if (category == commands::SUGGESTION) {
+     // TODO(komatsu): Enable to localized the message.
+-    constexpr absl::string_view kLabel = "Tabキーで選択";
++    constexpr char kLabel[] = "Tabキーで選択";
+     // TODO(komatsu): Need to check if Tab is not changed to other key binding.
+     footer->set_label(kLabel);
+   } else {
+@@ -379,13 +380,13 @@ bool SessionOutput::FillFooter(const commands::Category category,
+         if (cand.has_annotation() && cand.annotation().deletable()) {
+           // TODO(noriyukit): Change the message depending on user's keymap.
+ #if defined(__APPLE__)
+-          constexpr absl::string_view kDeleteInstruction =
++          constexpr char kDeleteInstruction[] =
+               "control+fn+deleteで履歴から削除";
+ #elif defined(OS_CHROMEOS)
+-          constexpr absl::string_view kDeleteInstruction =
++          constexpr char kDeleteInstruction[] =
+               "ctrl+alt+backspaceで履歴から削除";
+ #else   // !__APPLE__ && !OS_CHROMEOS
+-          constexpr absl::string_view kDeleteInstruction =
++          constexpr char kDeleteInstruction[] =
+               "Ctrl+Delで履歴から削除";
+ #endif  // __APPLE__ || OS_CHROMEOS
+           footer->set_label(kDeleteInstruction);
+@@ -419,10 +420,10 @@ bool SessionOutput::AddSegment(const absl::string_view key,
+   if (segment_type_mask & PREEDIT) {
+     normalized_value = TextNormalizer::NormalizeText(value);
+   } else if (segment_type_mask & CONVERSION) {
+-    strings::Assign(normalized_value, value);
++    normalized_value = std::string(value);
+   } else {
+     LOG(WARNING) << "Unknown segment type" << segment_type_mask;
+-    strings::Assign(normalized_value, value);
++    normalized_value = std::string(value);
+   }
+ 
+   if (normalized_value.empty()) {
+diff --git a/src/session/internal/session_output.h b/src/session/internal/session_output.h
+index 68d7f83..0928550 100644
+--- a/src/session/internal/session_output.h
++++ b/src/session/internal/session_output.h
+@@ -83,7 +83,7 @@ class SessionOutput {
+                          commands::Candidates *candidates_proto);
+ 
+   // Fill the access key of Candidates protobuf with the sequence of shortcuts.
+-  static void FillShortcuts(absl::string_view shortcuts,
++  static void FillShortcuts(const std::string &shortcuts,
+                             commands::Candidates *candidates_proto);
+ 
+   // Fill the sub_label of footer_proto.  This function should be
+diff --git a/src/session/session_converter.cc b/src/session/session_converter.cc
+index cc67560..0f772d4 100644
+--- a/src/session/session_converter.cc
++++ b/src/session/session_converter.cc
+@@ -73,14 +73,14 @@ using ::mozc::usage_stats::UsageStats;
+ 
+ constexpr size_t kDefaultMaxHistorySize = 3;
+ 
+-absl::string_view GetCandidateShortcuts(
++const char *GetCandidateShortcuts(
+     config::Config::SelectionShortcut selection_shortcut) {
+   // Keyboard shortcut for candidates.
+-  constexpr absl::string_view kShortcut123456789 = "123456789";
+-  constexpr absl::string_view kShortcutASDFGHJKL = "asdfghjkl";
+-  constexpr absl::string_view kNoShortcut = "";
++  constexpr const char *kShortcut123456789 = "123456789";
++  constexpr const char *kShortcutASDFGHJKL = "asdfghjkl";
++  constexpr const char *kNoShortcut = "";
+ 
+-  absl::string_view shortcut = kNoShortcut;
++  const char *shortcut = kNoShortcut;
+   switch (selection_shortcut) {
+     case config::Config::SHORTCUT_123456789:
+       shortcut = kShortcut123456789;
+@@ -106,7 +106,7 @@ ConversionRequest CreateIncognitoConversionRequest(
+ }
+ 
+ // Calculate cursor offset for committed text.
+-int32_t CalculateCursorOffset(absl::string_view committed_text) {
++int32_t CalculateCursorOffset(const std::string &committed_text) {
+   // If committed_text is a bracket pair, set the cursor in the middle.
+   return Util::IsBracketPairText(committed_text) ? -1 : 0;
+ }

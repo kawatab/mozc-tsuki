@@ -1,0 +1,17 @@
+0001-Support-uim.patch
+0002-Support-fcitx.patch
+0003-Change-compiler-from-clang-to-gcc.patch
+0004-Add-usage_dict.txt.patch
+0005-Enable-verbose-build.patch
+0006-Update-gyp-using-absl.patch
+0007-common.gypi-Use-command-v-instead-of-which.patch
+#0008-renderer-Convert-Gtk2-to-Gtk3.patch
+0009-protobuf.gyp-Add-latomic-to-link_settings.patch
+0010-Fix-the-compile-error-of-ParseCommandLineFlags-with.patch
+0011-enable-deprecated-gtk-renderer.patch
+0012-Enable-use_gyp_for_ibus_build-again.patch
+0013-ibus-drop-needless-client_mock.patch
+0014-protobuf-revert-internal-cleanup.patch
+0015-uim-mozc-fix-ftbfs.patch
+fcitx5-backport/e13338a41329f58e724801771f0cecf7338e24fb.patch
+0016-Fix-FTBFS-with-absl-20240722.0.patch

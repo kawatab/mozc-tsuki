@@ -1,0 +1,33 @@
+From: Kentaro Hayashi <kenhys@gmail.com>
+Date: Fri, 18 Oct 2024 13:12:47 +0900
+Subject: client: remove needless dependency to client_mock
+
+Description: Fix the following error:
+
+  gyp: Dependency 'client/client.gyp:client_mock#target' not found
+  while trying to load target unix/ibus/ibus.gyp:ibus_mozc_test#target
+
+  By commit 428e724802d3cce75f2333f2044f8f93eff1d7d2, ClientMock was
+  replaced with gmock in .bazel, but not for ibus.gyp.
+Author: Kentaro Hayashi <kenhys@xdump.org>
+Forwarded: not-needed
+Last-Update: 2024-11-17
+
+
+Signed-off-by: Kentaro Hayashi <kenhys@gmail.com>
+---
+ src/unix/ibus/ibus.gyp | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/src/unix/ibus/ibus.gyp b/src/unix/ibus/ibus.gyp
+index 45ad2b6..5850ff0 100644
+--- a/src/unix/ibus/ibus.gyp
++++ b/src/unix/ibus/ibus.gyp
+@@ -252,7 +252,6 @@
+         '../../base/absl.gyp:absl_base',
+         '../../base/base.gyp:base',
+         '../../client/client.gyp:client',
+-        '../../client/client.gyp:client_mock',
+         '../../protocol/protocol.gyp:commands_proto',
+         '../../testing/testing.gyp:gtest_main',
+         'ibus_mozc_lib',

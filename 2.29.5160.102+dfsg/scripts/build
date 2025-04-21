@@ -1,0 +1,6 @@
+#!/bin/sh
+
+TARGETS="server/server.gyp:mozc_server gui/gui.gyp:mozc_tool unix/fcitx/fcitx.gyp:fcitx-mozc"
+_bldtype="${_bldtype:-Debug}"
+
+GYP_DEFINES="use_libprotobuf=1 use_libzinnia=1 use_libabseil=1" python3 build_mozc.py build ${TARGETS} -c ${_bldtype}
