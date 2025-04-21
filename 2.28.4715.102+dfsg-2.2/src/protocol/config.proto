@@ -1,5 +1,6 @@
 // Modified code
 <<<<<<< HEAD:2.28.4715.102+dfsg-2.2/src/protocol/config.proto
+<<<<<<< HEAD:2.28.4715.102+dfsg-2.2/src/protocol/config.proto
 // Copyright 2023, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
 // All rights reserved.
 //
@@ -9,6 +10,8 @@
 // Original code
 // Copyright 2010-2021, Google Inc.
 =======
+=======
+>>>>>>> 792a090 (Modified README.md and fixed some errors):src/protocol/config.proto
 // Copyright 2019, Yasuhiro Yamakawa <kawatab@yahoo.co.jp>
 // All rights reserved.
 //
